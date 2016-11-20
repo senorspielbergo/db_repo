@@ -1,0 +1,18 @@
+Wahlkreise.csv
+
+wkumrechnung2013_modified_unicode.csv
+Hier haben wir glaube ich vor allem die Parteinamen angepasst, sodass sie in den beiden Files identisch sind.
+Und - wie der Name es schon sagt - in Unicode gespeichert
+==> Spaltenname Bündnis217RRP_S2 ge�ndert zu Bündnis21/RRP_S2
+
+kerg_modified_unicode.csv
+Soweit ich mich erinnern kann, war das kerg-File vorher auch nicht in schönem CSV. Es kann sein, dass erst wir diese Aufschlüsselung gebaut haben.
+In seinem Format wie es jetzt ist, war es auf jeden Fall maschinenlesbarer als zuvor.
+
+wahlbewerber2013_mit_platz.csv
+wahlbewerber2009_mod.csv
+Wenn ich mich richtig erinnern kann, haben wir im unteren File vor allem den Titel in eine extra Spalte verschoben.
+Damit konnte man dann Kandidaten, die in beiden Wahlen angetreten sind über den Namen joinen. Für 2013 
+gab es glaube ich schon eine eigene Titelspalte, 2009 war das in den Vornamen integriert.
+wahlbewerber2009_mod.csv ==> Wahlkreis Kaltenhauser ge�ndert von 45 zu 247
+
