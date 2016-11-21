@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,11 +19,24 @@ public class WahlCsvParser {
 
 	public static void main(String[] args) {
 		String wahlkreisId = null, wahljahr = null;
+		boolean execute = false;
 		try {
 			if (args.length != 1) {
 				if (args.length == 4 && args[1] == "-gs") {
 					wahlkreisId = args[2];
 					wahljahr = args[3];
+				} else if (args[1].equals("-w")) {
+					File sql = new File(args[0].concat(File.separator
+							+ "sql_statement"));
+					if (sql.exists()) {
+						InputStream scriptInputStream = new FileInputStream(sql);
+						SqlRunner.runScript(DatabaseConnectionManager
+								.getInstance().getConnection(),
+								scriptInputStream);
+						return;
+					} else {
+						execute = true;
+					}
 				} else {
 					throw new Exception();
 				}
@@ -151,15 +165,23 @@ public class WahlCsvParser {
 
 			writer.flush();
 			writer.close();
+
+			if (execute) {
+				InputStream scriptInputStream = new FileInputStream(sql);
+				SqlRunner.runScript(DatabaseConnectionManager.getInstance()
+						.getConnection(), scriptInputStream);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			System.out
+					.println("WahlCsvParser \"path\" [-gs \"wahlkreisNr\" \"wahljahr\"] [-w]");
 		}
 	}
 
 	private static void writeValues(PrintWriter writer, String table,
 			List<String[]> values, String[] types) {
 		writer.println();
-		writer.print("insert into " + table + " values(");
+		writer.print("insert into " + table + " values ");
 		for (int pidx = 0; pidx < values.size(); pidx++) {
 			writer.print("(");
 			String[] s = values.get(pidx);
@@ -179,7 +201,7 @@ public class WahlCsvParser {
 				writer.print(",");
 			}
 		}
-		writer.print(");");
+		writer.print(";");
 	}
 
 	private static List<String[]> getListenplaetzeValues(
@@ -260,8 +282,6 @@ public class WahlCsvParser {
 							});
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out
-					.println("WahlCsvParser \"path\" [-gs \"wahlkreisNr\" \"wahljahr\"]");
 		}
 		return listenplaetzeResult;
 	}
@@ -277,7 +297,7 @@ public class WahlCsvParser {
 			wahlbewerberLines.stream().forEach(
 					s -> {
 						String[] e = s.split(SEPARATOR);
-						if (e.length > 7) {
+						if (e.length > 7 && !e[5].isEmpty()) {
 							map.put("2009" + e[5] + e[7],
 									new String[] { "", "2009", e[5],
 											convertAbkuerzungToName(e[7]) });
@@ -288,7 +308,7 @@ public class WahlCsvParser {
 			wahlbewerberLines.stream().forEach(
 					s -> {
 						String[] e = s.split(";");
-						if (e.length > 8) {
+						if (e.length > 8 && !e[6].isEmpty()) {
 							map.put("2013" + e[6] + e[8],
 									new String[] { "", "2013", e[6],
 											convertAbkuerzungToName(e[8]) });
@@ -354,7 +374,7 @@ public class WahlCsvParser {
 					s -> {
 						String[] e = s.split(SEPARATOR);
 						map.put(e[1] + e[2] + e[3] + e[4] + e[5], new String[] {
-								"", e[1], e[2], e[3], e[5] });
+								"", e[1], e[2], e[3], e[5].isEmpty() ? "NULL" : e[5] });
 					});
 			wahlbewerberLines = Files.readAllLines(wahlbewerber2013.toPath());
 			wahlbewerberLines.remove(0);
@@ -362,7 +382,7 @@ public class WahlCsvParser {
 					s -> {
 						String[] e = s.split(";");
 						map.put(e[2] + e[4] + e[3] + e[5] + e[6], new String[] {
-								"", e[2], e[4], e[3], e[6] });
+								"", e[2], e[4], e[3], e[6].isEmpty() ? "NULL" : e[6] });
 					});
 			map.values().stream().forEach(s -> {
 				s[0] = String.valueOf(wahlbewerberResult.size());
@@ -396,21 +416,17 @@ public class WahlCsvParser {
 			List<String> kergLines = Files.readAllLines(kerg.toPath());
 			List<String> parties = Arrays.asList(kergLines.remove(0).split(
 					SEPARATOR));
-			parties.subList(8, parties.size())
-					.stream()
-					.forEach(
-							p -> result.add(new String[] { p.substring(0,
-									p.lastIndexOf("_S")) }));
+			parties.subList(8, parties.size()).stream()
+					.map(p -> p.substring(0, p.lastIndexOf("_S"))).distinct()
+					.forEach(p -> result.add(new String[] { p }));
 			List<String> wkumrechnung2013Lines = Files
 					.readAllLines(wkumrechnung2013.toPath());
 			List<String> parties2 = Arrays.asList(wkumrechnung2013Lines.remove(
 					0).split(SEPARATOR));
-			parties2.subList(8, parties2.size())
-					.stream()
+			parties2.subList(8, parties2.size()).stream()
 					.filter(p -> !parties.contains(p))
-					.forEach(
-							p -> result.add(new String[] { p.substring(0,
-									p.lastIndexOf("_S")) }));
+					.map(p -> p.substring(0, p.lastIndexOf("_S"))).distinct()
+					.forEach(p -> result.add(new String[] { p }));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

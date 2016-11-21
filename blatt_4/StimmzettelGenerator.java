@@ -72,7 +72,8 @@ public class StimmzettelGenerator {
 									.stream()
 									.forEach(
 											w -> {
-												String partei = p.isEmpty() ? "Übrige" : p;
+												String partei = p.isEmpty() ? "Übrige"
+														: p;
 												String[] s = w.split(separator);
 												if (s.length < idx
 														|| !direktKandidaten
@@ -150,19 +151,19 @@ public class StimmzettelGenerator {
 					pidx = (pidx + 1) % parteien.size();
 				}
 				String parteiL = parteiListe;
-				String direktId = "";
+				String direktId = "NULL";
 
 				if (parteiStimmen.get(parteiDirekt)[0] > 0) {
 					try {
-					direktId = direktKandidaten.get(parteiDirekt).stream()
-							.findAny().get().key;
-					} catch(Exception e){
+						direktId = direktKandidaten.get(parteiDirekt).stream()
+								.findAny().get().key;
+					} catch (Exception e) {
 						System.out.println();
 					}
 					parteiStimmen.get(parteiDirekt)[0]--;
 					sumNotVotedStimmen[0]--;
 				}
-				String landeslisteId = "";
+				String landeslisteId = "NULL";
 
 				if (parteiStimmen.get(parteiListe)[1] > 0) {
 					landeslisteId = landeslisteValues
@@ -186,10 +187,10 @@ public class StimmzettelGenerator {
 			for (int count = 0; count < anzahlStimmzettel - valid; count++) {
 				stimmzettelResult.add(new String[] {
 						String.valueOf(stimmzettelResult.size()),
-						String.valueOf(wahljahr), "", "", kreisErgebnis[0] });
+						String.valueOf(wahljahr), "NULL", "NULL",
+						kreisErgebnis[0] });
 			}
 
-			System.out.println();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

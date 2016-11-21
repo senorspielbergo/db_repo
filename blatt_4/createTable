@@ -1,7 +1,7 @@
-create table partei (name varchar(40) primary key);
-create table bundesland (name varchar(30) primary key, wahlberechtigte int(20) not null);
-create table bewerber (id int(30) primary key, titel varchar(30), vorname varchar(50) not null, nachname varchar(60) not null, partei varchar(40) references partei(name));
-create table landesliste (id int(30) primary key, wahljahr int(4) not null, partei varchar(40) references partei(name), bundesland varchar(30) references bundesland(name));
-create table listenplaetze (listen_id int(30) references landesliste(id), bewerber_id int(30) references bewerber(id), listenplatz int(4) not null, primary key (listen_id, bewerber_id));
-create table stimmzettel (id int(30) primary key, wahljahr int(4) not null, direktkandidat int(30) references bewerber(id), landesliste int(30) references landesliste(id), wahlkreis int(4) references wahlkreis(nummer));
-create table wahlkreis (nummer int(4) primary key, name varchar(40) not null, wahlberechtigte int(20) not null, bundesland varchar(30) references bundesland(name));
+create table if not exists partei (name varchar(40) primary key);
+create table if not exists bundesland (name varchar(30) primary key, wahlberechtigte int not null);
+create table if not exists wahlkreis (nummer int primary key, name varchar(40) not null, wahlberechtigte int not null, bundesland varchar(30) references bundesland(name));
+create table if not exists bewerber (id int primary key, titel varchar(30), vorname varchar(50) not null, nachname varchar(60) not null, partei varchar(40) references partei(name));
+create table if not exists landesliste (id int primary key, wahljahr int not null, partei varchar(40) references partei(name), bundesland varchar(30) references bundesland(name));
+create table if not exists listenplaetze (listen_id int references landesliste(id), bewerber_id int references bewerber(id), listenplatz int not null, primary key (listen_id, bewerber_id));
+create table if not exists stimmzettel (id int primary key, wahljahr int not null, direktkandidat int references bewerber(id), landesliste int references landesliste(id), wahlkreis int references wahlkreis(nummer));
