@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,7 +102,7 @@ public class WahlCsvParser {
 				listenplaetzeValues.clear();
 				listenplaetzeValues = null;
 
-				List<String> ergebnisLines = Files.readAllLines(kerg.toPath());
+				List<String> ergebnisLines = Files.readAllLines(kerg.toPath(), Charset.forName("UTF-8"));
 				String header13 = ergebnisLines.remove(0);
 				ergebnisLines.stream().forEach(
 						l -> {
@@ -117,7 +118,7 @@ public class WahlCsvParser {
 								e.printStackTrace();
 							}
 						});
-				ergebnisLines = Files.readAllLines(wkumrechnung2013.toPath());
+				ergebnisLines = Files.readAllLines(wkumrechnung2013.toPath(), Charset.forName("UTF-8"));
 				String header09 = ergebnisLines.remove(0);
 				ergebnisLines.stream().forEach(
 						l -> {
@@ -136,7 +137,7 @@ public class WahlCsvParser {
 			} else {
 				File wahlResult = (wahljahr.equals("2009") ? wkumrechnung2013
 						: kerg);
-				List<String> lines = Files.readAllLines(wahlResult.toPath());
+				List<String> lines = Files.readAllLines(wahlResult.toPath(), Charset.forName("UTF-8"));
 				String header = lines.remove(0);
 				String wkId = wahlkreisId;
 				String line = lines.stream()
@@ -169,7 +170,7 @@ public class WahlCsvParser {
 				.getResourceAsStream("createTable");
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					createStatement));
+					createStatement, "UTF-8"));
 			reader.lines().forEach(l -> {
 				try {
 					if (writer != null) {
@@ -256,7 +257,7 @@ public class WahlCsvParser {
 			File wahlbewerber2009, File wahlbewerber2013) throws Exception {
 		List<String[]> listenplaetzeResult = new ArrayList<String[]>();
 		List<String> wahlbewerberLines = Files.readAllLines(wahlbewerber2009
-				.toPath());
+				.toPath(), Charset.forName("UTF-8"));
 		wahlbewerberLines.remove(0);
 		wahlbewerberLines
 				.stream()
@@ -291,7 +292,7 @@ public class WahlCsvParser {
 								}
 							}
 						});
-		wahlbewerberLines = Files.readAllLines(wahlbewerber2013.toPath());
+		wahlbewerberLines = Files.readAllLines(wahlbewerber2013.toPath(), Charset.forName("UTF-8"));
 		wahlbewerberLines.remove(0);
 		wahlbewerberLines
 				.stream()
@@ -333,7 +334,7 @@ public class WahlCsvParser {
 			File wahlbewerber2013) throws Exception {
 		List<String[]> landeslisteResult = new ArrayList<String[]>();
 		List<String> wahlbewerberLines = Files.readAllLines(wahlbewerber2009
-				.toPath());
+				.toPath(), Charset.forName("UTF-8"));
 		wahlbewerberLines.remove(0);
 		Map<String, String[]> map = new HashMap<String, String[]>();
 		wahlbewerberLines.stream().forEach(
@@ -344,7 +345,7 @@ public class WahlCsvParser {
 								"2009", e[5], convertAbkuerzungToName(e[7]) });
 					}
 				});
-		wahlbewerberLines = Files.readAllLines(wahlbewerber2013.toPath());
+		wahlbewerberLines = Files.readAllLines(wahlbewerber2013.toPath(), Charset.forName("UTF-8"));
 		wahlbewerberLines.remove(0);
 		wahlbewerberLines.stream().forEach(
 				s -> {
@@ -403,7 +404,7 @@ public class WahlCsvParser {
 			File wahlbewerber2013) throws Exception {
 		List<String[]> wahlbewerberResult = new ArrayList<String[]>();
 		List<String> wahlbewerberLines = Files.readAllLines(wahlbewerber2009
-				.toPath());
+				.toPath(), Charset.forName("UTF-8"));
 		wahlbewerberLines.remove(0);
 		Map<String, String[]> map = new HashMap<String, String[]>();
 		wahlbewerberLines.stream().forEach(
@@ -413,7 +414,7 @@ public class WahlCsvParser {
 							"", e[1], e[2], e[3],
 							e[5].isEmpty() ? "#NULL#" : e[5] });
 				});
-		wahlbewerberLines = Files.readAllLines(wahlbewerber2013.toPath());
+		wahlbewerberLines = Files.readAllLines(wahlbewerber2013.toPath(), Charset.forName("UTF-8"));
 		wahlbewerberLines.remove(0);
 		wahlbewerberLines.stream().forEach(
 				s -> {
@@ -447,7 +448,7 @@ public class WahlCsvParser {
 	private static List<String[]> getParteiValues(File kerg,
 			File wkumrechnung2013) throws Exception {
 		List<String[]> result = new ArrayList<String[]>();
-		List<String> kergLines = Files.readAllLines(kerg.toPath());
+		List<String> kergLines = Files.readAllLines(kerg.toPath(), Charset.forName("UTF-8"));
 		List<String> parties = Arrays.asList(kergLines.remove(0).split(
 				SEPARATOR));
 		parties.subList(8, parties.size()).stream()
@@ -467,8 +468,8 @@ public class WahlCsvParser {
 	private static List<String[]> getWahlkreisValues(File wahlkreise, File kerg)
 			throws Exception {
 		List<String[]> wahlkreisResult = new ArrayList<String[]>();
-		List<String> wahlkreisLines = Files.readAllLines(wahlkreise.toPath());
-		List<String> kergLines = Files.readAllLines(kerg.toPath());
+		List<String> wahlkreisLines = Files.readAllLines(wahlkreise.toPath(), Charset.forName("UTF-8"));
+		List<String> kergLines = Files.readAllLines(kerg.toPath(), Charset.forName("UTF-8"));
 		wahlkreisLines.remove(0);
 		kergLines.remove(0);
 		Map<Object, String> kergs = kergLines.stream().collect(

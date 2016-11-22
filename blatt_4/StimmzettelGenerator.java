@@ -1,4 +1,5 @@
 import java.io.File;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +32,7 @@ public class StimmzettelGenerator {
 			int wahljahr) {
 		try {
 			List<String> wahlbewerberLines = Files.readAllLines(wahlbewerber
-					.toPath());
+					.toPath(), Charset.forName("UTF-8"));
 			wahlbewerberLines.remove(0);
 			int idx = (wahljahr == 2009) ? 8 : 9;
 			String separator = (wahljahr == 2009) ? "," : ";";
