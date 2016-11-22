@@ -1,5 +1,4 @@
 
-import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -13,7 +12,7 @@ import java.util.logging.Logger;
 public class DatabaseConnectionManager {
 
     private static final String POSTGRES_DRIVER = "org.postgresql.Driver";
-    private static final String DB_PATH = "jdbc:postgresql:" + File.separator + File.separator + "localhost:5432" + File.separator + "wahlinfo_db";
+    private static final String DB_PATH = "jdbc:postgresql://localhost:5432/wahlinfo_db";
     private static final String DB_USER = "kaphira";
     private static final String DB_PASSWORD = "cowboyohnepony";
     

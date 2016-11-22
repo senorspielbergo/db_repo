@@ -11,67 +11,69 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  *
  * @author theralph
  */
 public class SqlRunner {
-    private static final Logger logger = Logger.getLogger(SqlRunner.class.getSimpleName());
+	private Connection connection = null;
+	private final ConcurrentLinkedQueue<String> pendingCommands = new ConcurrentLinkedQueue<String>();
+	private boolean forceDeath = false;
 
-	private static final String DEFAULT_DELIMITER = ";";	
-	private static final Pattern NEW_DELIMITER_PATTERN = Pattern.compile("(?:--|\\/\\/|\\#)?!DELIMITER=(.+)");
-	private static final Pattern COMMENT_PATTERN = Pattern.compile("^(?:--|\\/\\/|\\#).+");
+	private static SqlRunner instance = null;
 
-	public static void runScript(Connection connection, InputStream scriptInputStream) throws SQLException, IOException {
-		try (BufferedReader scriptReader = new BufferedReader(new InputStreamReader(scriptInputStream))) {
-			StringBuffer command = null;
-			String delimiter = DEFAULT_DELIMITER;
-			String line = null;
-			
-			while ((line = scriptReader.readLine()) != null) {
-				if (command == null) {
-					command = new StringBuffer();
-				}
-				
-				String trimmedLine = line.trim();
-	
-				Matcher delimiterMatcher = NEW_DELIMITER_PATTERN.matcher(trimmedLine);
-				Matcher commentMatcher = COMMENT_PATTERN.matcher(trimmedLine);
-				
-				// a) Delimiter change
-				if (delimiterMatcher.find()) {
-					delimiter = delimiterMatcher.group(1);					
-					logger.log(Level.INFO, "SQL (new delimiter): " + delimiter);
-				}
-				
-				// b) Comment
-				else if (commentMatcher.find()) {
-					logger.log(Level.INFO, "SQL (comment): " + trimmedLine);
-				}
-				
-				// c) Statement
-				else {
-					command.append(trimmedLine);
-					command.append(" ");
-	
-					// End of statement
-					if (trimmedLine.endsWith(delimiter)) {
-						logger.log(Level.INFO, "SQL: " + command);
-	
+	public static SqlRunner instance() {
+		if (instance == null) {
+			instance = new SqlRunner();
+		}
+		return instance;
+	}
+
+	public SqlRunner() {
+		connection = DatabaseConnectionManager.getInstance().getConnection();
+		new Thread(() -> {
+			do {
+				try {
+					Thread.sleep(200);
+					if (!pendingCommands.isEmpty()) {
 						Statement statement = connection.createStatement();
-						
-						statement.execute(command.toString());
+						statement.execute(pendingCommands.poll());
 						statement.close();
-						
-						command = null;
 					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
+			} while (!forceDeath);
+		});// .start();
+	}
+
+	public void runScript(InputStream scriptInputStream) throws SQLException,
+			IOException {
+		try (BufferedReader scriptReader = new BufferedReader(
+				new InputStreamReader(scriptInputStream))) {
+			String line = null;
+
+			while ((line = scriptReader.readLine()) != null) {
+				execute(line);
 			}
+		}
+	}
+
+	public void execute(String line) throws SQLException {
+		Statement statement = connection.createStatement();
+		statement.execute(line);
+		statement.close();
+		// pendingCommands.offer(line);
+	}
+
+	public void close() {
+		forceDeath = true;
+		try {
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 }
