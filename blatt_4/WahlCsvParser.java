@@ -374,8 +374,7 @@ public class WahlCsvParser {
 		case "BE":
 			return "Berlin";
 		case "BW":
-			return new String(Charset.forName("UTF-8")
-					.encode("Baden-Württemberg").array());
+			return "Baden-W\u00fcrttemberg";
 		case "BY":
 			return "Bayern";
 		case "HB":
@@ -401,8 +400,7 @@ public class WahlCsvParser {
 		case "ST":
 			return "Sachsen-Anhalt";
 		case "TH":
-			return new String(Charset.forName("UTF-8").encode("Thüringen")
-					.array());
+			return "Th\u00fcringen";
 		}
 		return null;
 	}
