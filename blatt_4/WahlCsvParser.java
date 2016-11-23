@@ -157,10 +157,12 @@ public class WahlCsvParser {
 				stimmzettelValues = null;
 			}
 
-			writer.flush();
-			writer.close();
-
-			SqlRunner.instance().close();
+			if (writer != null) {
+				writer.flush();
+				writer.close();
+			} else {
+				SqlRunner.instance().close();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out
