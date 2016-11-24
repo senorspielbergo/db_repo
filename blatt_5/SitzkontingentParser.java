@@ -1,4 +1,5 @@
 import java.io.File;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,14 @@ public class SitzkontingentParser {
 		File file = new File(args[0].concat(File.separator
 				+ "sitzkontingente.csv"));
 		try {
-			List<String> lines = Files.readAllLines(file.toPath());
+			String[] bundesland = new String[] { "Baden-W\u00fcrttemberg",
+					"Bayern", "Berlin", "Brandenburg", "Bremen", "Hamburg",
+					"Hessen", "Mecklenburg-Vorpommern", "Niedersachsen",
+					"Nordrhein-Westfalen", "Rheinland-Pfalz", "Saarland",
+					"Sachsen", "Sachsen-Anhalt", "Schleswig-Holstein",
+					"Th\u00fcringen" };
+			List<String> lines = Files.readAllLines(file.toPath(),
+					Charset.forName("UTF-8"));
 			SqlRunner.instance()
 					.execute("DROP TABLE IF EXISTS sitzkontingent;");
 			SqlRunner
@@ -21,7 +29,7 @@ public class SitzkontingentParser {
 							"CREATE TABLE sitzkontingent ("
 									+ "id int primary key,"
 									+ " bundesland varchar(30) references bundesland(name),"
-									+ " int wahljahr not null,"
+									+ " wahljahr int not null,"
 									+ " kontingent int not null" + ");");
 			List<String[]> tuples = new ArrayList<String[]>();
 			lines.stream()
@@ -29,7 +37,8 @@ public class SitzkontingentParser {
 							l -> {
 								String[] v = l.split(",");
 								tuples.add(new String[] {
-										String.valueOf(tuples.size()), v[0],
+										String.valueOf(tuples.size()),
+										bundesland[Integer.valueOf(v[0])],
 										v[1], v[2] });
 							});
 			SqlRunner.instance().execute(
