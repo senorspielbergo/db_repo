@@ -1,0 +1,55 @@
+create function create_unterverteilung() returns void as $$ 
+begin
+create temp table obersitze as (select * from oberverteilung);
+loop
+with hoechstzahlen as (    
+    select el.bundesland, ll.partei, (cast(el.stimmen as numeric) / ug.zahl) as quotient
+    from erlaubtelisten el, landesliste ll, ungerade ug
+    where el.landesliste = ll.id),
+    helptable as (
+     select h.bundesland, h.partei 
+        from (
+           select h.bundesland, h.partei, (row_number() over 
+                                           (partition by h.partei order by quotient desc)) as rn
+           from hoechstzahlen h) as h
+        where h.rn <= (select o.sitze 
+                      		 from obersitze o 
+                      		 where o.partei = h.partei)),
+sitzeprolandpropartei as (
+select b.name, e.partei, (select count(*) 
+                                      from helptable h1 
+                                      where h1.bundesland=b.name and h1.partei=e.partei)
+                                      as sitze
+    from bundesland b, erlaubteparteien e
+    ),
+    withoutdirekt as (
+	select sppl.name, sppl.partei, greatest(sppl.sitze - dmpl.count, 0) as sitze
+	from sitzeprolandpropartei sppl, direktmandateproland dmpl
+	where sppl.name = dmpl.bundesland and sppl.partei = dmpl.partei
+	order by sppl.name),
+tempunterverteilung as (
+(select sppl.name as bundesland, sppl.partei, sppl.sitze
+           from sitzeprolandpropartei sppl
+           where not exists (select * from withoutdirekt w where w.name = sppl.name and w.partei = sppl.partei))
+union (select * from withoutdirekt)
+order by bundesland, partei)
+create temp view differenz as (
+select distinct u.partei, o.sitze - (d.anzahldirektmandate + (select sum(u1.sitze)
+                                from tempunterverteilung u1
+                                where u1.partei = u.partei)) as differenz
+from tempunterverteilung u, direktmandatepropartei d, obersitze o
+where u.partei = d.partei and o.partei = u.partei);
+if exists (select * from differenz d where d.differenz <> 0 ) then
+	update obersitze o
+    	set o.mandate = o.mandate - 1
+        from differenz d
+        where o.parei = d.partei and d.differenz <> 0;
+        drop view if exists differenz;
+else
+	exit;
+end if;
+end loop;
+create view table unterverteilung as (select * from tempunterverteilung );
+end;
+$$
+language plpgsql;
