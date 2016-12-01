@@ -1,0 +1,89 @@
+create materialized view sitzelandpartei2009 as (
+with stimmenProKandidat AS (SELECT stimmzettel.wahlkreis,
+    stimmzettel.direktkandidat,
+    count(stimmzettel.direktkandidat) AS stimmen
+   FROM stimmzettel
+  WHERE stimmzettel.wahljahr = 2009 AND stimmzettel.direktkandidat NOTNULL
+  GROUP BY stimmzettel.wahlkreis, stimmzettel.direktkandidat),
+wahlkreisSieger AS (with maxstimmen as (select stimmenprokandidat.wahlkreis, max(stimmenprokandidat.stimmen) as stimmen
+                    from stimmenprokandidat
+					group by (stimmenprokandidat.wahlkreis))  
+SELECT k1.wahlkreis, k1.direktkandidat, k1.stimmen
+ FROM stimmenprokandidat k1, maxstimmen m1
+ WHERE k1.stimmen = m1.stimmen and m1.wahlkreis = k1.wahlkreis ORDER BY k1.wahlkreis),
+wahlkreisstimmenprolandesliste AS (SELECT stimmzettel.wahlkreis,
+    stimmzettel.landesliste,
+    count(stimmzettel.landesliste) AS stimmen
+   FROM stimmzettel
+  WHERE stimmzettel.wahljahr = 2009 AND stimmzettel.landesliste IS NOT NULL
+  GROUP BY stimmzettel.wahlkreis, stimmzettel.landesliste),
+gesamtstimmen1 as(select sum(s1.stimmen) AS gesamt FROM wahlkreisstimmenprolandesliste s1),
+stimmenProLandesliste AS (
+SELECT w1.bundesland,
+    s1.landesliste,
+    sum(s1.stimmen) as stimmen, CAST(sum(s1.stimmen) AS numeric)/g1.gesamt as prozent
+   FROM wahlkreisstimmenprolandesliste s1, wahlkreis w1, gesamtstimmen1 g1
+  WHERE s1.wahlkreis = w1.nummer 
+  GROUP BY w1.bundesland, s1.landesliste, g1.gesamt
+  ORDER BY bundesland),
+gesamtstimmen2 as ( select sum(s1.stimmen) as gesamt FROM stimmenprolandesliste s1),
+stimmenProPartei AS (
+    SELECT l1.partei,
+    sum(s1.stimmen) as stimmen,
+    CAST(sum(s1.stimmen) AS numeric)/ g1.gesamt as prozent
+   FROM stimmenprolandesliste s1, landesliste l1, gesamtstimmen2 g1
+  WHERE s1.landesliste = l1.id 
+  GROUP BY l1.partei, g1.gesamt
+  ORDER BY l1.partei),
+direktmandateProPartei AS (
+    SELECT b1.partei, count(w1.direktkandidat) as anzahlDirektmandate
+   FROM wahlkreissieger w1, bewerber b1
+  WHERE w1.direktkandidat = b1.id 
+  GROUP BY b1.partei
+  ORDER BY b1.partei),
+erlaubteParteien AS (
+    (SELECT partei
+   FROM direktmandatepropartei where anzahlDirektmandate > 2)
+  UNION
+    (SELECT partei
+     FROM stimmenpropartei where prozent > 0.05)),
+ungerade AS (with recursive ungeradeZahlen(zahl) AS ((SELECT 1) UNION ALL (SELECT zahl + 2 FROM ungeradeZahlen WHERE zahl + 2 < 600))
+ select * from ungeradeZahlen),
+pinl as (
+    select w.bundesland, b.partei
+    from wahlkreissieger s, wahlkreis w, bewerber b
+    where s.wahlkreis=w.nummer and s.direktkandidat=b.id),
+ direktmandateproland as (    
+    select distinct pinl.bundesland, pinl.partei, (select count(*) from pinl p1 
+    where p1.bundesland = pinl.bundesland and p1.partei = pinl.partei)
+    from pinl order by pinl.bundesland, pinl.partei
+),
+ erlaubtelisten as (
+    select spl.bundesland, spl.landesliste, spl.stimmen 
+    from stimmenprolandesliste spl join landesliste l on spl.landesliste = l.id 
+    where l.partei in (select partei from erlaubteparteien)),
+hoechstzahlen as (
+    select l.bundesland, l1.partei, cast(l.stimmen as numeric)/u.zahl as quotient
+    from erlaubtelisten l join landesliste l1 on l.landesliste = l1.id, ungerade u
+	order by l.bundesland asc, quotient desc), 
+helptable as (
+    select h.bundesland, h.partei 
+    from (
+       select h.bundesland, h.partei, (row_number() over (partition by h.bundesland order by quotient desc)) as rn
+       from hoechstzahlen h) as h
+    where h.rn <= (select s.kontingent 
+                  from sitzkontingent s 
+                  where s.bundesland = h.bundesland and s.wahljahr = 2009))
+    select b.name, e.partei, greatest((select count(*) 
+                                      from helptable h1 
+                                      where h1.bundesland=b.name and h1.partei=e.partei
+                                     ), (select d.count from
+                                     direktmandateproland d
+                                     where d.bundesland=b.name and d.partei=e.partei))
+                                        as sitze
+    from bundesland b, erlaubteparteien e);
+
+select distinct s.partei, (select sum(s1.sitze)
+                           from sitzelandpartei2009 s1
+                           where s1.partei = s.partei) as sitze
+from sitzelandpartei2009 s;
