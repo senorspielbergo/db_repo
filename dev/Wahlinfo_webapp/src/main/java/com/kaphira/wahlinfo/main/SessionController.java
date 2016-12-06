@@ -2,18 +2,19 @@ package com.kaphira.wahlinfo.main;
 
 import com.kaphira.database.DatabaseConnectionManager;
 import com.kaphira.database.DatabaseQueries;
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 
 /**
  *
  * @author theralph
  */
-@ManagedBean
-@RequestScoped
-public class IndexBean {
+@ManagedBean(name="sessionController")
+@SessionScoped
+public class SessionController implements Serializable {
     
     private String title = "Wahlinfo 37!";
 

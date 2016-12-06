@@ -28,7 +28,16 @@ public class SqlRunner {
 	private static final Pattern NEW_DELIMITER_PATTERN = Pattern.compile("(?:--|\\/\\/|\\#)?!DELIMITER=(.+)");
 	private static final Pattern COMMENT_PATTERN = Pattern.compile("^(?:--|\\/\\/|\\#).+");
 
-	public static void runScript(Connection connection, InputStream scriptInputStream) throws SQLException, IOException {
+        private static SqlRunner instance = new SqlRunner();
+        
+        private SqlRunner(){
+            
+        }
+        public static SqlRunner instance(){
+            return instance;
+        }
+        
+        public static void runScript(Connection connection, InputStream scriptInputStream) throws SQLException, IOException {
 		try (BufferedReader scriptReader = new BufferedReader(new InputStreamReader(scriptInputStream))) {
 			StringBuffer command = null;
 			String delimiter = DEFAULT_DELIMITER;

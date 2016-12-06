@@ -1,17 +1,32 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:p ="http://primefaces.org/ui"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
-    <h:head>
-        <title>#{indexBean.title}</title>
-    </h:head>
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    
     <h:body>
-        <h:form>
-                <p:outputLabel value="#{indexBean.message}" style="align-content: center"/>
-                <br/>
-                <p:outputLabel value="#{indexBean.allDevelopers}"/>
-        </h:form>
+        <ui:composition template="templates/template.xhtml">
+            <ui:define name="content">
+                    <p:pieChart value="#{bundestagBean.pieChart}" 
+                                style="width:600px;height:400px"
+                                seriesColors="#{bundestagBean.pieChartColorCode}"
+                                showDataLabels="true"
+                                legendPosition="e"
+                                title="Sitzverteilung"
+                                dataFormat="value"/>
+                    
+                    <!--<p:dataTable var="party" value="#{bundestagBean.parties}">
+                        <p:column headerText="Partei">
+                            <h:outputText value="#{party.name}" />
+                        </p:column>
+
+                        <p:column headerText="Sitze">
+                            <h:outputText value="#{party.seats}" />
+                        </p:column>
+                    </p:dataTable> -->
+            </ui:define>
+        </ui:composition>
     </h:body>
 </html>
 

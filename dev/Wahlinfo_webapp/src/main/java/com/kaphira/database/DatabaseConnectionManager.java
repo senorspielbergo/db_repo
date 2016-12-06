@@ -17,7 +17,7 @@ public class DatabaseConnectionManager {
 
     private static final String POSTGRES_DRIVER = "org.postgresql.Driver";
     private static final String SLASH = System.getProperty("file.separator");
-    private static final String DB_PATH = "jdbc:postgresql:" + SLASH + SLASH + "localhost:5433" + SLASH + "wahlinfo_db";
+    private static final String DB_PATH = "jdbc:postgresql:" + SLASH + SLASH + "localhost:5432" + SLASH + "wahlinfo_db";
     private static final String DB_USER = "kaphira";
     private static final String DB_PASSWORD = "cowboyohnepony";
     
