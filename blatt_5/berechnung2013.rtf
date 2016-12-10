@@ -39,9 +39,9 @@
 \ts11\tsrowd\trftsWidthB3\trpaddl108\trpaddr108\trpaddfl3\trpaddft3\trpaddfb3\trpaddfr3\trcbpat1\trcfpat1\tblind0\tblindtype3\tsvertalt\tsbrdrt\tsbrdrl\tsbrdrb\tsbrdrr\tsbrdrdgl\tsbrdrdgr\tsbrdrh\tsbrdrv \ql \li0\ri0\sa200\sl276\slmult1
 \widctlpar\wrapdefault\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \rtlch\fcs1 \af0\afs22\alang1025 \ltrch\fcs0 \fs22\lang1031\langfe1031\loch\f31506\hich\af31506\dbch\af31505\cgrid\langnp1031\langfenp1031 \snext11 \ssemihidden \sunhideused 
 Normal Table;}}{\*\rsidtbl \rsid1970857\rsid2976492\rsid2978061\rsid3933386\rsid4655352\rsid5247499\rsid5589503\rsid6760756\rsid7552971\rsid7896169\rsid8082618\rsid9266807\rsid9526996\rsid10030915\rsid10561465\rsid10698254\rsid10892748\rsid11081484
-\rsid11542644\rsid11751167\rsid11761258\rsid12193339\rsid13532583\rsid14227449\rsid14762688\rsid15616872\rsid15625572\rsid16145543\rsid16264644\rsid16346359\rsid16478694\rsid16597668}{\mmathPr\mmathFont34\mbrkBin0\mbrkBinSub0\msmallFrac0\mdispDef1
-\mlMargin0\mrMargin0\mdefJc1\mwrapIndent1440\mintLim0\mnaryLim1}{\info{\operator Placc}{\creatim\yr2016\mo11\dy24\hr20\min7}{\revtim\yr2016\mo12\dy4\hr1\min51}{\version23}{\edmins0}{\nofpages4}{\nofwords961}{\nofchars6061}{\nofcharsws7008}{\vern49167}}
-{\*\xmlnstbl {\xmlns1 http://schemas.microsoft.com/office/word/2003/wordml}}\paperw11900\paperh16840\margl1440\margr1440\margt1417\margb1134\gutter0\ltrsect 
+\rsid11542644\rsid11751167\rsid11761258\rsid12063458\rsid12193339\rsid13532583\rsid14227449\rsid14762688\rsid15616872\rsid15625572\rsid16145543\rsid16264644\rsid16346359\rsid16478694\rsid16597668}{\mmathPr\mmathFont34\mbrkBin0\mbrkBinSub0\msmallFrac0
+\mdispDef1\mlMargin0\mrMargin0\mdefJc1\mwrapIndent1440\mintLim0\mnaryLim1}{\info{\operator Placc}{\creatim\yr2016\mo11\dy24\hr20\min7}{\revtim\yr2016\mo12\dy8\hr16\min14}{\version24}{\edmins0}{\nofpages4}{\nofwords961}{\nofchars6061}{\nofcharsws7008}
+{\vern49167}}{\*\xmlnstbl {\xmlns1 http://schemas.microsoft.com/office/word/2003/wordml}}\paperw11900\paperh16840\margl1440\margr1440\margt1417\margb1134\gutter0\ltrsect 
 \widowctrl\ftnbj\aenddoc\hyphhotz425\trackmoves0\trackformatting1\donotembedsysfont0\relyonvml0\donotembedlingdata1\grfdocevents0\validatexml0\showplaceholdtext0\ignoremixedcontent0\saveinvalidxml0\showxmlerrors0\horzdoc\dghspace120\dgvspace120
 \dghorigin1701\dgvorigin1984\dghshow0\dgvshow3\jcompress\viewkind1\viewscale120\rsidroot4655352 \fet0{\*\wgrffmtfilter 2450}\ilfomacatclnup0\ltrpar \sectd \ltrsect\linex0\sectdefaultcl\sftnbj {\*\pnseclvl1\pnucrm\pnstart1\pnindent720\pnhang {\pntxta .}}
 {\*\pnseclvl2\pnucltr\pnstart1\pnindent720\pnhang {\pntxta .}}{\*\pnseclvl3\pndec\pnstart1\pnindent720\pnhang {\pntxta .}}{\*\pnseclvl4\pnlcltr\pnstart1\pnindent720\pnhang {\pntxta )}}{\*\pnseclvl5\pndec\pnstart1\pnindent720\pnhang {\pntxtb (}{\pntxta )}}
@@ -52,8 +52,10 @@ CREATE MATERIALIZED VIEW stimmenProKandidat AS (SELECT stimmzettel.wahlkreis,
 \par \hich\af4\dbch\af31505\loch\f4     }{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\insrsid16478694 \hich\af4\dbch\af31505\loch\f4 stimmzettel.direktkandidat,
 \par \hich\af4\dbch\af31505\loch\f4     count(stimmzettel.direktkandidat) AS stimmen
 \par \hich\af4\dbch\af31505\loch\f4    FROM stimmzettel
-\par \hich\af4\dbch\af31505\loch\f4   WHERE stimmzettel.wahljahr = 2013 AND stimmzettel.direktkandidat NOTNULL
-\par \hich\af4\dbch\af31505\loch\f4   GROUP BY stimmzettel.wahlkreis, stimmzettel.direktkandidat)
+\par }\pard \ltrpar\ql \li0\ri0\nowidctlpar\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\wrapdefault\faauto\rin0\lin0\itap0\pararsid12063458 {\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\insrsid16478694 
+\hich\af4\dbch\af31505\loch\f4   WHERE \hich\af4\dbch\af31505\loch\f4 stimmzettel.wahljahr = 2013 AND \hich\af4\dbch\af31505\loch\f4 stimmzettel.direktkandidat NOTNULL
+\par }\pard \ltrpar\ql \li0\ri0\nowidctlpar\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\wrapdefault\faauto\rin0\lin0\itap0 {\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\insrsid16478694 \hich\af4\dbch\af31505\loch\f4 
+  GROUP BY stimmzettel.wahlkreis, stimmzettel.direktkandidat}{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\insrsid12063458 \hich\af4\dbch\af31505\loch\f4 )}{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\insrsid16478694 
 \par 
 \par }{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid16478694\charrsid14762688 \hich\af4\dbch\af31505\loch\f4 CREATE MATERIALIZED VIEW }{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 
 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid5247499 \hich\af4\dbch\af31505\loch\f4 wahlkreissieger}{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid16478694\charrsid14762688 \hich\af4\dbch\af31505\loch\f4  AS (}{
@@ -90,39 +92,40 @@ stimmenprokandidat.wahlkreis}{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\insrsi
 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid16346359\charrsid16346359 \hich\af4\dbch\af31505\loch\f4 CREATE MATERIALIZED VIEW stimmengueltigkeit AS (
 \par \hich\af4\dbch\af31505\loch\f4 WITH bewerber_count AS(
 \par \hich\af4\dbch\af31505\loch\f4     \tab SELECT spk.wahlkreis, SUM(spk.stimmen) AS stimmen FROM stimmenprokandidat spk
-\par \hich\af4\dbch\af31505\loch\f4     \tab GROUP BY spk.wahlkreis ORDER BY spk.wahlkrei\hich\af4\dbch\af31505\loch\f4 s
+\par \hich\af4\dbch\af31505\loch\f4     \tab GROUP BY spk.wahlkreis ORDER BY spk\hich\af4\dbch\af31505\loch\f4 .wahlkreis
 \par \tab }{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\insrsid16346359\charrsid16346359 \hich\af4\dbch\af31505\loch\f4 ),
 \par \tab \hich\af4\dbch\af31505\loch\f4 listen_count AS(
 \par \hich\af4\dbch\af31505\loch\f4     \tab SELECT wspl.wahlkreis, SUM(wspl.stimmen) AS stimmen FROM wahlkreisstimmenprolandesliste wspl
 \par \hich\af4\dbch\af31505\loch\f4     \tab }{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid16346359\charrsid16346359 \hich\af4\dbch\af31505\loch\f4 GROUP BY wspl.wahlkreis ORDER BY wspl.wahlkreis
 \par \tab \hich\af4\dbch\af31505\loch\f4 ),
 \par \hich\af4\dbch\af31505\loch\f4     gesamt AS(
-\par \hich\af4\dbch\af31505\loch\f4         SELECT s.wahlkreis, s.wahljahr, COUNT(s.wahlkreis) AS \hich\af4\dbch\af31505\loch\f4 waehler FROM
+\par \hich\af4\dbch\af31505\loch\f4         SELECT s.wahlkreis, s.wahljahr, COUNT(s.wahlk\hich\af4\dbch\af31505\loch\f4 reis) AS waehler FROM
 \par \hich\af4\dbch\af31505\loch\f4         stimmzettel s GROUP BY s.wahlkreis, s.wahljahr
 \par \hich\af4\dbch\af31505\loch\f4     }{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\insrsid16346359\charrsid16346359 \hich\af4\dbch\af31505\loch\f4 )
 \par \hich\af4\dbch\af31505\loch\f4     SELECT DISTINCT ges.wahlkreis, ges.wahljahr, ges.waehler, bc.stimmen AS g_erststimmen,
 \par \hich\af4\dbch\af31505\loch\f4     lc.stimmen AS g_zweitstimmen, ges.waehler - bc.stimmen AS ug_erststimmen, 
 \par \hich\af4\dbch\af31505\loch\f4     ges.waehler - lc.stimmen AS ug_zweitstimmen
 \par \hich\af4\dbch\af31505\loch\f4     FROM gesamt ges JOIN bewerber_count bc ON ges.wahlkreis=bc.wahlkreis JOIN
-\par \hich\af4\dbch\af31505\loch\f4     listen_count lc ON ges.wahlkreis=lc.wahlkreis
-\par \hich\af4\dbch\af31505\loch\f4     )}{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\insrsid16346359 
-\par }\pard \ltrpar\ql \li0\ri0\nowidctlpar\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\wrapdefault\faauto\rin0\lin0\itap0 {\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\insrsid16346359 
+\par \hich\af4\dbch\af31505\loch\f4     }{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid16346359\charrsid12063458 \hich\af4\dbch\af31505\loch\f4 listen_count lc ON ges.wahlkreis=lc.wahlkreis
+\par \hich\af4\dbch\af31505\loch\f4     )
+\par }\pard \ltrpar\ql \li0\ri0\nowidctlpar\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\wrapdefault\faauto\rin0\lin0\itap0 {\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 
+\f4\fs24\lang1033\langfe1031\langnp1033\insrsid16346359\charrsid12063458 
 \par }{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid16478694\charrsid4655352 \hich\af4\dbch\af31505\loch\f4 CREATE MATERIALIZED VIEW stimmenProLandesliste AS (}{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 
 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid4655352 
 \par }\pard \ltrpar\ql \li0\ri0\nowidctlpar\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\wrapdefault\faauto\rin0\lin0\itap0\pararsid13532583 {\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\insrsid13532583\charrsid13532583 
-\hich\af4\dbch\af31505\loch\f4 WITH gesamtstimmen AS(SELECT w1.bundesland, SUM(s1.stimmen) AS gesamt FROM wahlkreisstimmenprolandesliste s1
-\par \hich\af4\dbch\af31505\loch\f4                      JOIN wahlkreis\hich\af4\dbch\af31505\loch\f4  w1 ON s1.wahlkreis = w1.nummer GROUP BY w1.bundesland)
-\par \hich\af4\dbch\af31505\loch\f4 SELECT w1.bundesland, s1.landesliste, SUM(s1.stimmen) AS stimmen, (CAST(SUM(s1.stimmen) AS NUMERIC)/g1.gesamt) AS prozent
-\par \hich\af4\dbch\af31505\loch\f4 FROM wahlkreis w1 JOIN wahlkreisstimmenprolandesliste s1 ON s1.wahlkreis=w1.nu\hich\af4\dbch\af31505\loch\f4 mmer JOIN gesamtstimmen g1 ON w1.bundesland=g1.bundesland
+\hich\af4\dbch\af31505\loch\f4 WITH gesamtstimmen AS\hich\af4\dbch\af31505\loch\f4 (SELECT w1.bundesland, SUM(s1.stimmen) AS gesamt FROM wahlkreisstimmenprolandesliste s1
+\par \hich\af4\dbch\af31505\loch\f4                      JOIN wahlkreis w1 ON s1.wahlkreis = w1.nummer GROUP BY w1.bundesland)
+\par \hich\af4\dbch\af31505\loch\f4 SELECT w1.bundesland, s1.landesliste, SUM(s1.stimmen) AS stimmen, (CAST(SUM(s\hich\af4\dbch\af31505\loch\f4 1.stimmen) AS NUMERIC)/g1.gesamt) AS prozent
+\par \hich\af4\dbch\af31505\loch\f4 FROM wahlkreis w1 JOIN wahlkreisstimmenprolandesliste s1 ON s1.wahlkreis=w1.nummer JOIN gesamtstimmen g1 ON w1.bundesland=g1.bundesland
 \par \hich\af4\dbch\af31505\loch\f4 GROUP BY w1.bundesland, s1.landesliste, g1.gesamt
-\par }{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid13532583\charrsid13532583 \hich\af4\dbch\af31505\loch\f4 ORDER BY w1.bundesland, s1.landesliste}{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 
+\par }{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid13532583\charrsid13532583 \hich\af4\dbch\af31505\loch\f4 ORDER BY w1.bundesland, s\hich\af4\dbch\af31505\loch\f4 1.landesliste}{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 
 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid16478694\charrsid4655352 \hich\af4\dbch\af31505\loch\f4 )
 \par }\pard \ltrpar\ql \li0\ri0\nowidctlpar\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\wrapdefault\faauto\rin0\lin0\itap0 {\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 
 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid16478694\charrsid4655352 
 \par \hich\af4\dbch\af31505\loch\f4 CREATE MATERIALIZED VIEW stimmenProPartei AS (
 \par }\pard \ltrpar\ql \li0\ri0\nowidctlpar\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\wrapdefault\faauto\rin0\lin0\itap0\pararsid10030915 {\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 
 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid16478694\charrsid4655352 \hich\af4\dbch\af31505\loch\f4     }{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid10030915\charrsid10030915 \hich\af4\dbch\af31505\loch\f4 
-WITH gesamtstimmen AS ( SELECT SUM(s1.stimmen) AS gesamt\hich\af4\dbch\af31505\loch\f4  FROM stimmenprolandesliste s1)
+WITH gesamtstimmen AS ( SELECT SUM(s1.stimmen) AS gesamt FROM stimmenprolandesliste s1)
 \par \hich\af4\dbch\af31505\loch\f4     SELECT l1.partei,
 \par \hich\af4\dbch\af31505\loch\f4     SUM(s1.stimmen) AS stimmen,
 \par \hich\af4\dbch\af31505\loch\f4     CAST(SUM(s1.stimmen) AS NUMERIC)/ g1.gesamt AS prozent
@@ -131,14 +134,14 @@ WITH gesamtstimmen AS ( SELECT SUM(s1.stimmen) AS gesamt\hich\af4\dbch\af31505\l
 \par \hich\af4\dbch\af31505\loch\f4   ORDER BY l1.partei}{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid16478694\charrsid4655352 \hich\af4\dbch\af31505\loch\f4 )
 \par }\pard \ltrpar\ql \li0\ri0\nowidctlpar\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\wrapdefault\faauto\rin0\lin0\itap0 {\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 
 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid16478694\charrsid4655352 
-\par \hich\af4\dbch\af31505\loch\f4 CREATE MATERIALIZED VIEW direktmandateProPartei AS (
+\par \hich\af4\dbch\af31505\loch\f4 CREATE MATERIALIZED VIEW direktmandateProPartei\hich\af4\dbch\af31505\loch\f4  AS (
 \par \hich\af4\dbch\af31505\loch\f4     SELECT b1.partei, }{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid10030915 \hich\af4\dbch\af31505\loch\f4 COUNT}{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 
 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid16478694\charrsid4655352 \hich\af4\dbch\af31505\loch\f4 (w1.direktkandidat) }{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid10030915 \hich\af4\dbch\af31505\loch\f4 AS}{
 \rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid16478694\charrsid4655352 \hich\af4\dbch\af31505\loch\f4  anzahl
 \par }{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid16478694\charrsid6760756 \hich\af4\dbch\af31505\loch\f4    }{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\insrsid16478694 \hich\af4\dbch\af31505\loch\f4 
 FROM wahlkreissieger w1}{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\insrsid10030915 \hich\af4\dbch\af31505\loch\f4  JOIN}{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\insrsid16478694 \hich\af4\dbch\af31505\loch\f4  bewerber b1}{\rtlch\fcs1 \af4\afs24 
 \ltrch\fcs0 \f4\fs24\insrsid10030915 \hich\af4\dbch\af31505\loch\f4  ON }{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\insrsid16478694 \hich\af4\dbch\af31505\loch\f4 w1.direktkandidat = b1.id 
-\par \hich\af4\dbch\af31505\loch\f4   }{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid16478694\charrsid4655352 \hich\af4\dbch\af31505\loch\f4 GROUP BY b1.par\hich\af4\dbch\af31505\loch\f4 tei
+\par \hich\af4\dbch\af31505\loch\f4   }{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid16478694\charrsid4655352 \hich\af4\dbch\af31505\loch\f4 GROUP BY b1.partei
 \par \hich\af4\dbch\af31505\loch\f4   ORDER BY b1.partei)
 \par 
 \par }{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 \f4\fs24\lang1033\langfe1031\langnp1033\insrsid16478694\charrsid14227449 \hich\af4\dbch\af31505\loch\f4 CREATE }{\rtlch\fcs1 \af4\afs24 \ltrch\fcs0 
@@ -172,8 +175,7 @@ proland }{\rtlch\fcs1 \af0 \ltrch\fcs0 \lang1033\langfe1031\langnp1033\insrsid14
 \lang1033\langfe1031\langnp1033\insrsid7552971\charrsid7552971 \hich\af31506\dbch\af31505\loch\f31506  }{\rtlch\fcs1 \af0 \ltrch\fcs0 \lang1033\langfe1031\langnp1033\insrsid6760756 \hich\af31506\dbch\af31505\loch\f31506 SELECT}{\rtlch\fcs1 \af0 
 \ltrch\fcs0 \lang1033\langfe1031\langnp1033\insrsid6760756\charrsid6760756 \hich\af31506\dbch\af31505\loch\f31506  w.bundesland, b.partei, }{\rtlch\fcs1 \af0 \ltrch\fcs0 \lang1033\langfe1031\langnp1033\insrsid6760756 
 \hich\af31506\dbch\af31505\loch\f31506 COUNT}{\rtlch\fcs1 \af0 \ltrch\fcs0 \lang1033\langfe1031\langnp1033\insrsid6760756\charrsid6760756 \hich\af31506\dbch\af31505\loch\f31506 (b.partei)
-\par }{\rtlch\fcs1 \af0 \ltrch\fcs0 \lang1033\langfe1031\langnp1033\insrsid6760756\charrsid16346359 \hich\af31506\dbch\af31505\loch\f31506 FROM wahlkreissieger s JOIN wahlkreis w \hich\af31506\dbch\af31505\loch\f31506 ON\hich\af31506\dbch\af31505\loch\f31506 
- s.wahlkreis=w.nummer \hich\af31506\dbch\af31505\loch\f31506 JOIN\hich\af31506\dbch\af31505\loch\f31506  bewerber b \hich\af31506\dbch\af31505\loch\f31506 ON\hich\af31506\dbch\af31505\loch\f31506  s.direktkandidat = b.id
+\par }{\rtlch\fcs1 \af0 \ltrch\fcs0 \lang1033\langfe1031\langnp1033\insrsid6760756\charrsid16346359 \hich\af31506\dbch\af31505\loch\f31506 FROM wahlkreissieger s JOIN wahlkreis w ON s.wahlkreis=w.nummer JOIN bewerber b ON s.direktkandidat = b.id
 \par \hich\af31506\dbch\af31505\loch\f31506 GROUP BY w.bundesland, b.partei
 \par \hich\af31506\dbch\af31505\loch\f31506 ORDER BY w.bundesland, b.partei
 \par }{\rtlch\fcs1 \af0 \ltrch\fcs0 \lang1033\langfe1031\langnp1033\insrsid7552971\charrsid16346359 \hich\af31506\dbch\af31505\loch\f31506 )
@@ -184,7 +186,7 @@ proland }{\rtlch\fcs1 \af0 \ltrch\fcs0 \lang1033\langfe1031\langnp1033\insrsid14
 \lang1033\langfe1031\langnp1033\insrsid11081484\charrsid16346359 \hich\af31506\dbch\af31505\loch\f31506  erlaubtelisten }{\rtlch\fcs1 \af0 \ltrch\fcs0 \lang1033\langfe1031\langnp1033\insrsid9526996\charrsid16346359 \hich\af31506\dbch\af31505\loch\f31506 
 AS}{\rtlch\fcs1 \af0 \ltrch\fcs0 \lang1033\langfe1031\langnp1033\insrsid11081484\charrsid16346359 \hich\af31506\dbch\af31505\loch\f31506  (
 \par \hich\af31506\dbch\af31505\loch\f31506     }{\rtlch\fcs1 \af0 \ltrch\fcs0 \lang1033\langfe1031\langnp1033\insrsid9526996\charrsid16346359 \hich\af31506\dbch\af31505\loch\f31506 SELECT}{\rtlch\fcs1 \af0 \ltrch\fcs0 
-\lang1033\langfe1031\langnp1033\insrsid11081484\charrsid16346359 \hich\af31506\dbch\af31505\loch\f31506  spl.bundesland, spl.landesli\hich\af31506\dbch\af31505\loch\f31506 ste, spl.stimmen 
+\lang1033\langfe1031\langnp1033\insrsid11081484\charrsid16346359 \hich\af31506\dbch\af31505\loch\f31506  spl.bundesland, spl.landesliste, spl.st\hich\af31506\dbch\af31505\loch\f31506 immen 
 \par \hich\af31506\dbch\af31505\loch\f31506     }{\rtlch\fcs1 \af0 \ltrch\fcs0 \insrsid9526996 \hich\af31506\dbch\af31505\loch\f31506 FROM}{\rtlch\fcs1 \af0 \ltrch\fcs0 \insrsid11081484 \hich\af31506\dbch\af31505\loch\f31506  stimmenprolandesliste spl }{
 \rtlch\fcs1 \af0 \ltrch\fcs0 \insrsid9526996 \hich\af31506\dbch\af31505\loch\f31506 JOIN}{\rtlch\fcs1 \af0 \ltrch\fcs0 \insrsid11081484 \hich\af31506\dbch\af31505\loch\f31506  landesliste l }{\rtlch\fcs1 \af0 \ltrch\fcs0 \insrsid9526996 
 \hich\af31506\dbch\af31505\loch\f31506 ON}{\rtlch\fcs1 \af0 \ltrch\fcs0 \insrsid11081484 \hich\af31506\dbch\af31505\loch\f31506  spl.landesliste = l.id 
@@ -410,8 +412,8 @@ fffffffffffffffffdfffffffeffffffffffffffffffffffffffffffffffffffffffffffffffffff
 ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-ffffffffffffffffffffffffffffffff52006f006f007400200045006e00740072007900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000016000500ffffffffffffffffffffffff0c6ad98892f1d411a65f0040963251e5000000000000000000000000a07a
-f091c84dd201feffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000
+ffffffffffffffffffffffffffffffff52006f006f007400200045006e00740072007900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000016000500ffffffffffffffffffffffff0c6ad98892f1d411a65f0040963251e50000000000000000000000005014
+68bc6551d201feffffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffff00000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000
 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ffffffffffffffffffffffff000000000000000000000000000000000000000000000000
 0000000000000000000000000000000000000000000000000105000000000000}}
