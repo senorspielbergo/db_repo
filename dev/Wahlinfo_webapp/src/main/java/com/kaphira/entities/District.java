@@ -1,6 +1,7 @@
 package com.kaphira.entities;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -12,9 +13,10 @@ public class District implements Serializable {
     private int id;
     private String bundesland;
     private String name; 
-    private int wahlbeteiligung;
+    private double wahlbeteiligung;
     private int wahlberechtigte;
-    private String direktKandidat;
+    private Politician direktKandidat;
+    private List<Party> parties;
 
     private boolean isLoaded = false;
     
@@ -48,11 +50,11 @@ public class District implements Serializable {
         this.name = name;
     }
 
-    public int getWahlbeteiligung() {
+    public double getWahlbeteiligung() {
         return wahlbeteiligung;
     }
 
-    public void setWahlbeteiligung(int wahlbeteiligung) {
+    public void setWahlbeteiligung(double wahlbeteiligung) {
         this.wahlbeteiligung = wahlbeteiligung;
     }
 
@@ -64,15 +66,25 @@ public class District implements Serializable {
         this.wahlberechtigte = wahlberechtigte;
     }
 
-    public String getDirektKandidat() {
+    public Politician getDirektKandidat() {
         return direktKandidat;
     }
 
-    public void setDirektKandidat(String direktKandidat) {
+    public void setDirektKandidat(Politician direktKandidat) {
         this.direktKandidat = direktKandidat;
     }
 
-    public boolean isIsLoaded() {
+    public List<Party> getParties() {
+        return parties;
+    }
+
+    public void setParties(List<Party> parties) {
+        this.parties = parties;
+    }
+    
+    
+
+    public boolean isLoaded() {
         return isLoaded;
     }
 

@@ -1,6 +1,8 @@
 package com.kaphira.util;
 
 import com.kaphira.entities.Party;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 /**
  *
@@ -8,11 +10,23 @@ import com.kaphira.entities.Party;
  */
 public class Utils {
     
-    public static final String getColorCodeForParty(Party party){
+    private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
+    static {
+        decimalFormat.setRoundingMode(RoundingMode.CEILING);
+    }
+    
+    public static Double getPercentRoundedDouble(String doubleString) {
+        double result = Double.parseDouble(doubleString)*100;
+        result =  Double.parseDouble(decimalFormat.format(result));
+        System.out.println("Returning:" + result);
+        return result;
+    }
+    
+    public static String getColorCodeForParty(Party party){
         return getColorCodeForPartyName(party.getName());
     }
 
-    private static String getColorCodeForPartyName(String name) {
+    public static String getColorCodeForPartyName(String name) {
         name = name.toLowerCase();
         
         switch(name){

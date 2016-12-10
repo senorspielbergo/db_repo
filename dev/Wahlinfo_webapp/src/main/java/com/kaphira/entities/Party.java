@@ -1,5 +1,7 @@
 package com.kaphira.entities;
 
+import java.util.List;
+
 /**
  *
  * @author theralph
@@ -8,10 +10,13 @@ public class Party {
     
     private String name;
     private int seats;
+    private double percentage;
+    private int totalVotes;
 
-    public Party(String name, int percentage){
+    private List<Decision> closestDecisions;
+    
+    public Party(String name){
         this.name = name;
-        this.seats = percentage;
     }
     
     public String getName() {
@@ -26,9 +31,34 @@ public class Party {
         return seats;
     }
 
-    public void setPercentage(int percentage) {
-        this.seats = percentage;
+    public void setSeats(int seats) {
+        this.seats = seats;
     }
+
+    public double getPercentage() {
+        return percentage;
+    }
+
+    public void setPercentage(double percentage) {
+        this.percentage = percentage;
+    }
+
+    public int getTotalVotes() {
+        return totalVotes;
+    }
+
+    public void setTotalVotes(int totalVotes) {
+        this.totalVotes = totalVotes;
+    }
+
+    public List<Decision> getClosestDecisions() {
+        return closestDecisions;
+    }
+
+    public void setClosestDecisions(List<Decision> closestDecisions) {
+        this.closestDecisions = closestDecisions;
+    }
+    
     
     
 }

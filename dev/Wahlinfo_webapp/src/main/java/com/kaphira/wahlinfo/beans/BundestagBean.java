@@ -1,4 +1,4 @@
-package com.kaphira.wahlinfo.main;
+package com.kaphira.wahlinfo.beans;
 
 import com.kaphira.entities.Party;
 import com.kaphira.database.DatabaseConnectionManager;
@@ -124,9 +124,11 @@ public class BundestagBean implements Serializable{
             while (result.next()) {
                 
                 String partyName = result.getString(COLUMN_PARTY);
-                int percentage = Integer.parseInt(result.getString(COLUMN_SEATS));
+                int seats = Integer.parseInt(result.getString(COLUMN_SEATS));
                 
-                queriedParties.add(new Party(partyName,percentage));
+                Party party = new Party(partyName);
+                party.setSeats(seats);
+                queriedParties.add(party);
             }
         } catch (SQLException ex) {
             Logger.getLogger(BundestagBean.class.getName()).log(Level.SEVERE, null, ex);

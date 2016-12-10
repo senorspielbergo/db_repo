@@ -12,14 +12,77 @@
             <ui:define name="content">
                 <h:form>
                     <p:panelGrid columns="2" style="width:100%">
+                        <p:outputLabel value="Wählen Sie einen Wahlkreis: "/>
                         <p:selectOneMenu value="#{districtBean.selectedDistrict}">
-                            <f:converter converterId="#{districtBean.districtConverter}" />
+                            <f:converter binding ="#{districtConverter}" />
                             <f:selectItems value="#{districtBean.districts}" var="dist" itemValue="#{dist}" itemLabel="#{dist.name}"/>
-                            <p:ajax event="change" listener="#{districtBean.onDistrictSelection}" update="districtLabel"/>
+                            <p:ajax event="change" listener="#{districtBean.onDistrictSelection}" update="@form"/>
                         </p:selectOneMenu>
-                        
-                        <p:outputLabel id="districtLabel" value="#{districtBean.selectedDistrict.name}"/>
                     </p:panelGrid>
+                    <p:separator/>
+                    <h:panelGrid columns="3" cellpadding="5" style="width:100%; ">    
+                        
+                        <p:outputPanel>
+                            <h:outputText value="Wahlkreis" style='width:100%; align-content: center'/>
+                            <h:panelGrid columns="2" cellpadding="5">
+                                
+                                
+                                <h:outputText value="Name:" />
+                                <h:outputText value="#{districtBean.selectedDistrict.name}" style="font-weight: bold"/>
+                                
+                                <h:outputText value="Id:" />
+                                <h:outputText value="#{districtBean.selectedDistrict.id}" style="font-weight: bold"/>
+
+                                <h:outputText value="Bundesland:" />
+                                <h:outputText value="#{districtBean.selectedDistrict.bundesland}" style="font-weight: bold"/>
+                                
+                                <h:outputText value="Wahlberechtigte:" />
+                                <h:outputText value="#{districtBean.selectedDistrict.wahlberechtigte}" style="font-weight: bold"/>
+                                
+                                <h:outputText value="Wahlbeteiligung:" />
+                                <h:outputText value="#{districtBean.selectedDistrict.wahlbeteiligung} %" style="font-weight: bold"/>
+                            </h:panelGrid>
+                        </p:outputPanel>
+                 
+                        <p:outputPanel>
+                            <h:outputText value="Direktkandidat" style='width:100%; align-content: center'/>
+                            <h:panelGrid columns="2" cellpadding="5">
+                                
+                                
+                                <h:outputText value="Name:" />
+                                <h:outputText value="#{districtBean.selectedDistrict.direktKandidat.title} #{districtBean.selectedDistrict.direktKandidat.name}" style="font-weight: bold"/>
+                                
+                                <h:outputText value="Partei:" />
+                                <h:outputText value="#{districtBean.selectedDistrict.direktKandidat.party}" style="font-weight: bold"/>
+                                
+                                <h:outputText value="Stimmen:" />
+                                <h:outputText value="#{districtBean.selectedDistrict.direktKandidat.votes}" style="font-weight: bold"/>
+                                
+                            </h:panelGrid>
+                        </p:outputPanel>
+                        
+                    
+                    </h:panelGrid>
+                    
+                    <p:separator/>
+                        <p:dataTable var="party" value="#{districtBean.selectedDistrict.parties}"
+                                     lazy="true"
+                                     scrollable="true"
+                                     scrollHeight="700">
+
+                            <p:column headerText="Partei">
+                                <h:outputText value="#{party.name}" />
+                            </p:column>
+
+                            <p:column headerText="Absolute Stimmen">
+                                <h:outputText value="#{party.totalVotes}" />
+                            </p:column>
+
+                            <p:column headerText="Stimmenanteil in %">
+                                <h:outputText value="#{party.percentage}" />
+                            </p:column>
+                        </p:dataTable>
+                    
                 </h:form>
             </ui:define>
             

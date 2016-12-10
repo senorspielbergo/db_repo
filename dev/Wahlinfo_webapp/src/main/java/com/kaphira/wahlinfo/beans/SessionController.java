@@ -1,7 +1,7 @@
-package com.kaphira.wahlinfo.main;
+package com.kaphira.wahlinfo.beans;
 
 import com.kaphira.database.DatabaseConnectionManager;
-import com.kaphira.database.DatabaseQueries;
+import com.kaphira.database.DbQueries;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,7 +44,7 @@ public class SessionController implements Serializable {
         
         ResultSet result = DatabaseConnectionManager
                             .getInstance()
-                            .executeQuery(DatabaseQueries.ALL_DEVELOPERS);
+                            .executeQuery(DbQueries.ALL_DEVELOPERS);
         String resultString = "";
         while (result.next()) {
             resultString = resultString + result.getString("username") + ", ";
