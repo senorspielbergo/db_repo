@@ -7,7 +7,6 @@ import com.kaphira.entities.History;
 import com.kaphira.entities.Party;
 import com.kaphira.entities.Politician;
 import com.kaphira.util.Utils;
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,18 +14,18 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.SessionScoped; 
-import javax.faces.bean.ManagedBean; 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
 /**
  *
  * @author theralph
  */
-@ManagedBean(name="districtBean")
+@ManagedBean
 @SessionScoped
-public class DistrictBean implements Serializable {
+public class SingleAnalysisBean {
 
-    private static final String QRY_ALL_DISTRICTS = "select * from wahlkreis";
+    private static final String QRY_ALL_DISTRICTS = "select * from wahlkreis where nummer in (213,214,215,216,217)";
     private static final String COLUMN_ID = "nummer";
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_ALLOWED_VOTERS = "wahlberechtigte";
@@ -39,13 +38,14 @@ public class DistrictBean implements Serializable {
     private static final String COLUMN_VOTES = "stimmen";
     private static final String COLUMN_PERCENTAGE = "prozent";
     
-    private List<District> districts;
-    private District selectedDistrict;
-    private int selectedYear;
     private String COLUMN_SECOND_VOTE_DIFF = "zdiffabs";
     private String COLUMN_FIRST_VOTE_DIFF = "ediffabs";
     private String COLUMN_FIRST_VOTE_PERCENTAGE = "ediffpro";
     private String COLUMN_SECOND_VOTE_PERCENTAGE = "zdiffpro";
+    
+    private List<District> districts;
+    private District selectedDistrict;
+    private int selectedYear;
     
     @PostConstruct
     private void init(){
@@ -123,7 +123,7 @@ public class DistrictBean implements Serializable {
         
         ResultSet result = DatabaseConnectionManager
                     .getInstance()
-                    .executeQuery(DbQueries.queryTurnout(district.getId(),selectedYear));
+                    .executeQuery(DbQueries.queryQ7_1(district.getId(),selectedYear));
     
         result.next();
         double turnout = Utils.getPercentRoundedDouble(result.getString(COLUMN_TURNOUT));
@@ -135,7 +135,7 @@ public class DistrictBean implements Serializable {
         
         ResultSet result = DatabaseConnectionManager
                     .getInstance()
-                    .executeQuery(DbQueries.queryDistrictWinner(district.getId(),selectedYear));
+                    .executeQuery(DbQueries.queryQ7_2(district.getId(),selectedYear));
     
         result.next();
         String title = result.getString(COLUMN_TITLE);
@@ -155,7 +155,7 @@ public class DistrictBean implements Serializable {
         
         ResultSet result = DatabaseConnectionManager
                     .getInstance()
-                    .executeQuery(DbQueries.queryDistrictPartyResults(district.getId(), selectedYear));
+                    .executeQuery(DbQueries.queryQ7_3(district.getId(), selectedYear));
     
         List<Party> parties = new ArrayList<>();
         
@@ -170,6 +170,28 @@ public class DistrictBean implements Serializable {
             parties.add(party);
         }
         district.setParties(parties);
+    }
+    
+    private void loadHistories(District district) throws SQLException{
+
+        ResultSet result = DatabaseConnectionManager
+                    .getInstance()
+                    .executeQuery(DbQueries.queryQ7_4_1(district.getId(), selectedYear));
+    
+        List<History> histories = new ArrayList<>();
+        
+        while(result.next()) {
+            String partyName = result.getString(COLUMN_PARTY);
+            
+            int firstVoteDiff = Integer.parseInt(result.getString(COLUMN_FIRST_VOTE_DIFF));
+            int secondVoteDiff = Integer.parseInt(result.getString(COLUMN_SECOND_VOTE_DIFF));
+            double firstPercentage = Utils.getPercentRoundedDouble(result.getString(COLUMN_FIRST_VOTE_PERCENTAGE));
+            double secondPercentage = Utils.getPercentRoundedDouble(result.getString(COLUMN_SECOND_VOTE_PERCENTAGE));
+            
+            History history = new History(partyName, firstVoteDiff, secondVoteDiff, firstPercentage, secondPercentage);
+            histories.add(history);
+        }
+        district.setHistories(histories);
     }
     
     
@@ -200,28 +222,4 @@ public class DistrictBean implements Serializable {
     public void setSelectedYear(int selectedYear) {
         this.selectedYear = selectedYear;
     }
-
-    private void loadHistories(District district) throws SQLException{
-
-        ResultSet result = DatabaseConnectionManager
-                    .getInstance()
-                    .executeQuery(DbQueries.queryPartyDifferencesToPreviousYear(district.getId(), selectedYear));
-    
-        List<History> histories = new ArrayList<>();
-        
-        while(result.next()) {
-            String partyName = result.getString(COLUMN_PARTY);
-            
-            int firstVoteDiff = Integer.parseInt(result.getString(COLUMN_FIRST_VOTE_DIFF));
-            int secondVoteDiff = Integer.parseInt(result.getString(COLUMN_SECOND_VOTE_DIFF));
-            double firstPercentage = Utils.getPercentRoundedDouble(result.getString(COLUMN_FIRST_VOTE_PERCENTAGE));
-            double secondPercentage = Utils.getPercentRoundedDouble(result.getString(COLUMN_SECOND_VOTE_PERCENTAGE));
-            
-            History history = new History(partyName, firstVoteDiff, secondVoteDiff, firstPercentage, secondPercentage);
-            histories.add(history);
-        }
-        district.setHistories(histories);
-    }
- 
-    
 }

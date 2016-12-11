@@ -18,6 +18,12 @@ public class District implements Serializable {
     private Politician direktKandidat;
     private List<Party> parties;
 
+    private List<History> histories;
+    private String firstVoteParty;
+    private String secondVoteParty;
+    private int firstVotes;
+    private int secondVotes;
+
     private boolean isLoaded = false;
     
     public District(int id, String name) {
@@ -81,9 +87,49 @@ public class District implements Serializable {
     public void setParties(List<Party> parties) {
         this.parties = parties;
     }
-    
-    
 
+    public String getFirstVoteParty() {
+        return firstVoteParty;
+    }
+
+    public void setFirstVoteParty(String firstVoteParty) {
+        this.firstVoteParty = firstVoteParty;
+    }
+
+    public String getSecondVoteParty() {
+        return secondVoteParty;
+    }
+
+    public void setSecondVoteParty(String secondVoteParty) {
+        this.secondVoteParty = secondVoteParty;
+    }
+
+    public int getFirstVotes() {
+        return firstVotes;
+    }
+
+    public void setFirstVotes(int firstVotes) {
+        this.firstVotes = firstVotes;
+    }
+
+    public int getSecondVotes() {
+        return secondVotes;
+    }
+
+    public void setSecondVotes(int secondVotes) {
+        this.secondVotes = secondVotes;
+    }
+
+    public List<History> getHistories() {
+        return histories;
+    }
+
+    public void setHistories(List<History> histories) {
+        this.histories = histories;
+    }
+    
+    
+    
     public boolean isLoaded() {
         return isLoaded;
     }

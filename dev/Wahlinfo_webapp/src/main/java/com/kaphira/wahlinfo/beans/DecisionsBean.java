@@ -32,11 +32,13 @@ public class DecisionsBean {
     private static final String COLUMN_DIFFERNCE = "differenz";
             
     private List<Party> parties;
+    private int selectedYear;
 
     
     
     @PostConstruct
     public void init() {
+        setSelectedYear(2013);
         setParties(queryAllParties());
         loadAllDecisions(getParties());
     }
@@ -52,7 +54,7 @@ public class DecisionsBean {
         
         ResultSet result = DatabaseConnectionManager
                             .getInstance()
-                            .executeQuery(DbQueries.queryPartyDecisions(partyName));
+                            .executeQuery(DbQueries.queryPartyDecisions(partyName, selectedYear));
         
         List<Decision> decisions = new ArrayList<>();
         
@@ -110,6 +112,14 @@ public class DecisionsBean {
     
     public void setParties(List<Party> parties) {
         this.parties = parties;
+    }
+
+    public int getSelectedYear() {
+        return selectedYear;
+    }
+
+    public void setSelectedYear(int selectedYear) {
+        this.selectedYear = selectedYear;
     }
 
     
