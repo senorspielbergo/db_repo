@@ -11,14 +11,15 @@ import java.text.DecimalFormat;
 public class Utils {
     
     private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
+    
     static {
         decimalFormat.setRoundingMode(RoundingMode.CEILING);
     }
     
     public static Double getPercentRoundedDouble(String doubleString) {
         double result = Double.parseDouble(doubleString)*100;
-        result =  Double.parseDouble(decimalFormat.format(result));
-        System.out.println("Returning:" + result);
+        String sDouble = decimalFormat.format(result).replace(",", ".");
+        result =  Double.parseDouble(sDouble);
         return result;
     }
     
