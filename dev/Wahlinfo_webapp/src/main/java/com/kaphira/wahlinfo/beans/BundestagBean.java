@@ -2,6 +2,7 @@ package com.kaphira.wahlinfo.beans;
 
 import com.kaphira.entities.Party;
 import com.kaphira.database.DatabaseConnectionManager;
+import com.kaphira.database.DbQueries;
 import com.kaphira.entities.Politician;
 import com.kaphira.util.Utils;
 import java.io.Serializable;
@@ -25,13 +26,6 @@ import org.primefaces.model.chart.PieChartModel;
 public class BundestagBean implements Serializable{
 
     
-    private static final String QRY_OBERVERTEILUNG = "select * from oberverteilung";
-    private static final String QRY_ALL_MEMBERS = "SELECT b.titel, b.vorname, b.nachname, b.partei " +
-                                                  "FROM bewerber b JOIN listenplaetze lp ON b.id=lp.bewerber_id " +
-                                                  "JOIN landesliste l ON lp.listen_id=l.id JOIN " +
-                                                  "unterverteilung u ON l.partei=u.partei AND l.bundesland=u.bundesland " +
-                                                  "WHERE lp.listenplatz <= u.sitze AND l.wahljahr=2013 " +
-                                                  "ORDER BY l.bundesland, b.partei, lp.listenplatz";
     private static final String COLUMN_TITLE = "titel";
     private static final String COLUMN_FIRSTNAME = "vorname";
     private static final String COLUMN_LASTNAME = "nachname";
@@ -46,10 +40,12 @@ public class BundestagBean implements Serializable{
 
     
     private PieChartModel pieChart;
+    private int selectedYear;
 
     
      @PostConstruct
      private void init(){
+         setSelectedYear(2013);
          setParties(queryOberverteilung());
          setPieChart(createPieChart());
          setMembers(queryAllMembers());
@@ -82,7 +78,7 @@ public class BundestagBean implements Serializable{
         
         ResultSet result = DatabaseConnectionManager
                     .getInstance()
-                    .executeQuery(QRY_ALL_MEMBERS);
+                    .executeQuery(DbQueries.queryAllMembers(selectedYear));
         
         List<Politician> queriedPoliticians = new ArrayList<>();
         
@@ -115,7 +111,7 @@ public class BundestagBean implements Serializable{
         
         ResultSet result = DatabaseConnectionManager
                             .getInstance()
-                            .executeQuery(QRY_OBERVERTEILUNG);
+                            .executeQuery(DbQueries.queryOberverteilung(selectedYear));
         
         List<Party> queriedParties = new ArrayList<>();
         
@@ -192,4 +188,15 @@ public class BundestagBean implements Serializable{
     public void setMembers(List<Politician> members) {
         this.members = members;
     }
+
+    public int getSelectedYear() {
+        return selectedYear;
+    }
+
+    public void setSelectedYear(int selectedYear) {
+        this.selectedYear = selectedYear;
+    }
+    
+    
+
 }

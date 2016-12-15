@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p ="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <h:body>
+        <ui:composition template="templates/template.xhtml">
+            <ui:define name="content">
+                
+                <p:panel style="width:100;">
+                    <p:dataTable var="mandat" value="#{ueberhangsmandateBean.selectedMandate}"
+                                 lazy="true"
+                                 scrollable="true"
+                                 scrollHeight="700">
+                        <f:facet name="header">
+                            <p:outputLabel value="Überhangmandate im Jahr 2013" style='font-weight: bold'/>
+                        </f:facet>  
+                        <p:column headerText="Bundesland">
+                            <h:outputText value="#{mandat.bundesland}" />
+                        </p:column>
+                        
+                        <p:column headerText="Partei">
+                            <h:outputText value="#{mandat.partei}" />
+                        </p:column>
+                        
+                        <p:column headerText="Überhangsmandate">
+                            <h:outputText value="#{mandat.ueberhang}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+
