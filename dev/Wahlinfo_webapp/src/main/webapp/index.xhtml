@@ -27,25 +27,6 @@
                         </p:column>
                     </p:dataTable> 
                 </p:panelGrid>
-                <p:panel style="width:100;">
-                    <p:dataTable var="politician" value="#{bundestagBean.members}"
-                                 lazy="true"
-                                 scrollable="true"
-                                 scrollHeight="700">
-                                 
-                        <p:column headerText="Titel">
-                            <h:outputText value="#{politician.title}" />
-                        </p:column>
-                        
-                        <p:column headerText="Name">
-                            <h:outputText value="#{politician.name}" />
-                        </p:column>
-                        
-                        <p:column headerText="Partei">
-                            <h:outputText value="#{politician.party}" />
-                        </p:column>
-                    </p:dataTable>
-                </p:panel>
             </ui:define>
         </ui:composition>
     </h:body>
