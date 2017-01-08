@@ -1,0 +1,4 @@
+Wahlablauf Computerwahl 2017:
+
+Der Wähler bekommt nach der Überprüfung der Personalien durch einen Wahlangestellten von ebendiesem ein zehnstelliges, zufälliges Token aus Buchstaben und Zahlen, welches vom System über ein Admin-Interface für einen spezifischen Wahlkreis generiert wurde. Dieses Token ist zehn Minuten gültig und wird nach Ablauf dieser Zeit aus dem System gelöscht. 
+Der Wähler kann sich nun mithilfe des Tokens an einem Wahlcomputer registrieren. Nach Eingabe des Tokens in der Eingabemaske wird dieses sofort invalidiert, sodass eine mehrfache Stimmabgabe nicht möglich ist. Eine SQL-Injection ist hierbei nicht möglich, da der Eingegebene Text nur in der Applikationslogik behandelt und somit niemals an die Datenbank weitergereicht wird.
