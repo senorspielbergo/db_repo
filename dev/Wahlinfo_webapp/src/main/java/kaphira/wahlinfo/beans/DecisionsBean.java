@@ -1,8 +1,8 @@
-package com.kaphira.wahlinfo.beans;
+package kaphira.wahlinfo.beans;
 
-import com.kaphira.main.DatabaseBean;
-import com.kaphira.entities.Decision;
-import com.kaphira.entities.Party;
+import kaphira.wahlinfo.main.DatabaseBean;
+import kaphira.wahlinfo.entities.Decision;
+import kaphira.wahlinfo.entities.Party;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.kaphira.util;
+package kaphira.wahlinfo.util;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;

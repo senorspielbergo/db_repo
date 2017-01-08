@@ -1,6 +1,6 @@
-package com.kaphira.util;
+package kaphira.wahlinfo.util;
 
-import com.kaphira.entities.Party;
+import kaphira.wahlinfo.entities.Party;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 

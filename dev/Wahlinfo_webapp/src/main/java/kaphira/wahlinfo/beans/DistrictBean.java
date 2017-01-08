@@ -1,11 +1,11 @@
-package com.kaphira.wahlinfo.beans;
+package kaphira.wahlinfo.beans;
 
-import com.kaphira.main.DatabaseBean;
-import com.kaphira.entities.District;
-import com.kaphira.entities.History;
-import com.kaphira.entities.Party;
-import com.kaphira.entities.Politician;
-import com.kaphira.util.Utils;
+import kaphira.wahlinfo.main.DatabaseBean;
+import kaphira.wahlinfo.entities.District;
+import kaphira.wahlinfo.entities.History;
+import kaphira.wahlinfo.entities.Party;
+import kaphira.wahlinfo.entities.Politician;
+import kaphira.wahlinfo.util.Utils;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -1,4 +1,4 @@
-package com.kaphira.entities;
+package kaphira.wahlinfo.entities;
 
 import java.util.List;
 
