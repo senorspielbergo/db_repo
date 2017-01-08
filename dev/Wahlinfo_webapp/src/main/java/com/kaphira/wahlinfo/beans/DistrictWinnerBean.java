@@ -1,9 +1,7 @@
 package com.kaphira.wahlinfo.beans;
 
-import com.kaphira.database.DatabaseConnectionManager;
-import com.kaphira.database.DbQueries;
+import com.kaphira.main.DatabaseBean;
 import com.kaphira.entities.District;
-import com.kaphira.entities.Party;
 import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 
 /**
@@ -33,6 +32,8 @@ public class DistrictWinnerBean implements Serializable{
     private int selectedYear = 2013;
     private List<District> districts;
     
+    @ManagedProperty(value="#{databaseBean}")
+    private DatabaseBean databaseBean;
     
     @PostConstruct
     public void init() {
@@ -45,9 +46,7 @@ public class DistrictWinnerBean implements Serializable{
 
     private List<District> queryDistrictsAndWinners(){
         
-        ResultSet result = DatabaseConnectionManager
-                            .getInstance()
-                            .executeQuery(DbQueries.queryAllDistrictWinners(selectedYear));
+        ResultSet result = databaseBean.queryQ4(selectedYear);
         
         List<District> queriedDistricts = new ArrayList<>();
         
@@ -68,7 +67,6 @@ public class DistrictWinnerBean implements Serializable{
                 district.setSecondVoteParty(secondVotePartyName);
                 district.setFirstVotes(firstVotes);
                 district.setSecondVotes(secondVotes);
-                System.out.println("CREATED:" + districtName);
                 queriedDistricts.add(district);
             }
         } catch (SQLException ex) {
@@ -76,6 +74,14 @@ public class DistrictWinnerBean implements Serializable{
         }
         
         return queriedDistricts;
+    }
+
+    public DatabaseBean getDatabaseBean() {
+        return databaseBean;
+    }
+
+    public void setDatabaseBean(DatabaseBean databaseBean) {
+        this.databaseBean = databaseBean;
     }
     
     

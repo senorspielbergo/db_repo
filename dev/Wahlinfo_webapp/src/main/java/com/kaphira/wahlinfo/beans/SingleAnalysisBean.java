@@ -1,7 +1,6 @@
 package com.kaphira.wahlinfo.beans;
 
-import com.kaphira.database.DatabaseConnectionManager;
-import com.kaphira.database.DbQueries;
+import com.kaphira.main.DatabaseBean;
 import com.kaphira.entities.District;
 import com.kaphira.entities.History;
 import com.kaphira.entities.Party;
@@ -15,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 
 /**
@@ -46,6 +46,10 @@ public class SingleAnalysisBean {
     private List<District> districts;
     private District selectedDistrict;
     private int selectedYear;
+    
+    @ManagedProperty(value="#{databaseBean}")
+    private DatabaseBean databaseBean;
+    
     
     @PostConstruct
     private void init(){
@@ -91,9 +95,7 @@ public class SingleAnalysisBean {
     
     private List<District> queryAllDistricts(){
         
-        ResultSet result = DatabaseConnectionManager
-                    .getInstance()
-                    .executeQuery(QRY_ALL_DISTRICTS);
+        ResultSet result = databaseBean.executeQuery(QRY_ALL_DISTRICTS);
         
         List<District> queriedDistricts = new ArrayList<>();
         
@@ -121,9 +123,7 @@ public class SingleAnalysisBean {
     
     private void loadTurnout(District district) throws SQLException {
         
-        ResultSet result = DatabaseConnectionManager
-                    .getInstance()
-                    .executeQuery(DbQueries.queryQ7_1(district.getId(),selectedYear));
+        ResultSet result = databaseBean.queryQ7_1(district.getId(),selectedYear);
     
         result.next();
         double turnout = Utils.getPercentRoundedDouble(result.getString(COLUMN_TURNOUT));
@@ -133,9 +133,7 @@ public class SingleAnalysisBean {
 
     private void loadWinner(District district) throws SQLException {
         
-        ResultSet result = DatabaseConnectionManager
-                    .getInstance()
-                    .executeQuery(DbQueries.queryQ7_2(district.getId(),selectedYear));
+        ResultSet result = databaseBean.queryQ7_2(district.getId(),selectedYear);
     
         result.next();
         String title = result.getString(COLUMN_TITLE);
@@ -153,9 +151,7 @@ public class SingleAnalysisBean {
     
     private void loadPartyResults(District district) throws SQLException {
         
-        ResultSet result = DatabaseConnectionManager
-                    .getInstance()
-                    .executeQuery(DbQueries.queryQ7_3(district.getId(), selectedYear));
+        ResultSet result = databaseBean.queryQ7_3(district.getId(), selectedYear);
     
         List<Party> parties = new ArrayList<>();
         
@@ -174,9 +170,7 @@ public class SingleAnalysisBean {
     
     private void loadHistories(District district) throws SQLException{
 
-        ResultSet result = DatabaseConnectionManager
-                    .getInstance()
-                    .executeQuery(DbQueries.queryQ7_4_1(district.getId(), selectedYear));
+        ResultSet result = databaseBean.queryQ7_4_1(district.getId(), selectedYear);
     
         List<History> histories = new ArrayList<>();
         
@@ -222,4 +216,14 @@ public class SingleAnalysisBean {
     public void setSelectedYear(int selectedYear) {
         this.selectedYear = selectedYear;
     }
+
+    public DatabaseBean getDatabaseBean() {
+        return databaseBean;
+    }
+
+    public void setDatabaseBean(DatabaseBean databaseBean) {
+        this.databaseBean = databaseBean;
+    }
+    
+    
 }

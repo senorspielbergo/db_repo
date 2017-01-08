@@ -1,7 +1,6 @@
 package com.kaphira.wahlinfo.beans;
 
-import com.kaphira.database.DatabaseConnectionManager;
-import com.kaphira.database.DbQueries;
+import com.kaphira.main.DatabaseBean;
 import com.kaphira.entities.Decision;
 import com.kaphira.entities.Party;
 import java.sql.ResultSet;
@@ -12,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 
 /**
@@ -34,6 +34,9 @@ public class DecisionsBean {
     private List<Party> parties;
     private int selectedYear;
 
+    @ManagedProperty(value="#{databaseBean}")
+    private DatabaseBean databaseBean;
+    
     
     
     @PostConstruct
@@ -52,9 +55,7 @@ public class DecisionsBean {
     
     private List<Decision> loadPartyDecisions(String partyName) {
         
-        ResultSet result = DatabaseConnectionManager
-                            .getInstance()
-                            .executeQuery(DbQueries.queryPartyDecisions(partyName, selectedYear));
+        ResultSet result = databaseBean.queryQ6(partyName, selectedYear);
         
         List<Decision> decisions = new ArrayList<>();
         
@@ -81,9 +82,8 @@ public class DecisionsBean {
     
     private List<Party> queryAllParties(){
         
-        ResultSet result = DatabaseConnectionManager
-                            .getInstance()
-                            .executeQuery(QRY_ALL_PARTIES);
+        ResultSet result = databaseBean
+                            .executeQuery("select * from partei");
         
         List<Party> queriedParties = new ArrayList<>();
         
@@ -122,5 +122,11 @@ public class DecisionsBean {
         this.selectedYear = selectedYear;
     }
 
-    
+    public DatabaseBean getDatabaseBean() {
+        return databaseBean;
+    }
+
+    public void setDatabaseBean(DatabaseBean databaseBean) {
+        this.databaseBean = databaseBean;
+    }
 }

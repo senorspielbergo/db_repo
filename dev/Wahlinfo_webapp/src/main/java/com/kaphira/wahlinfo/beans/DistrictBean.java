@@ -1,7 +1,6 @@
 package com.kaphira.wahlinfo.beans;
 
-import com.kaphira.database.DatabaseConnectionManager;
-import com.kaphira.database.DbQueries;
+import com.kaphira.main.DatabaseBean;
 import com.kaphira.entities.District;
 import com.kaphira.entities.History;
 import com.kaphira.entities.Party;
@@ -17,6 +16,7 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.SessionScoped; 
 import javax.faces.bean.ManagedBean; 
+import javax.faces.bean.ManagedProperty;
 
 /**
  *
@@ -46,6 +46,11 @@ public class DistrictBean implements Serializable {
     private String COLUMN_FIRST_VOTE_DIFF = "ediffabs";
     private String COLUMN_FIRST_VOTE_PERCENTAGE = "ediffpro";
     private String COLUMN_SECOND_VOTE_PERCENTAGE = "zdiffpro";
+    
+    @ManagedProperty(value="#{databaseBean}")
+    private DatabaseBean databaseBean;
+    
+    
     
     @PostConstruct
     private void init(){
@@ -91,9 +96,7 @@ public class DistrictBean implements Serializable {
     
     private List<District> queryAllDistricts(){
         
-        ResultSet result = DatabaseConnectionManager
-                    .getInstance()
-                    .executeQuery(QRY_ALL_DISTRICTS);
+        ResultSet result = databaseBean.executeQuery(QRY_ALL_DISTRICTS);
         
         List<District> queriedDistricts = new ArrayList<>();
         
@@ -121,9 +124,7 @@ public class DistrictBean implements Serializable {
     
     private void loadTurnout(District district) throws SQLException {
         
-        ResultSet result = DatabaseConnectionManager
-                    .getInstance()
-                    .executeQuery(DbQueries.queryTurnout(district.getId(),selectedYear));
+        ResultSet result = databaseBean.queryQ3_1(district.getId(), selectedYear);
     
         result.next();
         double turnout = Utils.getPercentRoundedDouble(result.getString(COLUMN_TURNOUT));
@@ -133,9 +134,7 @@ public class DistrictBean implements Serializable {
 
     private void loadWinner(District district) throws SQLException {
         
-        ResultSet result = DatabaseConnectionManager
-                    .getInstance()
-                    .executeQuery(DbQueries.queryDistrictWinner(district.getId(),selectedYear));
+        ResultSet result = databaseBean.queryQ3_2(district.getId(), selectedYear);
     
         result.next();
         String title = result.getString(COLUMN_TITLE);
@@ -153,9 +152,7 @@ public class DistrictBean implements Serializable {
     
     private void loadPartyResults(District district) throws SQLException {
         
-        ResultSet result = DatabaseConnectionManager
-                    .getInstance()
-                    .executeQuery(DbQueries.queryDistrictPartyResults(district.getId(), selectedYear));
+        ResultSet result = databaseBean.queryQ3_3(district.getId(), selectedYear);
     
         List<Party> parties = new ArrayList<>();
         
@@ -203,9 +200,7 @@ public class DistrictBean implements Serializable {
 
     private void loadHistories(District district) throws SQLException{
 
-        ResultSet result = DatabaseConnectionManager
-                    .getInstance()
-                    .executeQuery(DbQueries.queryPartyDifferencesToPreviousYear(district.getId(), selectedYear));
+        ResultSet result = databaseBean.queryQ3_4_1(district.getId(), selectedYear);
     
         List<History> histories = new ArrayList<>();
         
@@ -223,5 +218,14 @@ public class DistrictBean implements Serializable {
         district.setHistories(histories);
     }
  
+    
+    public DatabaseBean getDatabaseBean() {
+        return databaseBean;
+    }
+
+    public void setDatabaseBean(DatabaseBean databaseBean) {
+        this.databaseBean = databaseBean;
+    }
+    
     
 }

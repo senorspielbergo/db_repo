@@ -1,8 +1,6 @@
 package com.kaphira.wahlinfo.beans;
 
-import com.kaphira.database.DatabaseConnectionManager;
-import com.kaphira.database.DbQueries;
-import com.kaphira.entities.District;
+import com.kaphira.main.DatabaseBean;
 import com.kaphira.entities.Mandat;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 
 /**
@@ -27,6 +26,11 @@ public class UeberhangsmandateBean {
     private static final String COLUMN_PARTY = "partei";
     private static final String COLUMN_MANDAT = "ueberhang";
     private static final String COLUMN_YEAR = "wahljahr";
+    
+    
+    @ManagedProperty(value="#{databaseBean}")
+    private DatabaseBean databaseBean;
+    
     
     
     private List<Mandat> mandate2013;
@@ -45,9 +49,7 @@ public class UeberhangsmandateBean {
     }
 
     private void loadAllUeberhangmandate() {
-        ResultSet result = DatabaseConnectionManager
-                            .getInstance()
-                            .executeQuery(DbQueries.queryAllUeberhaenge());
+        ResultSet result = databaseBean.queryQ5();
         
         
             
@@ -99,6 +101,13 @@ public class UeberhangsmandateBean {
     public void setSelectedMandate(List<Mandat> selectedMandate) {
         this.selectedMandate = selectedMandate;
     }
+
+    public DatabaseBean getDatabaseBean() {
+        return databaseBean;
+    }
+
+    public void setDatabaseBean(DatabaseBean databaseBean) {
+        this.databaseBean = databaseBean;
+    }
     
-      
 }
