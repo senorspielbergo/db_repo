@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE xhtml>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p ="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <h:body>
+        <ui:composition template="templates/template.xhtml">
+            
+            <ui:define name="content">
+                <h:form>
+                <p:outputLabel for="token" value="Bitte Token eingeben:      " />
+                <p:inputMask id="token" value="#{electionBean.token}" mask=""/>
+                <p:commandButton value="Anmelden" action="#{electionBean.register}" update="@form"/>
+                
+                <p:panelGrid columns="2" style="width:100%" rendered="#{electionBean.mayVote}">
+                        
+                        <p:outputLabel value="Wählen Sie einen Wahlkreis: "/>
+                        <p:selectOneMenu value="#{electionBean.selectedDistrict}">
+                            <f:converter binding ="#{districtConverter}" />
+                            <f:selectItems value="#{electionBean.districts}" var="dist" itemValue="#{dist}" itemLabel="#{dist.name}"/>
+                            <p:ajax event="change" listener="#{electionBean.onDistrictSelection}" update="@form"/>
+                        </p:selectOneMenu>
+                
+                </p:panelGrid>
+                
+                <p:panelGrid columns="2" style="width:100%" rendered="#{electionBean.displayChoices}">
+                        
+                        <p:outputLabel value="Ihre Erststimme:     "/>
+                        <p:selectOneMenu value="#{electionBean.selectedCandidate}">
+                            <f:selectItems value="#{electionBean.candidates}"/>
+                            <!--var="dist" itemValue="#{dist}" itemLabel="#{dist.name} -->
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel value="Ihre Zweitstimme:     "/>
+                        <p:selectOneMenu value="#{electionBean.selectedParty}">
+                            <f:selectItems value="#{electionBean.parties}"/>
+                            <!--var="dist" itemValue="#{dist}" itemLabel="#{dist.name} -->
+                        </p:selectOneMenu>
+                        
+                        <p:commandButton value="Stimme abgeben" action="#{electionBean.vote}" update="@form"/>
+                
+                </p:panelGrid>
+
+                <p:panelGrid columns="1" style="width:100%" rendered="#{electionBean.finished}">
+                    <p:outputLabel value="#{electionBean.message}"/>
+                </p:panelGrid>
+
+
+                </h:form>
+            </ui:define>
+            
+        </ui:composition>
+    </h:body>
+</html>
