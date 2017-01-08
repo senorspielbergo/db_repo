@@ -11,4 +11,4 @@ create table wahlkreis (nummer int primary key, name varchar(100) not null, wahl
 create table bewerber (id int primary key, titel varchar(30), vorname varchar(50) not null, nachname varchar(60) not null, partei varchar(40) references partei(name));
 create table landesliste (id int primary key, wahljahr int not null, partei varchar(40) references partei(name), bundesland varchar(30) references bundesland(name));
 create table listenplaetze (listen_id int references landesliste(id), bewerber_id int references bewerber(id), listenplatz int not null, primary key (listen_id, bewerber_id));
-create table stimmzettel (id int primary key, wahljahr int not null, direktkandidat int references bewerber(id), landesliste int references landesliste(id), wahlkreis int references wahlkreis(nummer));
+create table stimmzettel (id serial primary key, wahljahr int not null, direktkandidat int references bewerber(id), landesliste int references landesliste(id), wahlkreis int references wahlkreis(nummer));

@@ -164,7 +164,7 @@ SELECT h1.wahlkreis, h1.partei, COALESCE(h1.e_absolut, 0) - COALESCE(h2.e_absolu
 	COALESCE(h1.e_prozent, 0) - COALESCE(h2.e_prozent, 0) AS ediffpro, 
     COALESCE(h1.z_absolut, 0) - COALESCE(h2.z_absolut, 0) AS zdiffabs,
     COALESCE(h1.z_prozent, 0) - COALESCE(h2.z_prozent, 0) AS zdiffpro
-FROM helptable h1 JOIN helptable h2 ON h1.wahljahr > h2.wahljahr AND h1.wahlkreis=h2.wahlkreis AND h1.partei=h2.partei AND h1.wahlkreis=%wahlkreis_nr% WHERE h1.wahljahr=%wahljahr%;
+FROM helptable h1 JOIN helptable h2 ON h2.wahljahr=h1.wahljahr - 4 AND h1.wahlkreis=h2.wahlkreis AND h1.partei=h2.partei AND h1.wahlkreis=%wahlkreis_nr% WHERE h1.wahljahr=%wahljahr%;
 
 Q3_4_2:
 
@@ -180,7 +180,7 @@ SELECT w.nummer, w.name, w.bundesland,
 (sg1.ug_zweitstimmen - sg2.ug_zweitstimmen) as ugzdiffabs,
 (sg1.ug_zweitstimmen / CAST(sg1.waehler AS NUMERIC) - sg2.ug_zweitstimmen / CAST(sg2.waehler AS NUMERIC)) AS ugzdiffpro
 FROM wahlkreis w JOIN stimmengueltigkeit sg1 ON w.nummer=sg1.wahlkreis 
-JOIN stimmengueltigkeit sg2 ON sg1.wahljahr > sg2.wahljahr AND sg1.wahlkreis=sg2.wahlkreis
+JOIN stimmengueltigkeit sg2 ON sg2.wahljahr=sg1.wahljahr - 4 AND sg1.wahlkreis=sg2.wahlkreis
 WHERE w.nummer=%wahlkreis_nr% AND sg1.wahljahr=%wahljahr%;
 
 Q4:
@@ -417,7 +417,7 @@ SELECT h1.partei, COALESCE(h1.e_absolut, 0) - COALESCE(h2.e_absolut) AS ediffabs
 	COALESCE(h1.e_prozent, 0) - COALESCE(h2.e_prozent, 0) AS ediffpro, 
     COALESCE(h1.z_absolut, 0) - COALESCE(h2.z_absolut, 0) AS zdiffabs,
     COALESCE(h1.z_prozent, 0) - COALESCE(h2.z_prozent, 0) AS zdiffpro
-FROM helptable h1 JOIN helptable h2 ON h1.wahljahr > h2.wahljahr AND h1.partei=h2.partei AND h1.wahljahr=%wahljahr%
+FROM helptable h1 JOIN helptable h2 ON h2.wahljahr=h1.wahljahr - 4 AND h1.partei=h2.partei AND h1.wahljahr=%wahljahr%
 
 Q7_4_2:
 
@@ -473,5 +473,5 @@ SELECT w.name, w.bundesland,
 (sg1.g_zweitstimmen / CAST(sg1.waehler AS NUMERIC) - sg2.g_zweitstimmen / CAST(sg2.waehler AS NUMERIC)) AS gzdiffpro,
 (sg1.ug_zweitstimmen - sg2.ug_zweitstimmen) as ugzdiffabs,
 (sg1.ug_zweitstimmen / CAST(sg1.waehler AS NUMERIC) - sg2.ug_zweitstimmen / CAST(sg2.waehler AS NUMERIC)) AS ugzdiffpro
-FROM bstimmengueltigkeit sg1 JOIN bstimmengueltigkeit sg2 ON sg1.wahljahr > sg2.wahljahr, wahlkreis w
+FROM bstimmengueltigkeit sg1 JOIN bstimmengueltigkeit sg2 ON sg2.wahljahr = sg1.wahljahr - 4, wahlkreis w
 WHERE w.nummer=%wahlkreis_nr% AND sg1.wahljahr=%wahljahr%

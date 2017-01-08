@@ -1,0 +1,25 @@
+Stimme einfügen:
+
+WITH bewerber AS (
+SELECT * FROM bewerber b WHERE b.vorname=%vorname% AND b.nachname=%nachname% 
+AND b.partei=%partei% AND b.titel=%titel%
+),
+landesliste AS (
+SELECT * FROM landesliste l JOIN wahlkreis w ON w.bundesland=l.bundesland 
+WHERE w.nummer=%wahlkreis_nr% AND l.wahljahr=2013 AND l.partei=%partei%
+)
+INSERT INTO Stimmzettel VALUES (DEFAULT, 2017, bewerber.id, landesliste.id, %wahlkreis_nr%)
+
+
+Direktkandidaten:
+
+SELECT b.titel, b.vorname, b.nachname, b.partei
+FROM bewerber b JOIN stimmenprokandidat d ON b.id=d.direktkandidat
+JOIN wahlkreis w ON d.wahlkreis=w.nummer
+WHERE w.nummer=%wahlkreis_nr% AND d.wahljahr=2013
+
+Landeslisten:
+
+SELECT l.partei 
+FROM landesliste l JOIN wahlkreis w ON w.bundesland=l.bundesland
+WHERE l.wahljahr=2013 AND w.nummer=%wahlkreis_nr%
