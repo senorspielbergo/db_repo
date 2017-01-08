@@ -61,10 +61,9 @@ public class DistrictBean implements Serializable {
     }
 
     public void onDistrictSelection() {
-        if (selectedDistrict.isLoaded()) {
-            return;
+        if (!selectedDistrict.isLoaded()) {
+            loadDistrict(selectedDistrict);
         }
-        loadDistrict(selectedDistrict);
     }
         
     private void loadDistrict(District district) {

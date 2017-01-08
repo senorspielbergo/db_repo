@@ -38,9 +38,12 @@ public class ConfigBean {
     private String Q7_4_1;
     private String Q7_4_2;
     
+    private String insert;
+    private String Q2017_1;
+    private String Q2017_2;
+    
     @PostConstruct
     private void init() {
-        System.out.println("INITIALIZED CONFIG BEAN!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         
         properties = loadProperties();
 
@@ -59,6 +62,10 @@ public class ConfigBean {
         Q7_3 = loadQueryFromResource("/sql/Q7-3.sql");
         Q7_4_1 = loadQueryFromResource("/sql/Q7-4-1.sql");
         Q7_4_2 = loadQueryFromResource("/sql/Q7-4-2.sql");
+        
+        insert = loadQueryFromResource("/sql/insert.sql");
+        Q2017_1 = loadQueryFromResource("/sql/Q2017-1.sql");
+        Q2017_2 = loadQueryFromResource("/sql/Q2017-2.sql");
         
     }
 
@@ -181,6 +188,18 @@ public class ConfigBean {
 
     public String getQ7_4_2() {
         return Q7_4_2;
+    }
+
+    public String getInsert() {
+        return insert;
+    }
+
+    public String getQ2017_1() {
+        return Q2017_1;
+    }
+
+    public String getQ2017_2() {
+        return Q2017_2;
     }
     
     

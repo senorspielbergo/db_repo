@@ -28,6 +28,9 @@ public class DatabaseBean implements Serializable {
     private static final String PLACEHOLDER_YEAR = "%wahljahr%";
     private static final String PLACEHOLDER_DISTRICT = "%wahlkreis_nr%";
     private static final String PLACEHOLDER_PARTY = "%partei%";
+    private static final String PLACEHOLDER_TITLE = "%titel%";
+    private static final String PLACEHOLDER_FIRSTNAME = "%vorname%";
+    private static final String PLACEHOLDER_LASTNAME = "%nachname%";
     
     private final Logger logger = Logger.getLogger(DatabaseBean.class.getName());
     
@@ -65,17 +68,31 @@ public class DatabaseBean implements Serializable {
         try {
             Statement statement = connection.createStatement();
             return statement.executeQuery(query);
+            
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseBean.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
     
+    public void executeInsertStatement(String query){
+        if (connection == null){
+            init();
+        }
+        try {
+            Statement statement = connection.createStatement();
+            statement.execute(query);
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     
     public ResultSet queryQ1(int year) {
         String query = configBean.getQ1();
         query = query.replaceAll(PLACEHOLDER_YEAR, String.valueOf(year));
-        logger.log(Level.INFO, "Q1 Query: " + query, query);
+        logger.log(Level.INFO, "Q1 Query: ", query);
         return executeQuery(query);
     }
     
@@ -200,6 +217,38 @@ public class DatabaseBean implements Serializable {
         logger.log(Level.INFO, "Q7_4_2 Query: ", query);
         return executeQuery(query);
     }
+    
+    public ResultSet queryQ2017_1(int districtId) {
+        String query = configBean.getQ2017_1();
+        query = query.replaceAll(PLACEHOLDER_DISTRICT, String.valueOf(districtId));
+        
+        logger.log(Level.INFO, "Q2017_1 Query: ", query);
+        return executeQuery(query);
+    }
+    
+    public ResultSet queryQ2017_2(int districtId) {
+        String query = configBean.getQ2017_2();
+        query = query.replaceAll(PLACEHOLDER_DISTRICT, String.valueOf(districtId));
+        
+        logger.log(Level.INFO, "Q2017_2 Query: ", query);
+        return executeQuery(query);
+    }
+    
+    public void insertVote(int districtId, String title, String firstName, String lastName, String party ) {
+        String query = configBean.getInsert();
+        query = query.replaceAll(PLACEHOLDER_DISTRICT, String.valueOf(districtId));
+        query = query.replaceAll(PLACEHOLDER_TITLE, String.valueOf(title));
+        query = query.replaceAll(PLACEHOLDER_FIRSTNAME, String.valueOf(firstName));
+        query = query.replaceAll(PLACEHOLDER_LASTNAME, String.valueOf(lastName));
+        query = query.replaceAll(PLACEHOLDER_PARTY, String.valueOf(party));
+        
+        logger.log(Level.INFO, "InsertedVote \n" + query , query);
+        
+        executeInsertStatement(query);
+    }
+    
+    
+    
     
     @PreDestroy
     private void onClose() {
