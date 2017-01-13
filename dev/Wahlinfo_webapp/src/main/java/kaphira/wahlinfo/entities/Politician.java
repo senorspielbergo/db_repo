@@ -28,7 +28,6 @@ public class Politician {
         this.votes = 0;
     }
     
-    
     public String getTitle() {
         return title;
     }

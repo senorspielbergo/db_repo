@@ -1,7 +1,7 @@
-package kaphira.wahlinfo.beans;
+package kaphira.wahlinfo.querybeans;
 
 import kaphira.wahlinfo.entities.Party;
-import kaphira.wahlinfo.main.DatabaseBean;
+import kaphira.wahlinfo.database.DatabaseBean;
 import kaphira.wahlinfo.entities.Politician;
 import kaphira.wahlinfo.util.Utils;
 import java.io.Serializable;
@@ -15,6 +15,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import kaphira.wahlinfo.database.DbColumns;
 import org.primefaces.model.chart.PieChartModel;
 
 /**
@@ -26,11 +27,7 @@ import org.primefaces.model.chart.PieChartModel;
 public class BundestagBean implements Serializable{
 
     
-    private static final String COLUMN_TITLE = "titel";
-    private static final String COLUMN_FIRSTNAME = "vorname";
-    private static final String COLUMN_LASTNAME = "nachname";
-    private static final String COLUMN_PARTY = "partei";
-    private static final String COLUMN_SEATS = "sitze";
+
     private static final String PIE_CHART_TITLE = "Sitzeverteilung";
     
     private List<Party> parties;
@@ -86,10 +83,10 @@ public class BundestagBean implements Serializable{
             
             while (result.next()) {
                 
-                String polTitle = result.getString(COLUMN_TITLE);
-                String polName = result.getString(COLUMN_LASTNAME);
-                String polFirstName = result.getString(COLUMN_FIRSTNAME);
-                String polParty = result.getString(COLUMN_PARTY);
+                String polTitle = result.getString(DbColumns.CLM_TITLE);
+                String polName = result.getString(DbColumns.CLM_LASTNAME);
+                String polFirstName = result.getString(DbColumns.CLM_FIRSTNAME);
+                String polParty = result.getString(DbColumns.CLM_PARTY);
                 
                 Politician pol = new Politician(polName + ", " + polFirstName, polParty);
                 if (polTitle != null) {
@@ -119,8 +116,8 @@ public class BundestagBean implements Serializable{
             
             while (result.next()) {
                 
-                String partyName = result.getString(COLUMN_PARTY);
-                int seats = Integer.parseInt(result.getString(COLUMN_SEATS));
+                String partyName = result.getString(DbColumns.CLM_PARTY);
+                int seats = Integer.parseInt(result.getString(DbColumns.CLM_SEATS));
                 
                 Party party = new Party(partyName);
                 party.setSeats(seats);

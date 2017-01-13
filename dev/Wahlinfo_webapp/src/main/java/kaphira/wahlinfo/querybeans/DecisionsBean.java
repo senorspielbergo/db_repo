@@ -1,6 +1,6 @@
-package kaphira.wahlinfo.beans;
+package kaphira.wahlinfo.querybeans;
 
-import kaphira.wahlinfo.main.DatabaseBean;
+import kaphira.wahlinfo.database.DatabaseBean;
 import kaphira.wahlinfo.entities.Decision;
 import kaphira.wahlinfo.entities.Party;
 import java.sql.ResultSet;
@@ -13,6 +13,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import kaphira.wahlinfo.database.DbColumns;
 
 /**
  *
@@ -23,13 +24,7 @@ import javax.faces.bean.SessionScoped;
 public class DecisionsBean {
 
     private static final String QRY_ALL_PARTIES = "select * from partei";
-    private static final String COLUMN_NAME = "name";
-    
-    private static final String COLUMN_DISTRICT = "wahlkreis";
-    private static final String COLUMN_TITLE = "titel";
-    private static final String COLUMN_FIRSTNAME = "vorname";
-    private static final String COLUMN_LASTNAME = "nachname";
-    private static final String COLUMN_DIFFERNCE = "differenz";
+
             
     private List<Party> parties;
     private int selectedYear;
@@ -61,11 +56,11 @@ public class DecisionsBean {
         
         try {
             while (result.next()) {
-                String district = result.getString(COLUMN_DISTRICT);
-                String title = result.getString(COLUMN_TITLE);
-                String firstName = result.getString(COLUMN_FIRSTNAME);
-                String lastName = result.getString(COLUMN_LASTNAME);
-                int difference = Integer.parseInt(result.getString(COLUMN_DIFFERNCE));
+                String district = result.getString(DbColumns.CLM_DISTRICT);
+                String title = result.getString(DbColumns.CLM_TITLE);
+                String firstName = result.getString(DbColumns.CLM_FIRSTNAME);
+                String lastName = result.getString(DbColumns.CLM_LASTNAME);
+                int difference = Integer.parseInt(result.getString(DbColumns.CLM_DIFFERNCE));
                 
                 String completeName = new StringBuilder(title)
                                             .append(" ").append(firstName)
@@ -91,7 +86,7 @@ public class DecisionsBean {
             
             while (result.next()) {
                 
-                String partyName = result.getString(COLUMN_NAME);
+                String partyName = result.getString(DbColumns.CLM_NAME);
                 
                 Party party = new Party(partyName);
                 queriedParties.add(party);

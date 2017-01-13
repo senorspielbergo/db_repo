@@ -41,13 +41,32 @@ public class TokenBean implements Serializable {
         cleanerThread.interrupt();
     }
     
-    public String generateToken() {
+    public String generateToken(int districtId) {
         synchronized(semaphor) {
-            Token token = newToken();
+            Token token = newToken(districtId);
             currentTokens.add(token);
             return token.getValue();
         }
     }
+    
+    public int decodeDistrictId(String tokenValue) {
+        return Integer.parseInt(tokenValue.substring(5, 8), 16);
+    }
+    
+    /**
+     * Konvertiert eine Wahlkreis - ID in einen dreistelligen HEX-Code
+     * @param districtId
+     * @return 
+     */
+    private String encodeDistrictId(int districtId) {
+        String hex = Integer.toHexString(districtId);
+        String formattedHex = ("000" + hex).substring(hex.length());
+        
+        return formattedHex;
+    }
+    
+    
+    
     
     public boolean authenticate(String tokenValue) {
         for (Token token : currentTokens) {
@@ -89,10 +108,16 @@ public class TokenBean implements Serializable {
         return false;
     }
     
-    private Token newToken() {
+    private Token newToken(int districtId) {
+        
+        String districtHex = encodeDistrictId(districtId);
         
         long random = RANDOM.nextLong() * System.nanoTime() * 37;
-        String hexString = Long.toHexString(random).substring(0, 10).toUpperCase();
+   
+        String hexString = Long.toHexString(random).substring(0, 10);
+               hexString = hexString.substring(0, 5) + districtHex + hexString.substring(5);
+               hexString = hexString.toUpperCase();
+               
         Token token = new Token(hexString);
         
         return token;
@@ -117,5 +142,7 @@ public class TokenBean implements Serializable {
         
         return cleaner;
     }
+
+    
 
 }

@@ -1,6 +1,6 @@
-package kaphira.wahlinfo.beans;
+package kaphira.wahlinfo.querybeans;
 
-import kaphira.wahlinfo.main.DatabaseBean;
+import kaphira.wahlinfo.database.DatabaseBean;
 import kaphira.wahlinfo.entities.Mandat;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import kaphira.wahlinfo.database.DbColumns;
 
 /**
  *
@@ -22,12 +23,6 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class UeberhangsmandateBean {
 
-    private static final String COLUMN_COUNTRY = "bundesland";
-    private static final String COLUMN_PARTY = "partei";
-    private static final String COLUMN_MANDAT = "ueberhang";
-    private static final String COLUMN_YEAR = "wahljahr";
-    
-    
     @ManagedProperty(value="#{databaseBean}")
     private DatabaseBean databaseBean;
     
@@ -56,10 +51,10 @@ public class UeberhangsmandateBean {
         try {
             while (result.next()) {
                 
-                String country = result.getString(COLUMN_COUNTRY);
-                String partyName = result.getString(COLUMN_PARTY);
-                int mandate = Integer.parseInt(result.getString(COLUMN_MANDAT));
-                int year = Integer.parseInt(result.getString(COLUMN_YEAR));
+                String country = result.getString(DbColumns.CLM_COUNTRY);
+                String partyName = result.getString(DbColumns.CLM_PARTY);
+                int mandate = Integer.parseInt(result.getString(DbColumns.CLM_MANDAT));
+                int year = Integer.parseInt(result.getString(DbColumns.CLM_YEAR));
                 
                 Mandat mandat = new Mandat(country, partyName, mandate, year);
                 

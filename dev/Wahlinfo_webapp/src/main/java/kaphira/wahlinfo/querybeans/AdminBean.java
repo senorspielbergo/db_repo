@@ -1,4 +1,4 @@
-package kaphira.wahlinfo.beans;
+package kaphira.wahlinfo.querybeans;
 
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
@@ -26,8 +26,9 @@ public class AdminBean implements Serializable {
         tokenValue = "-";
     }
 
+    //TODO: Wahlkreisliste hier führen und ID mit übergeben
     public void buttonClicked() {
-        setTokenValue(tokenBean.generateToken());
+        setTokenValue(tokenBean.generateToken(37));
     }
 
     public TokenBean getTokenBean() {

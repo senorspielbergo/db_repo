@@ -1,6 +1,6 @@
-package kaphira.wahlinfo.beans;
+package kaphira.wahlinfo.querybeans;
 
-import kaphira.wahlinfo.main.DatabaseBean;
+import kaphira.wahlinfo.database.DatabaseBean;
 import kaphira.wahlinfo.entities.District;
 import java.io.Serializable;
 import java.sql.ResultSet;
@@ -13,6 +13,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import kaphira.wahlinfo.database.DbColumns;
 
 /**
  *
@@ -22,12 +23,7 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class DistrictWinnerBean implements Serializable{
 
-    private static final String COLUMN_ID = "nummer";
-    private static final String COLUMN_NAME = "name";
-    private static final String COLUMN_FIRST_VOTE_PARY = "erststimmen_partei";
-    private static final String COLUMN_FIRST_VOTES = "erststimmen";
-    private static final String COLUMN_SECOND_VOTE_PARTY = "zweitstimmen_partei";
-    private static final String COLUMN_SECOND_VOTES = "zweitstimmen";
+
             
     private int selectedYear = 2013;
     private List<District> districts;
@@ -54,13 +50,13 @@ public class DistrictWinnerBean implements Serializable{
             
             while (result.next()) {
                 
-                int districtId = Integer.parseInt(result.getString(COLUMN_ID));
-                int firstVotes = Integer.parseInt(result.getString(COLUMN_FIRST_VOTES));
-                int secondVotes = Integer.parseInt(result.getString(COLUMN_SECOND_VOTES));
+                int districtId = Integer.parseInt(result.getString(DbColumns.CLM_ID));
+                int firstVotes = Integer.parseInt(result.getString(DbColumns.CLM_FIRST_VOTES));
+                int secondVotes = Integer.parseInt(result.getString(DbColumns.CLM_SECOND_VOTES));
                 
-                String districtName = result.getString(COLUMN_NAME);
-                String firstVotePartyName = result.getString(COLUMN_FIRST_VOTE_PARY);
-                String secondVotePartyName = result.getString(COLUMN_SECOND_VOTE_PARTY);
+                String districtName = result.getString(DbColumns.CLM_NAME);
+                String firstVotePartyName = result.getString(DbColumns.CLM_FIRST_VOTE_PARY);
+                String secondVotePartyName = result.getString(DbColumns.CLM_SECOND_VOTE_PARTY);
 
                 District district = new District(districtId, districtName);
                 district.setFirstVoteParty(firstVotePartyName);
@@ -83,20 +79,7 @@ public class DistrictWinnerBean implements Serializable{
     public void setDatabaseBean(DatabaseBean databaseBean) {
         this.databaseBean = databaseBean;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     public int getSelectedYear() {
         return selectedYear;
     }

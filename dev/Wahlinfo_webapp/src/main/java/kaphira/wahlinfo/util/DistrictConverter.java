@@ -1,7 +1,7 @@
 package kaphira.wahlinfo.util;
 
 import kaphira.wahlinfo.entities.District;
-import kaphira.wahlinfo.beans.DistrictBean;
+import kaphira.wahlinfo.querybeans.DistrictBean;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;

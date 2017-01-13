@@ -1,6 +1,6 @@
-package kaphira.wahlinfo.main;
+package kaphira.wahlinfo.database;
 
-import kaphira.wahlinfo.main.ConfigBean;
+import kaphira.wahlinfo.database.ConfigBean;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -24,7 +24,23 @@ import javax.faces.bean.SessionScoped;
 public class DatabaseBean implements Serializable {
 
     private static final String POSTGRES_DRIVER = "org.postgresql.Driver";
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     private static final String PLACEHOLDER_YEAR = "%wahljahr%";
     private static final String PLACEHOLDER_DISTRICT = "%wahlkreis_nr%";
     private static final String PLACEHOLDER_PARTY = "%partei%";

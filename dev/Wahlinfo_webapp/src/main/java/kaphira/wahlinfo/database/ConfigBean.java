@@ -1,4 +1,4 @@
-package kaphira.wahlinfo.main;
+package kaphira.wahlinfo.database;
 
 import java.io.BufferedReader;
 import java.io.IOException;

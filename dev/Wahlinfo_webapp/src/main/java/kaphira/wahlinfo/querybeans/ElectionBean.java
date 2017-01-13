@@ -1,4 +1,4 @@
-package kaphira.wahlinfo.beans;
+package kaphira.wahlinfo.querybeans;
 
 import java.io.Serializable;
 import java.sql.ResultSet;
@@ -12,7 +12,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import kaphira.wahlinfo.entities.District;
-import kaphira.wahlinfo.main.DatabaseBean;
+import kaphira.wahlinfo.database.DatabaseBean;
+import kaphira.wahlinfo.database.DbColumns;
 import kaphira.wahlinfo.security.TokenBean;
 
 /**
@@ -24,17 +25,7 @@ import kaphira.wahlinfo.security.TokenBean;
 public class ElectionBean implements Serializable {
     
     private static final String QRY_ALL_DISTRICTS = "select * from wahlkreis";
-    private static final String COLUMN_ID = "nummer";
-    private static final String COLUMN_NAME = "name";
-    private static final String COLUMN_ALLOWED_VOTERS = "wahlberechtigte";
-    private static final String COLUMN_COUNTRY = "bundesland";
-    private static final String COLUMN_TURNOUT = "wahlbeteiligung";
-    private static final String COLUMN_FIRSTNAME = "vorname";
-    private static final String COLUMN_LASTNAME = "nachname";
-    private static final String COLUMN_TITLE = "titel";
-    private static final String COLUMN_PARTY = "partei";
-    private static final String COLUMN_VOTES = "stimmen";
-    private static final String COLUMN_PERCENTAGE = "prozent";
+
 
     @ManagedProperty(value="#{databaseBean}")
     private DatabaseBean databaseBean;
@@ -104,10 +95,10 @@ public class ElectionBean implements Serializable {
             
             while (result.next()) {
                 
-                int districtId = Integer.parseInt(result.getString(COLUMN_ID));
-                int allowedVoters = Integer.parseInt(result.getString(COLUMN_ALLOWED_VOTERS));
-                String districtName = result.getString(COLUMN_NAME);
-                String districtCountry = result.getString(COLUMN_COUNTRY);
+                int districtId = Integer.parseInt(result.getString(DbColumns.CLM_ID));
+                int allowedVoters = Integer.parseInt(result.getString(DbColumns.CLM_ALLOWED_VOTERS));
+                String districtName = result.getString(DbColumns.CLM_NAME);
+                String districtCountry = result.getString(DbColumns.CLM_COUNTRY);
                 
                 
                 District district = new District(districtId, districtName);
@@ -133,7 +124,7 @@ public class ElectionBean implements Serializable {
             
             while (result.next()) {
                 
-                String party = result.getString(COLUMN_PARTY);
+                String party = result.getString(DbColumns.CLM_PARTY);
                 queriedParties.add(party);
             }
         } catch (SQLException ex) {
@@ -153,10 +144,10 @@ public class ElectionBean implements Serializable {
             
             while (result.next()) {
                 
-                String polTitle = result.getString(COLUMN_TITLE);
-                String polName = result.getString(COLUMN_LASTNAME);
-                String polFirstName = result.getString(COLUMN_FIRSTNAME);
-                String polParty = result.getString(COLUMN_PARTY);
+                String polTitle = result.getString(DbColumns.CLM_TITLE);
+                String polName = result.getString(DbColumns.CLM_LASTNAME);
+                String polFirstName = result.getString(DbColumns.CLM_FIRSTNAME);
+                String polParty = result.getString(DbColumns.CLM_PARTY);
                 
                 if (polTitle == null) {
                     polTitle = "";
@@ -309,7 +300,5 @@ public class ElectionBean implements Serializable {
     public void setFinished(boolean finished) {
         this.finished = finished;
     }
- 
-    
     
 }
