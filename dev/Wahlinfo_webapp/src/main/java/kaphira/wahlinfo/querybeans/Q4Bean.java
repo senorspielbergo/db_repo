@@ -21,39 +21,41 @@ import kaphira.wahlinfo.database.DbColumns;
  */
 @ManagedBean
 @SessionScoped
-public class DistrictWinnerBean implements Serializable{
+public class Q4Bean implements Serializable {
 
+    private final Logger logger = Logger.getLogger(Q4Bean.class.getName());
 
-            
-    private int selectedYear = 2013;
-    private List<District> districts;
-    
-    @ManagedProperty(value="#{databaseBean}")
+    @ManagedProperty(value = "#{databaseBean}")
     private DatabaseBean databaseBean;
-    
+
+    private List<District> districts;
+
+    private int selectedYear;
+
     @PostConstruct
     public void init() {
+        setSelectedYear(2013);
         setDistricts(queryDistrictsAndWinners());
     }
-    
-    public void reload() {
-        
-    }
 
-    private List<District> queryDistrictsAndWinners(){
-        
+    //*********************************//
+    //             QUERIES             //
+    //*********************************//
+    
+    private List<District> queryDistrictsAndWinners() {
+
         ResultSet result = databaseBean.queryQ4(selectedYear);
-        
+
         List<District> queriedDistricts = new ArrayList<>();
-        
+
         try {
-            
+
             while (result.next()) {
-                
+
                 int districtId = Integer.parseInt(result.getString(DbColumns.CLM_ID));
                 int firstVotes = Integer.parseInt(result.getString(DbColumns.CLM_FIRST_VOTES));
                 int secondVotes = Integer.parseInt(result.getString(DbColumns.CLM_SECOND_VOTES));
-                
+
                 String districtName = result.getString(DbColumns.CLM_NAME);
                 String firstVotePartyName = result.getString(DbColumns.CLM_FIRST_VOTE_PARY);
                 String secondVotePartyName = result.getString(DbColumns.CLM_SECOND_VOTE_PARTY);
@@ -66,12 +68,16 @@ public class DistrictWinnerBean implements Serializable{
                 queriedDistricts.add(district);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(BundestagBean.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
         }
-        
+
         return queriedDistricts;
     }
 
+    //*********************************//
+    //         GETTER/SETTER           //
+    //*********************************//
+    
     public DatabaseBean getDatabaseBean() {
         return databaseBean;
     }
@@ -85,7 +91,10 @@ public class DistrictWinnerBean implements Serializable{
     }
 
     public void setSelectedYear(int selectedYear) {
-        this.selectedYear = selectedYear;
+        if (selectedYear != this.selectedYear) {
+            this.selectedYear = selectedYear;
+            setDistricts(queryDistrictsAndWinners());
+        }
     }
 
     public List<District> getDistricts() {
@@ -95,6 +104,5 @@ public class DistrictWinnerBean implements Serializable{
     public void setDistricts(List<District> districts) {
         this.districts = districts;
     }
-    
-    
+
 }

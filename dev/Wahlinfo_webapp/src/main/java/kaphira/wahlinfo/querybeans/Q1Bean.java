@@ -24,31 +24,28 @@ import org.primefaces.model.chart.PieChartModel;
  */
 @ManagedBean
 @SessionScoped
-public class BundestagBean implements Serializable{
+public class Q1Bean implements Serializable{
 
+    @ManagedProperty(value="#{databaseBean}")
+    private DatabaseBean databaseBean;
     
 
     private static final String PIE_CHART_TITLE = "Sitzeverteilung";
     
-    private List<Party> parties;
-    private List<Politician> members;
-
-    @ManagedProperty(value="#{databaseBean}")
-    private DatabaseBean databaseBean;
-
-    
     private PieChartModel pieChart;
+    
+    
+    private List<Party> parties;
+    
+    
     private int selectedYear;
 
     
      @PostConstruct
      private void init(){
-         System.out.println("Initializing Q1 Bean...");
          setSelectedYear(2013);
          setParties(queryOberverteilung());
          setPieChart(createPieChart());
-         setMembers(queryAllMembers());
-         
      }
     
      public void reload(){
@@ -73,35 +70,6 @@ public class BundestagBean implements Serializable{
     
      
      
-    public List<Politician> queryAllMembers(){
-        
-        ResultSet result = databaseBean.queryQ2(selectedYear);
-        
-        List<Politician> queriedPoliticians = new ArrayList<>();
-        
-        try {
-            
-            while (result.next()) {
-                
-                String polTitle = result.getString(DbColumns.CLM_TITLE);
-                String polName = result.getString(DbColumns.CLM_LASTNAME);
-                String polFirstName = result.getString(DbColumns.CLM_FIRSTNAME);
-                String polParty = result.getString(DbColumns.CLM_PARTY);
-                
-                Politician pol = new Politician(polName + ", " + polFirstName, polParty);
-                if (polTitle != null) {
-                    pol.setTitle(polTitle);
-                }
-                queriedPoliticians.add(pol);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(BundestagBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return queriedPoliticians;
-    } 
-    
-    
      /**
       * 
       * @return 
@@ -124,7 +92,7 @@ public class BundestagBean implements Serializable{
                 queriedParties.add(party);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(BundestagBean.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Q1Bean.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         return queriedParties;
@@ -175,16 +143,6 @@ public class BundestagBean implements Serializable{
         this.parties = parties;
     }
     
-    public List<Politician> getMembers() {
-        if (members == null) {
-            members = new ArrayList<>();   
-        }
-        return members;
-    }
-
-    public void setMembers(List<Politician> members) {
-        this.members = members;
-    }
 
     public int getSelectedYear() {
         return selectedYear;

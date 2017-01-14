@@ -1,8 +1,6 @@
 package kaphira.wahlinfo.querybeans;
 
-import kaphira.wahlinfo.database.DatabaseBean;
-import kaphira.wahlinfo.entities.Decision;
-import kaphira.wahlinfo.entities.Party;
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,7 +11,10 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import kaphira.wahlinfo.database.DatabaseBean;
 import kaphira.wahlinfo.database.DbColumns;
+import kaphira.wahlinfo.entities.Decision;
+import kaphira.wahlinfo.entities.Party;
 
 /**
  *
@@ -21,39 +22,40 @@ import kaphira.wahlinfo.database.DbColumns;
  */
 @ManagedBean
 @SessionScoped
-public class DecisionsBean {
+public class Q6Bean implements Serializable {
 
-    private static final String QRY_ALL_PARTIES = "select * from partei";
+    private final Logger logger = Logger.getLogger(Q6Bean.class.getName());
 
-            
+    @ManagedProperty(value = "#{databaseBean}")
+    private DatabaseBean databaseBean;
+
     private List<Party> parties;
+
     private int selectedYear;
 
-    @ManagedProperty(value="#{databaseBean}")
-    private DatabaseBean databaseBean;
-    
-    
-    
     @PostConstruct
     public void init() {
         setSelectedYear(2013);
         setParties(queryAllParties());
         loadAllDecisions(getParties());
     }
+
+    //*********************************//
+    //             QUERIES             //
+    //*********************************//
     
     private void loadAllDecisions(List<Party> parties) {
         for (Party party : parties) {
             party.setClosestDecisions(loadPartyDecisions(party.getName()));
         }
     }
-    
-    
+
     private List<Decision> loadPartyDecisions(String partyName) {
-        
+
         ResultSet result = databaseBean.queryQ6(partyName, selectedYear);
-        
+
         List<Decision> decisions = new ArrayList<>();
-        
+
         try {
             while (result.next()) {
                 String district = result.getString(DbColumns.CLM_DISTRICT);
@@ -61,42 +63,44 @@ public class DecisionsBean {
                 String firstName = result.getString(DbColumns.CLM_FIRSTNAME);
                 String lastName = result.getString(DbColumns.CLM_LASTNAME);
                 int difference = Integer.parseInt(result.getString(DbColumns.CLM_DIFFERNCE));
-                
+
                 String completeName = new StringBuilder(title)
-                                            .append(" ").append(firstName)
-                                            .append(" ").append(lastName).toString();
-                Decision decision = new Decision(district,completeName , difference);
+                        .append(" ").append(firstName)
+                        .append(" ").append(lastName).toString();
+                Decision decision = new Decision(district, completeName, difference);
                 decisions.add(decision);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(DecisionsBean.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
         }
         return decisions;
     }
 
-    
-    private List<Party> queryAllParties(){
-        
-        ResultSet result = databaseBean
-                            .executeQuery("select * from partei");
-        
+    private List<Party> queryAllParties() {
+
+        ResultSet result = databaseBean.queryAllParties();
+
         List<Party> queriedParties = new ArrayList<>();
-        
+
         try {
-            
+
             while (result.next()) {
-                
+
                 String partyName = result.getString(DbColumns.CLM_NAME);
-                
+
                 Party party = new Party(partyName);
                 queriedParties.add(party);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(BundestagBean.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
         }
-        
+
         return queriedParties;
     }
+
+    //*********************************//
+    //         GETTER/SETTER           //
+    //*********************************//
     
     public List<Party> getParties() {
         if (parties == null) {
@@ -104,7 +108,7 @@ public class DecisionsBean {
         }
         return parties;
     }
-    
+
     public void setParties(List<Party> parties) {
         this.parties = parties;
     }

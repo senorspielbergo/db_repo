@@ -11,7 +11,7 @@
             
             <ui:define name="content">
                 <h:panelGrid columns="3" cellpadding='5'>
-                    <ui:repeat var="party" value="#{decisionsBean.parties}" >
+                    <ui:repeat var="party" value="#{q6Bean.parties}" >
                         <p:dataTable var="decision" value="#{party.closestDecisions}" rendered="#{party.closestDecisions.size()>0}">
                             <f:facet name="header">
                                 <p:outputLabel value="#{party.name}" style='font-weight: bold'/>

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ApplicationScoped;
@@ -18,7 +19,7 @@ import org.apache.commons.io.IOUtils;
 
 @ManagedBean
 @ApplicationScoped
-public class ConfigBean {
+public class ConfigBean implements Serializable {
 
     private Properties properties;
 

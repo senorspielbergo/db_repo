@@ -1,4 +1,4 @@
-package kaphira.wahlinfo.querybeans;
+package kaphira.wahlinfo.backingbeans;
 
 import java.io.Serializable;
 import javax.annotation.PostConstruct;

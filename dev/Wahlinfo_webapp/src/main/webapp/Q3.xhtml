@@ -14,10 +14,10 @@
                 <h:form>
                     <p:panelGrid columns="2" style="width:100%">
                         <p:outputLabel value="Wählen Sie einen Wahlkreis: "/>
-                        <p:selectOneMenu value="#{districtBean.selectedDistrict}">
+                        <p:selectOneMenu value="#{q37Bean.selectedDistrict}">
                             <f:converter binding ="#{districtConverter}" />
-                            <f:selectItems value="#{districtBean.districts}" var="dist" itemValue="#{dist}" itemLabel="#{dist.name}"/>
-                            <p:ajax event="change" listener="#{districtBean.onDistrictSelection}" update="@form"/>
+                            <f:selectItems value="#{q37Bean.selectedDistricts}" var="dist" itemValue="#{dist}" itemLabel="#{dist.name}"/>
+                            <p:ajax event="change" listener="#{q37Bean.onDistrictSelection}" update="@form"/>
                         </p:selectOneMenu>
                     </p:panelGrid>
                     <p:separator/>
@@ -29,19 +29,19 @@
                                 
                                 
                                 <h:outputText value="Name:" />
-                                <h:outputText value="#{districtBean.selectedDistrict.name}" style="font-weight: bold"/>
+                                <h:outputText value="#{q37Bean.selectedDistrict.name}" style="font-weight: bold"/>
                                 
                                 <h:outputText value="Id:" />
-                                <h:outputText value="#{districtBean.selectedDistrict.id}" style="font-weight: bold"/>
+                                <h:outputText value="#{q37Bean.selectedDistrict.id}" style="font-weight: bold"/>
 
                                 <h:outputText value="Bundesland:" />
-                                <h:outputText value="#{districtBean.selectedDistrict.bundesland}" style="font-weight: bold"/>
+                                <h:outputText value="#{q37Bean.selectedDistrict.bundesland}" style="font-weight: bold"/>
                                 
                                 <h:outputText value="Wahlberechtigte:" />
-                                <h:outputText value="#{districtBean.selectedDistrict.wahlberechtigte}" style="font-weight: bold"/>
+                                <h:outputText value="#{q37Bean.selectedDistrict.wahlberechtigte}" style="font-weight: bold"/>
                                 
                                 <h:outputText value="Wahlbeteiligung:" />
-                                <h:outputText value="#{districtBean.selectedDistrict.wahlbeteiligung} %" style="font-weight: bold"/>
+                                <h:outputText value="#{q37Bean.selectedDistrict.wahlbeteiligung} %" style="font-weight: bold"/>
                             </h:panelGrid>
                         </p:outputPanel>
                  
@@ -51,13 +51,13 @@
                                 
                                 
                                 <h:outputText value="Name:" />
-                                <h:outputText value="#{districtBean.selectedDistrict.direktKandidat.title} #{districtBean.selectedDistrict.direktKandidat.name}" style="font-weight: bold"/>
+                                <h:outputText value="#{q37Bean.selectedDistrict.direktKandidat.title} #{q37Bean.selectedDistrict.direktKandidat.name}" style="font-weight: bold"/>
                                 
                                 <h:outputText value="Partei:" />
-                                <h:outputText value="#{districtBean.selectedDistrict.direktKandidat.party}" style="font-weight: bold"/>
+                                <h:outputText value="#{q37Bean.selectedDistrict.direktKandidat.party}" style="font-weight: bold"/>
                                 
                                 <h:outputText value="Stimmen:" />
-                                <h:outputText value="#{districtBean.selectedDistrict.direktKandidat.votes}" style="font-weight: bold"/>
+                                <h:outputText value="#{q37Bean.selectedDistrict.direktKandidat.votes}" style="font-weight: bold"/>
                                 
                             </h:panelGrid>
                         </p:outputPanel>
@@ -66,7 +66,7 @@
                     </h:panelGrid>
                     
                     <p:separator/>
-                        <p:dataTable var="party" value="#{districtBean.selectedDistrict.parties}"
+                        <p:dataTable var="party" value="#{q37Bean.selectedDistrict.parties}"
                                      lazy="true"
                                      scrollable="true"
                                      >
@@ -85,7 +85,7 @@
                         </p:dataTable>
                     
                     <p:separator/>
-                        <p:dataTable var="history" value="#{districtBean.selectedDistrict.histories}"
+                        <p:dataTable var="history" value="#{q37Bean.selectedDistrict.histories}"
                                      lazy="true"
                                      scrollable="true"
                                      scrollHeight="700">

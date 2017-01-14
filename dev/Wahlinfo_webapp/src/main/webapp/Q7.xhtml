@@ -13,10 +13,10 @@
                 <h:form>
                     <p:panelGrid columns="2" style="width:100%">
                         <p:outputLabel value="Wählen Sie einen Wahlkreis: "/>
-                        <p:selectOneMenu value="#{singleAnalysisBean.selectedDistrict}">
+                        <p:selectOneMenu value="#{q3q7Bean.singleAnalysisDistrict}">
                             <f:converter binding ="#{districtConverter}" />
-                            <f:selectItems value="#{singleAnalysisBean.districts}" var="dist" itemValue="#{dist}" itemLabel="#{dist.name}"/>
-                            <p:ajax event="change" listener="#{singleAnalysisBean.onDistrictSelection}" update="@form"/>
+                            <f:selectItems value="#{q3q7Bean.singleAnalysisDistricts}" var="dist" itemValue="#{dist}" itemLabel="#{dist.name}"/>
+                            <p:ajax event="change" listener="#{q3q7Bean.onDistrictSelection}" update="@form"/>
                         </p:selectOneMenu>
                     </p:panelGrid>
                     <h:outputText value="Bitte beachten Sie: Die Analysen auf dieser Seite werden auf Einzelstimmen ausgeführt. Daher können diese etwas länger dauern, als
@@ -30,19 +30,19 @@
                                 
                                 
                                 <h:outputText value="Name:" />
-                                <h:outputText value="#{singleAnalysisBean.selectedDistrict.name}" style="font-weight: bold"/>
+                                <h:outputText value="#{q3q7Bean.singleAnalysisDistrict.name}" style="font-weight: bold"/>
                                 
                                 <h:outputText value="Id:" />
-                                <h:outputText value="#{singleAnalysisBean.selectedDistrict.id}" style="font-weight: bold"/>
+                                <h:outputText value="#{q3q7Bean.singleAnalysisDistrict.id}" style="font-weight: bold"/>
 
                                 <h:outputText value="Bundesland:" />
-                                <h:outputText value="#{singleAnalysisBean.selectedDistrict.bundesland}" style="font-weight: bold"/>
+                                <h:outputText value="#{q3q7Bean.singleAnalysisDistrict.bundesland}" style="font-weight: bold"/>
                                 
                                 <h:outputText value="Wahlberechtigte:" />
-                                <h:outputText value="#{singleAnalysisBean.selectedDistrict.wahlberechtigte}" style="font-weight: bold"/>
+                                <h:outputText value="#{q3q7Bean.singleAnalysisDistrict.wahlberechtigte}" style="font-weight: bold"/>
                                 
                                 <h:outputText value="Wahlbeteiligung:" />
-                                <h:outputText value="#{singleAnalysisBean.selectedDistrict.wahlbeteiligung} %" style="font-weight: bold"/>
+                                <h:outputText value="#{q3q7Bean.singleAnalysisDistrict.wahlbeteiligung} %" style="font-weight: bold"/>
                             </h:panelGrid>
                         </p:outputPanel>
                  
@@ -52,13 +52,13 @@
                                 
                                 
                                 <h:outputText value="Name:" />
-                                <h:outputText value="#{singleAnalysisBean.selectedDistrict.direktKandidat.title} #{singleAnalysisBean.selectedDistrict.direktKandidat.name}" style="font-weight: bold"/>
+                                <h:outputText value="#{q3q7Bean.singleAnalysisDistrict.direktKandidat.title} #{q3q7Bean.singleAnalysisDistrict.direktKandidat.name}" style="font-weight: bold"/>
                                 
                                 <h:outputText value="Partei:" />
-                                <h:outputText value="#{singleAnalysisBean.selectedDistrict.direktKandidat.party}" style="font-weight: bold"/>
+                                <h:outputText value="#{q3q7Bean.singleAnalysisDistrict.direktKandidat.party}" style="font-weight: bold"/>
                                 
                                 <h:outputText value="Stimmen:" />
-                                <h:outputText value="#{singleAnalysisBean.selectedDistrict.direktKandidat.votes}" style="font-weight: bold"/>
+                                <h:outputText value="#{q3q7Bean.singleAnalysisDistrict.direktKandidat.votes}" style="font-weight: bold"/>
                                 
                             </h:panelGrid>
                         </p:outputPanel>
@@ -67,7 +67,7 @@
                     </h:panelGrid>
                     
                     <p:separator/>
-                        <p:dataTable var="party" value="#{singleAnalysisBean.selectedDistrict.parties}"
+                        <p:dataTable var="party" value="#{q3q7Bean.singleAnalysisDistrict.parties}"
                                      lazy="true"
                                      scrollable="true"
                                      scrollHeight="700">
@@ -86,7 +86,7 @@
                         </p:dataTable>
                     <p:separator/>
                     
-                    <p:dataTable var="history" value="#{singleAnalysisBean.selectedDistrict.histories}"
+                    <p:dataTable var="history" value="#{q3q7Bean.singleAnalysisDistrict.histories}"
                                      lazy="true"
                                      scrollable="true"
                                      scrollHeight="700">

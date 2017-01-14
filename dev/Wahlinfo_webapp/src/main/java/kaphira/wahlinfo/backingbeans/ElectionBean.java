@@ -1,4 +1,4 @@
-package kaphira.wahlinfo.querybeans;
+package kaphira.wahlinfo.backingbeans;
 
 import java.io.Serializable;
 import java.sql.ResultSet;
@@ -107,7 +107,7 @@ public class ElectionBean implements Serializable {
                 queriedDistricts.add(district);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(BundestagBean.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ElectionBean.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         return queriedDistricts;
@@ -128,7 +128,7 @@ public class ElectionBean implements Serializable {
                 queriedParties.add(party);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(BundestagBean.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ElectionBean.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         return queriedParties;
@@ -157,7 +157,7 @@ public class ElectionBean implements Serializable {
                 queriedPoliticians.add(politician);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(BundestagBean.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ElectionBean.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         return queriedPoliticians;
