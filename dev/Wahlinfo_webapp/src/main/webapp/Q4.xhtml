@@ -9,50 +9,49 @@
     <h:body>
         <ui:composition template="templates/template.xhtml">
             <ui:define name="content">
-                <h:form>
-                    <p:panelGrid columns="2">
-                        <p:outputLabel value="Wahljahr:"/>
-                        
-                        <p:selectOneRadio id="year" value="#{q4Bean.selectedYear}" >
+                <h:form styleClass="centered">
+                        <p:selectOneRadio id="year" value="#{q4Bean.selectedYear}" style="display: inline">
                             <f:converter binding ="#{stringIntConverter}" />
                             <p:ajax event="change" listener="#{q4Bean.onYearSelection}" update="@form"/>
                             <f:selectItem itemLabel="2013" itemValue="2013" />
                             <f:selectItem itemLabel="2009" itemValue="2009" />
                         </p:selectOneRadio>
-                    </p:panelGrid>
                     
-                    <p:panel style="width:100;">
-                        <p:dataTable var="district" value="#{q4Bean.districts}"
-                                     lazy="true"
-                                     scrollable="true"
-                                     scrollHeight="1000">
-
-                            <p:column headerText="Nr." style="width: 5%">
-                                <h:outputText value="#{district.id}" />
-                            </p:column>
-
-                            <p:column headerText="Name" style="white-space: nowrap; width: 45%">
-                                <h:outputText value="#{district.name}" />
-                            </p:column>
-
-                            <p:column headerText="Erststimmen-  sieger">
-                                <h:outputText value="#{district.firstVoteParty}" />
-                            </p:column>
-
-                            <p:column headerText="Erststimmen">
-                                <h:outputText value="#{district.firstVotes}" />
-                            </p:column>
-
-                            <p:column headerText="Zweitstimmen-  sieger">
-                                <h:outputText value="#{district.secondVoteParty}" />
-                            </p:column>
-
-                            <p:column headerText="Zweitstimmen">
-                                <h:outputText value="#{district.secondVotes}" />
-                            </p:column>
-
-                        </p:dataTable>
+                    <p:panel style="border: none;">
+                        <p:separator/>
+                        <p:outputLabel value="Siegerparteien der Wahlkreise" style="font-size: 24pt"/>
                     </p:panel>
+                    
+                    <p:dataTable var="district" value="#{q4Bean.districts}"
+                                 lazy="true"
+                                 scrollable="true"
+                                 scrollHeight="1000">
+
+                        <p:column headerText="Nr." style="width: 5%">
+                            <h:outputText value="#{district.id}" />
+                        </p:column>
+
+                        <p:column headerText="Name" style="white-space: nowrap; width: 45%">
+                            <h:outputText value="#{district.name}" />
+                        </p:column>
+
+                        <p:column headerText="Erststimmen-  sieger">
+                            <h:outputText value="#{district.firstVoteParty}" />
+                        </p:column>
+
+                        <p:column headerText="Erststimmen">
+                            <h:outputText value="#{district.firstVotes}" />
+                        </p:column>
+
+                        <p:column headerText="Zweitstimmen-  sieger">
+                            <h:outputText value="#{district.secondVoteParty}" />
+                        </p:column>
+
+                        <p:column headerText="Zweitstimmen">
+                            <h:outputText value="#{district.secondVotes}" />
+                        </p:column>
+
+                    </p:dataTable>
                 </h:form>
             </ui:define>
         </ui:composition>

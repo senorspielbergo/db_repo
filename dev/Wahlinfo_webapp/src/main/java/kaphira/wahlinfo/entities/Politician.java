@@ -12,20 +12,15 @@ public class Politician {
     private String lastName;
     private String party;
     private int votes;
+    private String formattedName;
 
-    public Politician(String name, String party) {
-        this.name = name; 
-        this.party = party;
-        this.title = "";
-        this.votes = 0;
-    }
-    
-    public Politician(String firstName, String lastName, String party) {
+    public Politician(String title,String firstName, String lastName, String party) {
         this.firstName = firstName; 
         this.lastName = lastName; 
         this.party = party;
-        this.title = "";
+        this.title = title;
         this.votes = 0;
+        this.formattedName = title + " " + firstName + " " + lastName;
     }
     
     public String getTitle() {
@@ -75,6 +70,13 @@ public class Politician {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-    
+
+    public String getFormattedName() {
+        return formattedName;
+    }
+
+    public void setFormattedName(String formattedName) {
+        this.formattedName = formattedName;
+    }
     
 }

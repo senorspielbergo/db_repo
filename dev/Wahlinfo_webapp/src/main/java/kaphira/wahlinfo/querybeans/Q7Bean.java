@@ -31,9 +31,7 @@ public class Q7Bean implements Serializable {
     }
     
     public void onDistrictSelection(){
-        if (!selectedDistrict.isLoaded()) {
             districtManagementBean.loadDistrict(selectedDistrict, selectedYear, true);
-        }
     }
     
     public void onYearSelection() {

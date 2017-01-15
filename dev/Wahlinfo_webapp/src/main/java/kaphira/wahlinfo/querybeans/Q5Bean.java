@@ -57,11 +57,12 @@ public class Q5Bean implements Serializable {
                 int year = Integer.parseInt(result.getString(DbColumns.CLM_YEAR));
 
                 Mandat mandat = new Mandat(country, partyName, mandate, year);
-
-                if (year == 2013) {
-                    getMandate2013().add(mandat);
-                } else {
-                    getMandate2009().add(mandat);
+                if (mandat.getUeberhang() != 0){
+                    if (year == 2013) {
+                        getMandate2013().add(mandat);
+                    } else {
+                        getMandate2009().add(mandat);
+                    }
                 }
             }
         } catch (SQLException ex) {

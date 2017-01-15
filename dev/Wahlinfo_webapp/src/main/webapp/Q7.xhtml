@@ -11,24 +11,9 @@
         <ui:composition template="templates/template.xhtml">
             
             <ui:define name="content">
-                <h:panelGroup id="viewArea">
-                    <h:form>
-                    <p:panelGrid id="selection" columns="4" style="width:100%">
+                    <h:form styleClass="centered">
                         
-                        <p:outputLabel value="Wählen Sie einen Wahlkreis: "/>
-                        
-                        <p:selectOneMenu value="#{q7Bean.selectedDistrict}">
-                            <f:converter binding ="#{districtConverter}" />
-                            <f:selectItems value="#{q7Bean.districts}" var="dist" itemValue="#{dist}" itemLabel="#{dist.name}"/>
-                            <p:ajax event="change" listener="#{q7Bean.onDistrictSelection}" 
-                                    onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" 
-                                    update="@form"/>
-                        </p:selectOneMenu>
-                        
-                        
-                        <p:outputLabel value="Wahljahr:"/>
-                        
-                        <p:selectOneRadio id="year" value="#{q7Bean.selectedYear}" >
+                        <p:selectOneRadio id="year" value="#{q7Bean.selectedYear}" style="display: inline">
                             <f:converter binding ="#{stringIntConverter}" />
                             <p:ajax event="change" listener="#{q7Bean.onYearSelection}" 
                                     onstart="PF('statusDialog').show()" 
@@ -37,8 +22,19 @@
                             <f:selectItem itemLabel="2013" itemValue="2013" />
                             <f:selectItem itemLabel="2009" itemValue="2009" />
                         </p:selectOneRadio>
+                        <p:panel style="border:none;">
+                            <p:outputLabel value="Wahlkreis: "/>
+
+                            <p:selectOneMenu value="#{q7Bean.selectedDistrict}">
+                                <f:converter binding ="#{districtConverter}" />
+                                <f:selectItems value="#{q7Bean.districts}" var="dist" itemValue="#{dist}" itemLabel="#{dist.name}"/>
+                                <p:ajax event="change" listener="#{q7Bean.onDistrictSelection}" 
+                                        onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" 
+                                        update="@form"/>
+                            </p:selectOneMenu>
+                        </p:panel>
                         
-                    </p:panelGrid>
+                        
                     <p:dialog widgetVar="statusDialog" modal="true" draggable="true" 
                               closable="false" 
                               width="300" 
@@ -46,23 +42,31 @@
                               showHeader="true"
                               header="Analysen werden geladen..."
                               >
-                        <p:panelGrid columns="1" style="border:none">
+                        <p:panel style="border: none;">
+                            <p:graphicImage library="img" name="ajax-loader.gif" style="display: inline-block" />
+                        </p:panel>
+                        <p:panel style="border: none;">
                             <h:outputText value="Bitte haben Sie einen Moment Geduld. Die Analyse der Daten
                                                  wird live berechnet." 
                                           style="white-space: normal"/>
-                            <p:graphicImage library="img" name="ajax-loader.gif" />
-                        </p:panelGrid>
+                        </p:panel>
+                    
                     </p:dialog>
                         
-                    <p:separator/>
-                    <h:panelGrid columns="3" cellpadding="5" style="width:100%; " rendered="#{q7Bean.selectedDistrict!=null}">    
+                        <h:panelGroup id="viewArea" rendered="#{q7Bean.selectedDistrict != null}">
+                    <p:panel style="border: none;">
+                        <p:separator/>
+                        <p:outputLabel value="Übersicht" style="font-size: 24pt"/>
+                    </p:panel>    
                         
+                        
+                        
+                    <h:panelGrid columns="2" cellpadding="10" style="width:80%; display: inline-block">    
                         <p:outputPanel>
-                            <h:outputText value="Wahlkreis" style='width:100%; align-content: center'/>
                             <h:panelGrid columns="2" cellpadding="5">
                                 
                                 
-                                <h:outputText value="Name:" />
+                                <h:outputText value="Wahlkreis:" />
                                 <h:outputText value="#{q7Bean.selectedDistrict.name}" style="font-weight: bold"/>
                                 
                                 <h:outputText value="Id:" />
@@ -80,12 +84,11 @@
                         </p:outputPanel>
                  
                         <p:outputPanel>
-                            <h:outputText value="Direktkandidat" style='width:100%; align-content: center'/>
                             <h:panelGrid columns="2" cellpadding="5">
                                 
                                 
-                                <h:outputText value="Name:" />
-                                <h:outputText value="#{q7Bean.selectedDistrict.direktKandidat.title} #{q7Bean.selectedDistrict.direktKandidat.name}" style="font-weight: bold"/>
+                                <h:outputText value="Direktkandidat" />
+                                <h:outputText value="#{q7Bean.selectedDistrict.direktKandidat.formattedName}" style="font-weight: bold"/>
                                 
                                 <h:outputText value="Partei:" />
                                 <h:outputText value="#{q7Bean.selectedDistrict.direktKandidat.party}" style="font-weight: bold"/>
@@ -95,16 +98,18 @@
                                 
                             </h:panelGrid>
                         </p:outputPanel>
-                        
-                    
                     </h:panelGrid>
                     
-                    <p:separator/>
+                    <p:panel style="border: none;">
+                        <p:separator/>
+                        <p:outputLabel value="Wahlergebnis" style="font-size: 24pt"/>
+                    </p:panel>
+                    
+                    
                         <p:dataTable var="party" value="#{q7Bean.selectedDistrict.parties}"
                                      lazy="true"
                                      scrollable="true"
-                                     scrollHeight="700"
-                                     rendered="#{q7Bean.selectedDistrict!=null}">
+                                     >
 
                             <p:column headerText="Partei">
                                 <h:outputText value="#{party.name}" />
@@ -114,44 +119,37 @@
                                 <h:outputText value="#{party.totalVotes}" />
                             </p:column>
 
-                            <p:column headerText="Stimmenanteil in %">
-                                <h:outputText value="#{party.percentage}" />
+                            <p:column headerText="Stimmenanteil">
+                                <h:outputText value="#{party.percentage} %" />
                             </p:column>
                         </p:dataTable>
-                    <p:separator/>
+                    <p:panel style="border:none;"/>
+                    <p:panel style="border: none;">
+                        <p:separator/>
+                        <p:outputLabel value="Entwicklung zu vorheriger Wahl" style="font-size: 24pt"/>
+                    </p:panel>
                     
-                    <p:dataTable var="history" value="#{q7Bean.selectedDistrict.histories}"
+                        <p:dataTable var="history" value="#{q7Bean.selectedDistrict.histories}"
                                      lazy="true"
                                      scrollable="true"
-                                     scrollHeight="700"
-                                     rendered="#{q7Bean.selectedDistrict!=null}">
-                            <f:facet name="header">
-                                <p:outputLabel value="Wahlentwicklungen zu vorheriger Wahl" style='font-weight: bold'/>
-                            </f:facet>
+                                     scrollHeight="700">
+                            
                                      
                             <p:column headerText="Partei">
                                 <h:outputText value="#{history.party}" />
                             </p:column>
 
                             <p:column headerText="Erststimmendifferenz">
-                                <h:outputText value="#{history.diffFirstVote}" />
+                                <h:outputText value="#{history.diffFirstVote} (#{history.diffFirstVotePc} %)" />
                             </p:column>
-
-                            <p:column headerText="in Pozent">
-                                <h:outputText value="#{history.diffFirstVotePc}" />
-                            </p:column>
-                            
                             <p:column headerText="Zweitstimmendifferenz">
-                                <h:outputText value="#{history.diffSecondVote}" />
-                            </p:column>
-                            
-                            <p:column headerText="in Pozent">
-                                <h:outputText value="#{history.diffSecondVotePc}" />
+                                <h:outputText value="#{history.diffSecondVote} (#{history.diffSecondVotePc} %)" />
                             </p:column>
                             
                         </p:dataTable>
+                    
+                        </h:panelGroup>
                     </h:form>
-                </h:panelGroup>
                 
             </ui:define>
         </ui:composition>

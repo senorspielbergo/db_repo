@@ -9,40 +9,39 @@
     <h:body>
         <ui:composition template="templates/template.xhtml">
             <ui:define name="content">
-                <h:form>
+                <h:form styleClass="centered">
 
-                    <p:panelGrid columns="2">
-                            <p:outputLabel value="Wahljahr:"/>
+                    <p:selectOneRadio id="year" value="#{q6Bean.selectedYear}" style="display: inline">
+                        <f:converter binding ="#{stringIntConverter}" />
+                        <p:ajax event="change" listener="#{q6Bean.onYearSelection}" update="@form"/>
+                        <f:selectItem itemLabel="2013" itemValue="2013" />
+                        <f:selectItem itemLabel="2009" itemValue="2009" />
+                    </p:selectOneRadio>
+                    <p:panel style="border:none;">
+                        <p:outputLabel value="Übersicht über die knappste Siege/Niederlagen" style='font-size: 24pt'/>
+                    </p:panel>
 
-                            <p:selectOneRadio id="year" value="#{q6Bean.selectedYear}" >
-                                <f:converter binding ="#{stringIntConverter}" />
-                                <p:ajax event="change" listener="#{q6Bean.onYearSelection}" update="@form"/>
-                                <f:selectItem itemLabel="2013" itemValue="2013" />
-                                <f:selectItem itemLabel="2009" itemValue="2009" />
-                            </p:selectOneRadio>
-                    </p:panelGrid>
+                    <ui:repeat var="party" value="#{q6Bean.parties}" >
+                        <p:panel style="border: none;" rendered="#{party.closestDecisions.size()>0}">
+                            <p:separator/>
+                            <p:outputLabel value="#{party.name}" style='font-size: 24pt'/>
+                        </p:panel>
+                        
+                        
+                        <p:dataTable var="decision" value="#{party.closestDecisions}" rendered="#{party.closestDecisions.size()>0}">
 
-                    <h:panelGrid columns="3" cellpadding='5'>
-                        <ui:repeat var="party" value="#{q6Bean.parties}" >
-                            <p:dataTable var="decision" value="#{party.closestDecisions}" rendered="#{party.closestDecisions.size()>0}">
-                                <f:facet name="header">
-                                    <p:outputLabel value="#{party.name}" style='font-weight: bold'/>
-                                </f:facet>
+                            <p:column headerText="Wahlkreis">
+                                <p:outputLabel value="#{decision.district}"/>
+                            </p:column>
+                            <p:column headerText="Kandidat">
+                                <p:outputLabel value="#{decision.candidate}"/>
+                            </p:column>
+                            <p:column headerText="Differenz">
+                                <p:outputLabel value="#{decision.difference}"/>
+                            </p:column>
 
-                                <p:column headerText="Wahlkreis">
-                                    <p:outputLabel value="#{decision.district}"/>
-                                </p:column>
-                                <p:column headerText="Kandidat">
-                                    <p:outputLabel value="#{decision.candidate}"/>
-                                </p:column>
-                                <p:column headerText="Differenz">
-                                    <p:outputLabel value="#{decision.difference}"/>
-                                </p:column>
-
-                            </p:dataTable>
-                            <p:separator rendered="#{party.closestDecisions.size()>0}"/>
-                        </ui:repeat>
-                    </h:panelGrid>
+                        </p:dataTable>
+                    </ui:repeat>
                 </h:form>
             </ui:define>
         </ui:composition>

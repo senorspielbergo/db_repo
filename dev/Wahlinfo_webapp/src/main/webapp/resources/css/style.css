@@ -67,7 +67,6 @@ th, td
 	padding: .5em 1em;
 	vertical-align: top;
 	text-align: left;
-	border-bottom: 1px solid #ddd;
 }
 
 a:link { color: royalblue; }
@@ -79,9 +78,11 @@ a:active { color: red; }
 Layout styles
 ------------------------*/
 
+
 .container
 {
 	max-width: 80em;
+        min-width: 50em;
 	margin: 0 auto;
 	background-color: #fff;
 }
@@ -91,14 +92,16 @@ Layout styles
 	color: #000;
 	background: #fff;
 	padding: 1em 1.25em;
+        white-space: nowrap;
 }
 
 .header-heading { margin: 0; }
 
 .nav-bar
 {
-	background: #000;
+	background: #1C7385;
 	padding: 0;
+        white-space: nowrap;
 }
 
 .content { 
@@ -112,12 +115,15 @@ Layout styles
     align-content: center;
     align-items: center;
     text-align: center;
+    justify-content: center
 }
 
 .footer
 {
-	color: #fff;
-	background: #555;
+	color: #000;
+	background: #fff;
+        text-align: center;
+        vertical-align: central;
 	/*padding: 1em 1.25em;*/
 }
 
@@ -130,6 +136,18 @@ Nav
 	margin: 0;
 	padding: 0;
 	list-style: none;
+}
+
+.nav_foot
+{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+        color: black !important
+        display: block;
+	padding: .7em 1.25em;
+	text-decoration: none;
+	border-bottom: 1px solid gray;
 }
 
 .nav li
@@ -294,4 +312,9 @@ Alignment
 
 .alVerMid{
     vertical-align: middle
+}
+
+.ui-selectoneradio{
+    align-content: center;
+    justify-content: center;
 }

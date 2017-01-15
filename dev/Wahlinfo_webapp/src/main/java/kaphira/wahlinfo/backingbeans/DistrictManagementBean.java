@@ -156,11 +156,12 @@ public class DistrictManagementBean implements Serializable {
 
         result.next();
         String title = result.getString(DbColumns.CLM_TITLE);
-        String fullName = result.getString(DbColumns.CLM_FIRSTNAME) + " " + result.getString(DbColumns.CLM_LASTNAME);
+        String firstName = result.getString(DbColumns.CLM_FIRSTNAME); 
+        String lastName = result.getString(DbColumns.CLM_LASTNAME);
         String party = result.getString(DbColumns.CLM_PARTY);
         int votes = Integer.parseInt(result.getString(DbColumns.CLM_VOTES));
 
-        Politician politician = new Politician(fullName, party);
+        Politician politician = new Politician(title,firstName, lastName, party);
         politician.setTitle(title);
         politician.setVotes(votes);
 

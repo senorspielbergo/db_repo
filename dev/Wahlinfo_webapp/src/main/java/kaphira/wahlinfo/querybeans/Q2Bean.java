@@ -29,7 +29,7 @@ public class Q2Bean implements Serializable {
     private DatabaseBean databaseBean;
 
     private List<Politician> governmentMembers;
-
+    private List<Politician> filteredPoliticians;
     private int selectedYear;
     
     @PostConstruct
@@ -62,10 +62,7 @@ public class Q2Bean implements Serializable {
                 String polFirstName = result.getString(DbColumns.CLM_FIRSTNAME);
                 String polParty = result.getString(DbColumns.CLM_PARTY);
                 
-                Politician pol = new Politician(polName + ", " + polFirstName, polParty);
-                if (polTitle != null) {
-                    pol.setTitle(polTitle);
-                }
+                Politician pol = new Politician(polTitle,polFirstName,polName, polParty);
                 queriedPoliticians.add(pol);
             }
         } catch (SQLException ex) {
@@ -105,5 +102,14 @@ public class Q2Bean implements Serializable {
     public void setSelectedYear(int selectedYear) {
             this.selectedYear = selectedYear;
     }
+
+    public List<Politician> getFilteredPoliticians() {
+        return filteredPoliticians;
+    }
+
+    public void setFilteredPoliticians(List<Politician> filteredPoliticians) {
+        this.filteredPoliticians = filteredPoliticians;
+    }
+    
     
 }

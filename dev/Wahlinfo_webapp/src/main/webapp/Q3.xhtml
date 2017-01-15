@@ -11,36 +11,39 @@
             
             <ui:define name="content">
                 
-                <h:form>
-                    
-                    <p:panelGrid columns="4" style="width:100%">
-                        <p:outputLabel value="Wählen Sie einen Wahlkreis: "/>
-                        
-                        <p:selectOneMenu value="#{q3Bean.selectedDistrict}">
-                            <f:converter binding ="#{districtConverter}" />
-                            <f:selectItems value="#{q3Bean.districts}" var="dist" itemValue="#{dist}" itemLabel="#{dist.name}"/>
-                            <p:ajax event="change" listener="#{q3Bean.onDistrictSelection}" update="@form"/>
-                        </p:selectOneMenu>
-    
-                        <p:outputLabel value="Wahljahr:"/>
-                        
-                        <p:selectOneRadio id="year" value="#{q3Bean.selectedYear}" >
+                <h:form styleClass="centered">
+                    <p:selectOneRadio id="year" value="#{q3Bean.selectedYear}" style="display: inline">
                             <f:converter binding ="#{stringIntConverter}" />
                             <p:ajax event="change" listener="#{q3Bean.onYearSelection}" update="@form"/>
                             <f:selectItem itemLabel="2013" itemValue="2013" />
                             <f:selectItem itemLabel="2009" itemValue="2009" />
                         </p:selectOneRadio>
-                    </p:panelGrid>
                     
-                    <p:separator/>
-                    <h:panelGrid columns="3" cellpadding="5" style="width:100%; ">    
+                    
+                    
+                    <p:panel style="border: none;">
+                        <p:outputLabel value="Wahlkreis: "/>
                         
+                        <p:selectOneMenu value="#{q3Bean.selectedDistrict}" filter="true" filterMatchMode="contains">
+                            <f:converter binding ="#{districtConverter}" />
+                            <f:selectItems value="#{q3Bean.districts}" var="dist" itemValue="#{dist}" itemLabel="#{dist.name}"/>
+                            <p:ajax event="change" listener="#{q3Bean.onDistrictSelection}" update="@form"/>
+                        </p:selectOneMenu>
+                    </p:panel>
+                    
+                    
+                    <p:panel style="border: none;">
+                        <p:separator/>
+                        <p:outputLabel value="Übersicht" style="font-size: 24pt"/>
+                    </p:panel>
+                    
+
+                    <h:panelGrid columns="2" cellpadding="10" style="width:80%; display: inline-block">    
                         <p:outputPanel>
-                            <h:outputText value="Wahlkreis" style='width:100%; align-content: center'/>
                             <h:panelGrid columns="2" cellpadding="5">
                                 
                                 
-                                <h:outputText value="Name:" />
+                                <h:outputText value="Wahlkreis:" />
                                 <h:outputText value="#{q3Bean.selectedDistrict.name}" style="font-weight: bold"/>
                                 
                                 <h:outputText value="Id:" />
@@ -58,12 +61,11 @@
                         </p:outputPanel>
                  
                         <p:outputPanel>
-                            <h:outputText value="Direktkandidat" style='width:100%; align-content: center'/>
                             <h:panelGrid columns="2" cellpadding="5">
                                 
                                 
-                                <h:outputText value="Name:" />
-                                <h:outputText value="#{q3Bean.selectedDistrict.direktKandidat.title} #{q3Bean.selectedDistrict.direktKandidat.name}" style="font-weight: bold"/>
+                                <h:outputText value="Direktkandidat" />
+                                <h:outputText value="#{q3Bean.selectedDistrict.direktKandidat.formattedName}" style="font-weight: bold"/>
                                 
                                 <h:outputText value="Partei:" />
                                 <h:outputText value="#{q3Bean.selectedDistrict.direktKandidat.party}" style="font-weight: bold"/>
@@ -73,11 +75,14 @@
                                 
                             </h:panelGrid>
                         </p:outputPanel>
-                        
-                    
                     </h:panelGrid>
                     
-                    <p:separator/>
+                    <p:panel style="border: none;">
+                        <p:separator/>
+                        <p:outputLabel value="Wahlergebnis" style="font-size: 24pt"/>
+                    </p:panel>
+                    
+                    
                         <p:dataTable var="party" value="#{q3Bean.selectedDistrict.parties}"
                                      lazy="true"
                                      scrollable="true"
@@ -91,38 +96,31 @@
                                 <h:outputText value="#{party.totalVotes}" />
                             </p:column>
 
-                            <p:column headerText="Stimmenanteil in %">
-                                <h:outputText value="#{party.percentage}" />
+                            <p:column headerText="Stimmenanteil">
+                                <h:outputText value="#{party.percentage} %" />
                             </p:column>
                         </p:dataTable>
+                    <p:panel style="border:none;"/>
+                    <p:panel style="border: none;">
+                        <p:separator/>
+                        <p:outputLabel value="Entwicklung zu vorheriger Wahl" style="font-size: 24pt"/>
+                    </p:panel>
                     
-                    <p:separator/>
                         <p:dataTable var="history" value="#{q3Bean.selectedDistrict.histories}"
                                      lazy="true"
                                      scrollable="true"
                                      scrollHeight="700">
-                            <f:facet name="header">
-                                <p:outputLabel value="Wahlentwicklungen zu vorheriger Wahl" style='font-weight: bold'/>
-                            </f:facet>
+                            
                                      
                             <p:column headerText="Partei">
                                 <h:outputText value="#{history.party}" />
                             </p:column>
 
                             <p:column headerText="Erststimmendifferenz">
-                                <h:outputText value="#{history.diffFirstVote}" />
+                                <h:outputText value="#{history.diffFirstVote} (#{history.diffFirstVotePc} %)" />
                             </p:column>
-
-                            <p:column headerText="in Pozent">
-                                <h:outputText value="#{history.diffFirstVotePc}" />
-                            </p:column>
-                            
                             <p:column headerText="Zweitstimmendifferenz">
-                                <h:outputText value="#{history.diffSecondVote}" />
-                            </p:column>
-                            
-                            <p:column headerText="in Pozent">
-                                <h:outputText value="#{history.diffSecondVotePc}" />
+                                <h:outputText value="#{history.diffSecondVote} (#{history.diffSecondVotePc} %)" />
                             </p:column>
                             
                         </p:dataTable>
