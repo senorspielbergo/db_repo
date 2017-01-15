@@ -12,4 +12,4 @@ waehler AS (
 SELECT wk.nummer, wk.name, wk.bundesland, 
 w.anzahl / CAST(wk.wahlberechtigte AS NUMERIC) AS wahlbeteiligung
 FROM wahlkreis wk JOIN waehler w ON wk.nummer=w.wahlkreis
-WHERE wk.nummer=213;
+WHERE wk.nummer=%wahlkreis_nr%;

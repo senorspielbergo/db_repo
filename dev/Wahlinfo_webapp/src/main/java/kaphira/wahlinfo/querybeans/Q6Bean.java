@@ -39,6 +39,11 @@ public class Q6Bean implements Serializable {
         setParties(queryAllParties());
         loadAllDecisions(getParties());
     }
+    
+    public void onYearSelection(){
+        setParties(queryAllParties());
+        loadAllDecisions(getParties());
+    }
 
     //*********************************//
     //             QUERIES             //

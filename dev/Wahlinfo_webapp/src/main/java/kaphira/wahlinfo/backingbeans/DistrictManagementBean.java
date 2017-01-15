@@ -1,4 +1,4 @@
-package kaphira.wahlinfo.querybeans;
+package kaphira.wahlinfo.backingbeans;
 
 import java.io.Serializable;
 import java.sql.ResultSet;
@@ -25,20 +25,19 @@ import kaphira.wahlinfo.util.Utils;
  */
 @ManagedBean
 @SessionScoped
-public class Q37Bean implements Serializable {
+public class DistrictManagementBean implements Serializable {
 
-    private final Logger logger = Logger.getLogger(Q37Bean.class.getName());
+    private final Logger logger = Logger.getLogger(DistrictManagementBean.class.getName());
     
     @ManagedProperty(value = "#{databaseBean}")
     private DatabaseBean databaseBean;
     
     private List<District> districts2013;
     private List<District> districts2009;
-    private List<District> singleAnalysisDistricts;
-    private List<District> selectedDistricts;
-    private District selectedDistrict;
-    private District singleAnalysisDistrict;
-    private int selectedYear;
+    
+    private List<District> bavarianDistricts2013;
+    private List<District> bavarianDistricts2009;
+
 
     //*********************************//
     //             SETUP               //
@@ -46,19 +45,10 @@ public class Q37Bean implements Serializable {
     @PostConstruct
     public void init() {
         
-
         districts2009 = queryAllDistricts(false);
         districts2013 = queryAllDistricts(false);
-        
-        selectedYear = 2013;
-        selectedDistricts = districts2013;
-        singleAnalysisDistricts = queryAllDistricts(true);
-        
-        selectedDistrict = getSelectedDistricts().get(0);
-        singleAnalysisDistrict = getSingleAnalysisDistricts().get(0);
-        
-        loadDistrict(getSelectedDistrict(), false);
-        //loadDistrict(getSingleAnalysisDistrict(), true);
+        bavarianDistricts2013 = queryAllDistricts(true);
+        bavarianDistricts2009 = queryAllDistricts(true);
         
     }
 
@@ -66,34 +56,14 @@ public class Q37Bean implements Serializable {
     //             CONTROLS            //
     //*********************************//
     
-    public void onDistrictSelection() {
-        if (!selectedDistrict.isLoaded()) {
-            loadDistrict(selectedDistrict, false);
-        }
-//        if (!singleAnalysisDistrict.isLoaded()) {
-//            loadDistrict(selectedDistrict, true);
-//        }
-    }
-
-    private void onYearSelection(int year) {
-        if (year == 2013) {
-            setSelectedDistricts(districts2013);
-            setSelectedDistrict(getSelectedDistricts().get(0));
-        } else {
-            setSelectedDistricts(districts2009);
-            setSelectedDistrict(getSelectedDistricts().get(0));
-        }
-        onDistrictSelection();
-    }
-
-    private void loadDistrict(District district, boolean singleAnalysed) {
+    public void loadDistrict(District district, int selectedYear, boolean singleAnalysed) {
 
         try {
 
-            loadTurnout(district, singleAnalysed);
-            loadWinner(district, singleAnalysed);
-            loadPartyResults(district, singleAnalysed);
-            loadHistories(district, singleAnalysed);
+            loadTurnout(district, selectedYear, singleAnalysed);
+            loadWinner(district, selectedYear, singleAnalysed);
+            loadPartyResults(district, selectedYear, singleAnalysed);
+            loadHistories(district,  selectedYear, singleAnalysed);
             district.setIsLoaded(true);
 
         } catch (SQLException ex) {
@@ -111,13 +81,21 @@ public class Q37Bean implements Serializable {
         }
         return null;
     }
+    
+    public District findDistrictByID(int ID) {
+            for (District district : districts2013) {
+                if (district.getId() == ID) {
+                    return district;
+                }
+            }
+        return null;
+    }
 
     //*********************************//
     //             QUERIES             //
     //*********************************//
     private List<District> queryAllDistricts(boolean singleAnalysed) {
 
-        System.out.println("QUERYING!!!");
         
         ResultSet result;
         if(singleAnalysed){
@@ -150,7 +128,7 @@ public class Q37Bean implements Serializable {
         return queriedDistricts;
     }
 
-    private void loadTurnout(District district, boolean singleAnalysed) throws SQLException {
+    private void loadTurnout(District district,int selectedYear, boolean singleAnalysed) throws SQLException {
 
         ResultSet result;
         if(singleAnalysed){
@@ -166,7 +144,7 @@ public class Q37Bean implements Serializable {
         district.setWahlbeteiligung(turnout);
     }
 
-    private void loadWinner(District district, boolean singleAnalysed) throws SQLException {
+    private void loadWinner(District district,int selectedYear, boolean singleAnalysed) throws SQLException {
 
         ResultSet result;
         if(singleAnalysed){
@@ -189,7 +167,7 @@ public class Q37Bean implements Serializable {
         district.setDirektKandidat(politician);
     }
 
-    private void loadPartyResults(District district, boolean singleAnalysed) throws SQLException {
+    private void loadPartyResults(District district,int selectedYear, boolean singleAnalysed) throws SQLException {
 
         ResultSet result;
         if(singleAnalysed){
@@ -202,7 +180,6 @@ public class Q37Bean implements Serializable {
         List<Party> parties = new ArrayList<>();
 
         while (result.next()) {
-            System.out.println("FOUND A RESULT!");
             String partyName = result.getString(DbColumns.CLM_PARTY);
             int votes = Integer.parseInt(result.getString(DbColumns.CLM_VOTES));
             double percentage = Utils.getPercentRoundedDouble(result.getString(DbColumns.CLM_PERCENTAGE));
@@ -215,7 +192,7 @@ public class Q37Bean implements Serializable {
         district.setParties(parties);
     }
 
-    private void loadHistories(District district, boolean singleAnalysed) throws SQLException {
+    private void loadHistories(District district,int selectedYear, boolean singleAnalysed) throws SQLException {
 
         ResultSet result;
         if(singleAnalysed){
@@ -253,47 +230,22 @@ public class Q37Bean implements Serializable {
         this.databaseBean = databaseBean;
     }
 
-    public List<District> getSingleAnalysisDistricts() {
-        return singleAnalysisDistricts;
+    public List<District> getDistricts2013() {
+        return districts2013;
     }
 
-    public void setSingleAnalysisDistricts(List<District> singleAnalysisDistricts) {
-        this.singleAnalysisDistricts = singleAnalysisDistricts;
+    public List<District> getDistricts2009() {
+        return districts2009;
     }
 
-    public District getSingleAnalysisDistrict() {
-        return singleAnalysisDistrict;
+    public List<District> getBavarianDistricts2013() {
+        return bavarianDistricts2013;
     }
 
-    public void setSingleAnalysisDistrict(District singleAnalysisDistrict) {
-        this.singleAnalysisDistrict = singleAnalysisDistrict;
+    public List<District> getBavarianDistricts2009() {
+        return bavarianDistricts2009;
     }
+
     
-    public List<District> getSelectedDistricts() {
-        return selectedDistricts;
-    }
-
-    public void setSelectedDistricts(List<District> selectedDistricts) {
-        this.selectedDistricts = selectedDistricts;
-    }
-
-    public District getSelectedDistrict() {
-        return selectedDistrict;
-    }
-
-    public void setSelectedDistrict(District selectedDistrict) {
-        this.selectedDistrict = selectedDistrict;
-    }
-
-    public int getSelectedYear() {
-        return selectedYear;
-    }
-
-    public void setSelectedYear(int selectedYear) {
-        if (selectedYear != this.selectedYear) {
-            onYearSelection(selectedYear);
-        }
-        this.selectedYear = selectedYear;
-    }
-
+    
 }

@@ -10,21 +10,33 @@
         <ui:composition template="templates/template.xhtml">
             
             <ui:define name="content">
-                <h:form>
-                <p:outputLabel for="token" value="Bitte Token eingeben:      " />
-                <p:inputMask id="token" value="#{electionBean.token}" mask=""/>
-                <p:commandButton value="Anmelden" action="#{electionBean.register}" update="@form"/>
+                <h:form styleClass="centered">
+                        <p:panel style="border:none">
+                            <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+                        </p:panel>
+
+                    <h:panelGroup rendered="#{!electionBean.mayVote}">
+                        <p:panel style="border:none">
+                            <p:outputLabel for="token" value="Bitte geben Sie Ihren Token ein" style="font-weight: bold"/>
+                        </p:panel>
+
+                        <p:panel style="border:none">
+                            <p:inputMask id="token" value="#{electionBean.token}" mask=""/>
+                        </p:panel>
+                            <p:commandButton value="Anmelden" action="#{electionBean.register}" update="@form"/>
+                    </h:panelGroup>
+                    
+                    <p:panel style="border:none" rendered="#{electionBean.mayVote}">
+                        <p:outputLabel value="Wahlkreis: #{electionBean.selectedDistrict.name}" style="font-weight: bold"/>
+                    </p:panel>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                 
-                <p:panelGrid columns="2" style="width:100%" rendered="#{electionBean.mayVote}">
-                        
-                        <p:outputLabel value="Wählen Sie einen Wahlkreis: "/>
-                        <p:selectOneMenu value="#{electionBean.selectedDistrict}">
-                            <f:converter binding ="#{districtConverter}" />
-                            <f:selectItems value="#{electionBean.districts}" var="dist" itemValue="#{dist}" itemLabel="#{dist.name}"/>
-                            <p:ajax event="change" listener="#{electionBean.onDistrictSelection}" update="@form"/>
-                        </p:selectOneMenu>
-                
-                </p:panelGrid>
                 
                 <p:panelGrid columns="2" style="width:100%" rendered="#{electionBean.displayChoices}">
                         

@@ -131,6 +131,14 @@ public class ConfigBean implements Serializable {
         return properties.getProperty("dbpassword");
     }
 
+    public String getAdminUser(){
+        return properties.getProperty("username");
+    }
+    
+    public String getAdmintPassword(){
+        return properties.getProperty("password");
+    }
+    
     public String getQ1() {
         return Q1;
     }

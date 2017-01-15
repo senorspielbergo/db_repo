@@ -37,6 +37,10 @@ public class Q4Bean implements Serializable {
         setSelectedYear(2013);
         setDistricts(queryDistrictsAndWinners());
     }
+    
+    public void onYearSelection(){
+        setDistricts(queryDistrictsAndWinners());
+    }
 
     //*********************************//
     //             QUERIES             //
@@ -91,10 +95,7 @@ public class Q4Bean implements Serializable {
     }
 
     public void setSelectedYear(int selectedYear) {
-        if (selectedYear != this.selectedYear) {
             this.selectedYear = selectedYear;
-            setDistricts(queryDistrictsAndWinners());
-        }
     }
 
     public List<District> getDistricts() {

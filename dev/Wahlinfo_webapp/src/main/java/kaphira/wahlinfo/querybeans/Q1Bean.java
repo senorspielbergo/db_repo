@@ -49,7 +49,8 @@ public class Q1Bean implements Serializable{
      }
     
      public void reload(){
-         init();
+         setParties(queryOberverteilung());
+         setPieChart(createPieChart());
      }
      
      /**
@@ -64,7 +65,7 @@ public class Q1Bean implements Serializable{
          chart.setTitle(PIE_CHART_TITLE);
          chart.setLegendPosition("e");
          chart.setSliceMargin(1);
-         
+         chart.setExtender("chartextender");
          return chart;
      }
     
@@ -115,6 +116,11 @@ public class Q1Bean implements Serializable{
     }
     
     
+    public void onYearSelection(){
+        System.out.println("RELOAD!!!");
+        reload();
+    }
+    
     //********************************************
     //              GETTER/SETTER
     //********************************************
@@ -145,10 +151,12 @@ public class Q1Bean implements Serializable{
     
 
     public int getSelectedYear() {
+        System.out.println("YEAR GETTER!");
         return selectedYear;
     }
 
     public void setSelectedYear(int selectedYear) {
+        System.out.println("YEAR SETTER!");
         this.selectedYear = selectedYear;
     }
     

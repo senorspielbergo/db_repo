@@ -9,16 +9,51 @@
     <h:body>
         <ui:composition template="templates/template.xhtml">
             <ui:define name="content">
-                <h:form>
-                    <p:panelGrid columns="1" style="align-content: center ">
-                        <p:commandButton value="Token erzeugen" 
-                                         update="@form" 
-                                         action="#{adminBean.buttonClicked}"
-                                         >
+                <h:form styleClass="centered">
+                    <p:panel style="border:none;">
+                        <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+                    </p:panel>
+                    
+                    <h:panelGroup rendered="#{!adminBean.loggedIn}">
+                        <p:panel style="border:none">
 
-                        </p:commandButton>
-                        <p:outputLabel value="#{adminBean.tokenValue}" id="tokenLabel" />
-                    </p:panelGrid>
+                            <h:outputLabel value="Benutzername:" style="padding-right: 1em"/>
+                            <p:inputMask id="username" value="#{adminBean.username}" mask=""/>
+                        </p:panel>
+
+
+                        <p:panel style="border:none">
+                            <h:outputLabel for="pwd2" value="Passwort:" style="padding-right: 1em"/>
+                            <p:password id="pwd2" value="#{adminBean.password}" label="Password 2" required="true" />
+                        </p:panel>
+                    <p:commandButton  value="Login" action="#{adminBean.login()}" label="Login" update="@form" />
+                    </h:panelGroup>
+                    
+                    
+                    
+                    <h:panelGroup rendered="#{adminBean.loggedIn}">
+                        <p:panel style="border:none">
+                            <h:outputLabel value="Für welchen Wahlkreis möchten Sie einen Token erzeugen?"  />
+                        </p:panel>   
+                        
+                        <p:panel style="border:none">
+                            <p:selectOneMenu value="#{adminBean.selectedDistrict}">
+                            <f:converter binding ="#{districtConverter}" />
+                            <f:selectItems value="#{adminBean.districts}" var="dist" itemValue="#{dist}" itemLabel="#{dist.name}"/>
+                        </p:selectOneMenu>
+                        </p:panel>    
+
+
+                        <p:panel style="border:none">
+                        <p:commandButton value="Token erzeugen" 
+                                             update="@form" 
+                                             action="#{adminBean.buttonClicked()}"
+                                             />
+                        </p:panel>
+                        <p:panel style="border:none;">
+                            <p:outputLabel value="#{adminBean.tokenValue}" id="tokenLabel" style="font-weight: bold" />
+                        </p:panel>
+                   </h:panelGroup>
                 </h:form>
             </ui:define>
         </ui:composition>

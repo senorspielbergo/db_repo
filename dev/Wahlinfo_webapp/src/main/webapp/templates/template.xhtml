@@ -6,10 +6,10 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
         <title>Wahlinfo 3000</title>
-        <h:outputStylesheet library="css" name="style.css"/>
     </h:head>
     
     <h:body>
+        <h:outputStylesheet library="css" name="style.css"/>
         <div class="container">
 
             <div>
@@ -18,11 +18,11 @@
                 </ui:insert>
             </div>
       
-            <!--<div class="content">-->
+            <div class="content" style="align-content: center">
                 <ui:insert name="content" >
                     <ui:include src="default_content.xhtml" />
                 </ui:insert>
-            <!--</div>-->
+            </div>
         
             <div id="footer">
                 <ui:insert name="footer" >

@@ -38,6 +38,10 @@ public class Q2Bean implements Serializable {
         setGovernmentMembers(queryAllMembers());
     }
 
+    public void onYearSelection(){
+        setGovernmentMembers(queryAllMembers());
+    }
+    
     
     //*********************************//
     //             QUERIES             //
@@ -99,10 +103,7 @@ public class Q2Bean implements Serializable {
     }
 
     public void setSelectedYear(int selectedYear) {
-        if (selectedYear != this.selectedYear){
             this.selectedYear = selectedYear;
-            setGovernmentMembers(queryAllMembers());
-        }
     }
     
 }

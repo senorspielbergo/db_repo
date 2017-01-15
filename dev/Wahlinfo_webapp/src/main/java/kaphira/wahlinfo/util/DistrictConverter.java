@@ -8,7 +8,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import kaphira.wahlinfo.querybeans.Q37Bean;
+import kaphira.wahlinfo.backingbeans.DistrictManagementBean;
 
 /**
  *
@@ -18,13 +18,13 @@ import kaphira.wahlinfo.querybeans.Q37Bean;
 @SessionScoped
 public class DistrictConverter implements Converter, Serializable {
         
-    @ManagedProperty(value = "#{q37Bean}")
-    private Q37Bean q37Bean;
+    @ManagedProperty(value = "#{districtManagementBean}")
+    private DistrictManagementBean districtManagementBean;
 
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
-        return q37Bean.findDistrictByName(value);
+        return districtManagementBean.findDistrictByName(value);
     }
 
     @Override
@@ -32,12 +32,12 @@ public class DistrictConverter implements Converter, Serializable {
         return ((District) value).getName();
     }
 
-    public Q37Bean getQ37Bean() {
-        return q37Bean;
+    public DistrictManagementBean getDistrictManagementBean() {
+        return districtManagementBean;
     }
 
-    public void setQ37Bean(Q37Bean q37Bean) {
-        this.q37Bean = q37Bean;
+    public void setDistrictManagementBean(DistrictManagementBean districtManagementBean) {
+        this.districtManagementBean = districtManagementBean;
     }
 
     
