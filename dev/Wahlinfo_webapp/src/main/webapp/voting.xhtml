@@ -6,13 +6,25 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     
+    <h:head>
+        <title>Wahlinfo 3000</title>
+    </h:head>
     <h:body>
-        <ui:composition template="templates/template.xhtml">
-            
-            <ui:define name="content">
+        <h:outputStylesheet library="css" name="style.css"/>
+        <div class="container">
+            <div>
+                
+                <div id="header" class="header" style="vertical-align: bottom">
+                <p:graphicImage library="img" name="bundestag.png" />
+                <p:graphicImage library="img" name="wahlinfo_logo.png" style="padding-left: 5em" />
+                </div>
+                
+            </div>
+            <p:separator/>
+            <div>
                 <h:form styleClass="centered">
                         <p:panel style="border:none">
-                            <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+                            <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true"/>
                         </p:panel>
 
                     <h:panelGroup rendered="#{!electionBean.mayVote}">
@@ -26,44 +38,50 @@
                             <p:commandButton value="Anmelden" action="#{electionBean.register}" update="@form"/>
                     </h:panelGroup>
                     
-                    <p:panel style="border:none" rendered="#{electionBean.mayVote}">
-                        <p:outputLabel value="Wahlkreis: #{electionBean.selectedDistrict.name}" style="font-weight: bold"/>
-                    </p:panel>
                     
-                    
-                    
-                    
-                    
-                    
-                    
-                
-                
-                <p:panelGrid columns="2" style="width:100%" rendered="#{electionBean.displayChoices}">
-                        
-                        <p:outputLabel value="Ihre Erststimme:     "/>
-                        <p:selectOneMenu value="#{electionBean.selectedCandidate}">
-                            <f:selectItems value="#{electionBean.candidates}"/>
-                            <!--var="dist" itemValue="#{dist}" itemLabel="#{dist.name} -->
-                        </p:selectOneMenu>
-                        
-                        <p:outputLabel value="Ihre Zweitstimme:     "/>
-                        <p:selectOneMenu value="#{electionBean.selectedParty}">
-                            <f:selectItems value="#{electionBean.parties}"/>
-                            <!--var="dist" itemValue="#{dist}" itemLabel="#{dist.name} -->
-                        </p:selectOneMenu>
+                    <h:panelGroup rendered="#{electionBean.mayVote}" >
+                        <p:panel style="border: none;">
+                            <p:outputLabel value="Wahlkreis: #{electionBean.selectedDistrict.name}" style="font-size: 24pt; font-weight: bold"/>
+                            <p:separator/>
+                            <p:outputLabel value="Hinweis: Ein nicht vollständig ausgewählter Stimmzettel gilt 
+                                                    automatisch als üngültig!" 
+                                           style="font-weight: bold; color: red"/>
+                        </p:panel>
+
+                        <h:panelGrid columns="2" style="display: inline" columnClasses="w50Td alCenter, w50Td alCenter">
+                            
+                            <p:panel style="border:none;font-size: 18pt; font-weight: bold">
+                                <p:outputLabel value="Ihre Erststimme"/>
+                                <p:separator/>
+                                <p:selectOneRadio value="#{electionBean.selectedCandidate}" layout="pageDirection">
+                                    <f:selectItems value="#{electionBean.candidates}" var="candidate" 
+                                                   itemValue="#{candidate}" 
+                                                   itemLabel="#{candidate.formattedName}, #{candidate.party}"/>
+                                    <f:converter binding ="#{politicianConverter}" />
+                                </p:selectOneRadio>
+                            </p:panel>
+                            
+                            <p:panel style="border:none;font-size: 18pt; font-weight: bold">
+                                <p:outputLabel value="Ihre Zweitstimme"/>
+                                <p:separator/>
+                                <p:selectOneRadio layout="pageDirection" value="#{electionBean.selectedParty}">
+                                    <f:selectItems value="#{electionBean.parties}"/>
+                                </p:selectOneRadio>
+                            </p:panel>
+                            
+                        </h:panelGrid>
                         
                         <p:commandButton value="Stimme abgeben" action="#{electionBean.vote}" update="@form"/>
-                
-                </p:panelGrid>
-
-                <p:panelGrid columns="1" style="width:100%" rendered="#{electionBean.finished}">
-                    <p:outputLabel value="#{electionBean.message}"/>
-                </p:panelGrid>
+                        
+                    </h:panelGroup>
+                    
+                    <p:panel style="border:none;" rendered="#{electionBean.finished}">
+                        <p:outputLabel value="#{electionBean.message}"/>
+                    </p:panel>
 
 
                 </h:form>
-            </ui:define>
-            
-        </ui:composition>
+            </div>
+        </div>
     </h:body>
 </html>

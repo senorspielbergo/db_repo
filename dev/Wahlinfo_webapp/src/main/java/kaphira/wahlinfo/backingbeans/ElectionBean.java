@@ -9,13 +9,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.FacesMessage.Severity;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.sound.sampled.Mixer.Info;
+import static jdk.nashorn.internal.runtime.Debug.id;
 import kaphira.wahlinfo.entities.District;
 import kaphira.wahlinfo.database.DatabaseBean;
 import kaphira.wahlinfo.database.DbColumns;
+import kaphira.wahlinfo.entities.Politician;
+import kaphira.wahlinfo.security.Token;
 import kaphira.wahlinfo.security.TokenBean;
 
 /**
@@ -37,18 +42,17 @@ public class ElectionBean implements Serializable {
     @ManagedProperty(value = "#{tokenBean}")
     private TokenBean tokenBean;
 
-    private List<String> candidates;
+    private List<Politician> candidates;
     private List<String> parties;
 
     private District selectedDistrict;
-    private String selectedCandidate;
+    private Politician selectedCandidate;
     private String selectedParty;
 
     private String token;
     private int selectedYear;
 
     private boolean mayVote;
-    private boolean displayChoices;
 
     private String message;
     private boolean finished;
@@ -57,46 +61,47 @@ public class ElectionBean implements Serializable {
     private void init() {
         setSelectedYear(2013);
         mayVote = false;
-        displayChoices = false;
     }
 
     public void register() {
         mayVote = tokenBean.authenticate(getToken());
-        messageLogin(mayVote);
         if(mayVote){
             int districtID = tokenBean.decodeDistrictId(getToken());
             selectedDistrict = districtManagementBean.findDistrictByID(districtID);
             onDistrictSelection();
+            message(FacesMessage.SEVERITY_INFO,"Info", "Token akzeptiert, bitte wählen Sie.");
+            return;
         }
+        message(FacesMessage.SEVERITY_FATAL,"Fatal","Dieser Token ist leider nicht mehr gültig oder inkorrekt");
     }
 
     public void vote() {
 
         insertVote();
-        setMessage("Danke für Ihre Stimme! Sie haben gewählt:" + getSelectedCandidate() + " und " + getSelectedParty());
         mayVote = false;
-        displayChoices = false;
-        finished = true;
+        token = "";
+        selectedCandidate = null;
+        selectedParty = null;
+        message(FacesMessage.SEVERITY_INFO,"Info", "Vielen Dank für Ihre Stimme!");
     }
 
     public void onDistrictSelection() {
         candidates = queryCandidates();
         parties = queryParties();
-        displayChoices = true;
     }
 
-    public void messageLogin(boolean loggedIn) {
-        String messageLevel;
-        String message;
-
-        if (loggedIn) {
-            messageLevel = "Info";
-            message = "Token akzeptiert";
-        } else {
-            messageLevel = "Fatal!";
-            message = "Dieser Token ist leider nicht mehr gültig oder inkorrekt";
+    public void message(Severity severity,String messageLevel,String message) {
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, messageLevel, message));
+    }
+    
+    
+    public Politician findPoliticianByName(String fullName){
+        for (Politician candidate : candidates) {
+            if (candidate.getFormattedName().equals(fullName)){
+                return candidate;
+            }
         }
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, messageLevel, message));
+        return null;
     }
     //********************************//
     //      QUERIES                   //
@@ -123,11 +128,11 @@ public class ElectionBean implements Serializable {
         return queriedParties;
     }
 
-    public List<String> queryCandidates() {
+    public List<Politician> queryCandidates() {
 
         ResultSet result = databaseBean.queryQ2017_1(getSelectedDistrict().getId());
 
-        List<String> queriedPoliticians = new ArrayList<>();
+        List<Politician> queriedPoliticians = new ArrayList<>();
 
         try {
 
@@ -138,11 +143,7 @@ public class ElectionBean implements Serializable {
                 String polFirstName = result.getString(DbColumns.CLM_FIRSTNAME);
                 String polParty = result.getString(DbColumns.CLM_PARTY);
 
-                if (polTitle == null) {
-                    polTitle = "";
-                }
-                String politician = polTitle + "," + polFirstName + "," + polName + "," + polParty;
-                System.out.println("ADDING: " + politician);
+                Politician politician = new Politician(polTitle, polFirstName, polName, polParty);
                 queriedPoliticians.add(politician);
             }
         } catch (SQLException ex) {
@@ -153,17 +154,20 @@ public class ElectionBean implements Serializable {
     }
 
     private void insertVote() {
-
-        int districtId = getSelectedDistrict().getId();
-        String[] splitCandidate = getSelectedCandidate().split(",");
-
-        String title = splitCandidate[0];
-        String firstName = splitCandidate[1];
-        String lastName = splitCandidate[2];
-
-        String party = getSelectedParty();
-
-        databaseBean.insertVote(districtId, title, firstName, lastName, party);
+        if(selectedCandidate != null && selectedParty != null){
+            int districtId = getSelectedDistrict().getId();
+            
+            String title = selectedCandidate.getTitle();
+            String firstName = selectedCandidate.getFirstName();
+            String lastName = selectedCandidate.getName();
+            
+            String party = getSelectedParty();
+            
+            databaseBean.insertVote(districtId, title, firstName, lastName, party);
+        } else {
+//            databaseBean.insertVote();
+        }
+        
 
     }
 
@@ -194,11 +198,11 @@ public class ElectionBean implements Serializable {
         this.selectedYear = selectedYear;
     }
 
-    public List<String> getCandidates() {
+    public List<Politician> getCandidates() {
         return candidates;
     }
 
-    public void setCandidates(List<String> candidates) {
+    public void setCandidates(List<Politician> candidates) {
         this.candidates = candidates;
     }
 
@@ -210,11 +214,11 @@ public class ElectionBean implements Serializable {
         this.parties = parties;
     }
 
-    public String getSelectedCandidate() {
+    public Politician getSelectedCandidate() {
         return selectedCandidate;
     }
 
-    public void setSelectedCandidate(String selectedCandidate) {
+    public void setSelectedCandidate(Politician selectedCandidate) {
         this.selectedCandidate = selectedCandidate;
     }
 
@@ -248,14 +252,6 @@ public class ElectionBean implements Serializable {
 
     public void setTokenBean(TokenBean tokenBean) {
         this.tokenBean = tokenBean;
-    }
-
-    public boolean isDisplayChoices() {
-        return displayChoices;
-    }
-
-    public void setDisplayChoices(boolean displayChoices) {
-        this.displayChoices = displayChoices;
     }
 
     public String getMessage() {

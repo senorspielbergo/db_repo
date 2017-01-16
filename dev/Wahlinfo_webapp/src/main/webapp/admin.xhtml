@@ -6,24 +6,37 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     
+    <h:head>
+        <title>Wahlinfo 3000</title>
+    </h:head>
     <h:body>
-        <ui:composition template="templates/template.xhtml">
-            <ui:define name="content">
+        <h:outputStylesheet library="css" name="style.css"/>
+        <div class="container">
+            <div>
+                
+                <div id="header" class="header" style="vertical-align: bottom">
+                <p:graphicImage library="img" name="bundestag.png" />
+                <p:graphicImage library="img" name="wahlinfo_logo.png" style="padding-left: 5em" />
+                </div>
+                
+            </div>
+            <p:separator/>
+            <div>
                 <h:form styleClass="centered">
                     <p:panel style="border:none;">
                         <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
                     </p:panel>
                     
                     <h:panelGroup rendered="#{!adminBean.loggedIn}">
-                        <p:panel style="border:none">
+                        <p:panel style="border:none; display: inline">
 
                             <h:outputLabel value="Benutzername:" style="padding-right: 1em"/>
                             <p:inputMask id="username" value="#{adminBean.username}" mask=""/>
                         </p:panel>
 
 
-                        <p:panel style="border:none">
-                            <h:outputLabel for="pwd2" value="Passwort:" style="padding-right: 1em"/>
+                        <p:panel style="border:none; display: inline">
+                            <h:outputLabel for="pwd2" value="Passwort:" style="padding-right: 3.5em"/>
                             <p:password id="pwd2" value="#{adminBean.password}" label="Password 2" required="true" />
                         </p:panel>
                     <p:commandButton  value="Login" action="#{adminBean.login()}" label="Login" update="@form" />
@@ -37,7 +50,7 @@
                         </p:panel>   
                         
                         <p:panel style="border:none">
-                            <p:selectOneMenu value="#{adminBean.selectedDistrict}">
+                            <p:selectOneMenu value="#{adminBean.selectedDistrict}" filter="true" filterMatchMode="contains">
                             <f:converter binding ="#{districtConverter}" />
                             <f:selectItems value="#{adminBean.districts}" var="dist" itemValue="#{dist}" itemLabel="#{dist.name}"/>
                         </p:selectOneMenu>
@@ -55,8 +68,8 @@
                         </p:panel>
                    </h:panelGroup>
                 </h:form>
-            </ui:define>
-        </ui:composition>
+            </div>
+        </div>
     </h:body>
 </html>
 

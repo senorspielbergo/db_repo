@@ -81,7 +81,7 @@ Layout styles
 
 .container
 {
-	max-width: 80em;
+	max-width: 70em;
         min-width: 50em;
 	margin: 0 auto;
 	background-color: #fff;
@@ -303,6 +303,7 @@ Alignment
 
 .alCenter{
     align-content: center;
+    justify-content: center;
 }
 
 .alRight{
