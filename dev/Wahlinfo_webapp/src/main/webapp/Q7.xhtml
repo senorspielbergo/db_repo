@@ -27,6 +27,7 @@
 
                             <p:selectOneMenu value="#{q7Bean.selectedDistrict}">
                                 <f:converter binding ="#{districtConverter}" />
+                                <f:selectItem itemLabel="bitte wählen" />
                                 <f:selectItems value="#{q7Bean.districts}" var="dist" itemValue="#{dist}" itemLabel="#{dist.name}"/>
                                 <p:ajax event="change" listener="#{q7Bean.onDistrictSelection}" 
                                         onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" 

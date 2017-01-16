@@ -1,5 +1,6 @@
 package kaphira.wahlinfo.util;
 
+import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
@@ -12,7 +13,7 @@ import javax.faces.convert.Converter;
  */
  @SessionScoped
  @ManagedBean
-public class StringIntConverter implements Converter {
+public class StringIntConverter implements Converter,Serializable {
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {

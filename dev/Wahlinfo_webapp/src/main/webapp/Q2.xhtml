@@ -31,11 +31,12 @@
                                  
                         
                         <p:column headerText="Name">
-                            <h:outputText value="#{politician.formattedName}" />
+                            <h:outputText value="#{politician.formattedName}" class="defFont"/>
                         </p:column>
                         
                         <p:column headerText="Partei">
-                            <h:outputText value="#{politician.party}" />
+                            <h:outputText value="#{politician.party}" 
+                                          style="font-weight: bold; color: ##{stylingBean.getPartyColor(politician.party)}" />
                         </p:column>
                     </p:dataTable>
                 </h:form>

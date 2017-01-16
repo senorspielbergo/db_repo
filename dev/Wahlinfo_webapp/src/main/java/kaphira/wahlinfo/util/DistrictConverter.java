@@ -29,6 +29,9 @@ public class DistrictConverter implements Converter, Serializable {
 
     @Override
     public String getAsString(FacesContext context, UIComponent component, Object value) {
+        if(value == null) {
+            return "---";
+        }
         return ((District) value).getName();
     }
 

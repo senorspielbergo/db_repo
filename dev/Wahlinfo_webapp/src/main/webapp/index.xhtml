@@ -31,11 +31,12 @@
                     <!--</p:panel>-->
                     <p:dataTable var="party" value="#{q1Bean.parties}" styleClass="cTable">
                         <p:column headerText="Partei" >
-                            <h:outputText value="#{party.name}" style="background-color: red"/>
+                            <h:outputText value="#{party.name}" 
+                                          style="font-weight: bold; color: ##{stylingBean.getPartyColor(party.name)}"/>
                         </p:column>
 
                         <p:column headerText="Sitze">
-                            <h:outputText value="#{party.seats}" />
+                            <h:outputText value="#{party.seats}" class="defFont" />
                         </p:column>
                     </p:dataTable> 
                 </h:form>

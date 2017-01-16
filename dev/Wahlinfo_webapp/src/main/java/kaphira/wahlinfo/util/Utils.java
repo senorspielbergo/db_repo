@@ -34,11 +34,11 @@ public class Utils {
             case "cdu": return "000000";
             case "csu": return "000000";
             case "spd": return "FF0000";
-            case "die linke": return "FE2EF7";
-            case "grüne": return "00FF00";
+            case "die linke": return "ff93c9";
+            case "grüne": return "00b200";
             case "fdp": return "FFFF00";
             case "afd": return "0000FF";
-            default: return "848484";
+            default: return "3a3a3a";
        }
     }
     
