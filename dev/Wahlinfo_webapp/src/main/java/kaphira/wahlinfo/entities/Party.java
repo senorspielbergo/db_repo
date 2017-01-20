@@ -3,7 +3,7 @@ package kaphira.wahlinfo.entities;
 import java.util.List;
 
 /**
- *
+ * This entity represents a party with all the information used in Q1, Q2 and Q4 queries
  * @author theralph
  */
 public class Party {

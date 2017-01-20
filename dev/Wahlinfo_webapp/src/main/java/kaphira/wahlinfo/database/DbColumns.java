@@ -1,13 +1,13 @@
 package kaphira.wahlinfo.database;
 
 /**
- * Liste aller Datenbank-Spaltennamen, welche von den Queries verwendet werden.
+ * Constant list of all database columns which are used by the queries of this application
  * @author theralph
  */
 public class DbColumns {
     
     private DbColumns(){
-        //Overriding public consttructor
+        //Overriding public constructor
     }
     
     public static final String CLM_TITLE = "titel";

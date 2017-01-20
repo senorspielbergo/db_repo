@@ -8,7 +8,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
 /**
- *
+ * Converter used for selectionMenus
  * @author theralph
  */
  @SessionScoped

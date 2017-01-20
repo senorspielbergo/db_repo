@@ -11,13 +11,14 @@
         <ui:composition template="templates/template.xhtml">
             <ui:define name="content">
                 <h:form styleClass="centered">
+                    <p:panel style="border: none;">
                     <p:selectOneRadio id="year" value="#{q2Bean.selectedYear}" style="display: inline">
                         <f:converter binding ="#{stringIntConverter}" />
                         <p:ajax event="change" listener="#{q2Bean.onYearSelection}" update="@form"/>
                         <f:selectItem itemLabel="2013" itemValue="2013" />
                         <f:selectItem itemLabel="2009" itemValue="2009" />
                     </p:selectOneRadio>
-
+                    </p:panel>
                     <p:panel style="border: none;">
                         <p:separator/>
                         <p:outputLabel value="Bundestagsabgeordnete" style="font-size: 24pt"/>

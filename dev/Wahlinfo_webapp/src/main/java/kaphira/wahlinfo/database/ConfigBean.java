@@ -12,7 +12,9 @@ import javax.faces.bean.ManagedBean;
 import org.apache.commons.io.IOUtils;
 
 /**
- *
+ * The only application scoped bean of the application
+ * Its purpose is to load all application variables as db-connection, username, passwords, and queries
+ * provided in the .properties and sql-files
  * @author theralph
  */
 
@@ -42,6 +44,7 @@ public class ConfigBean implements Serializable {
     private String insert;
     private String Q2017_1;
     private String Q2017_2;
+    private String reloadStatement;
     
     @PostConstruct
     private void init() {
@@ -68,6 +71,7 @@ public class ConfigBean implements Serializable {
         Q2017_1 = loadQueryFromResource("/sql/Q2017-1.sql");
         Q2017_2 = loadQueryFromResource("/sql/Q2017-2.sql");
         
+        reloadStatement = loadQueryFromResource("/sql/reloadViews.sql");
     }
 
     /**
@@ -127,7 +131,6 @@ public class ConfigBean implements Serializable {
     }
     
     public String getDbPassword() {
-        System.out.println("PASSWORD: " + properties.getProperty("dbpassword"));
         return properties.getProperty("dbpassword");
     }
 
@@ -209,6 +212,10 @@ public class ConfigBean implements Serializable {
 
     public String getQ2017_2() {
         return Q2017_2;
+    }
+
+    String getReloadStatement() {
+        return reloadStatement;
     }
     
     

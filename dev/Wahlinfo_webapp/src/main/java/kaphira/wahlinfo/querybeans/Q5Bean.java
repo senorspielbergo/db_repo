@@ -16,6 +16,7 @@ import javax.faces.bean.SessionScoped;
 import kaphira.wahlinfo.database.DbColumns;
 
 /**
+ * Backing the Q5.xhtml and its functionality
  *
  * @author theralph
  */
@@ -24,7 +25,7 @@ import kaphira.wahlinfo.database.DbColumns;
 public class Q5Bean implements Serializable {
 
     private final Logger logger = Logger.getLogger(Q5Bean.class.getName());
-    
+
     @ManagedProperty(value = "#{databaseBean}")
     private DatabaseBean databaseBean;
 
@@ -39,11 +40,10 @@ public class Q5Bean implements Serializable {
         loadAllUeberhangmandate();
         selectedMandate = getMandate2013();
     }
-    
+
     //*********************************//
     //             QUERIES             //
     //*********************************//
-    
     private void loadAllUeberhangmandate() {
 
         ResultSet result = databaseBean.queryQ5();
@@ -57,7 +57,7 @@ public class Q5Bean implements Serializable {
                 int year = Integer.parseInt(result.getString(DbColumns.CLM_YEAR));
 
                 Mandat mandat = new Mandat(country, partyName, mandate, year);
-                if (mandat.getUeberhang() != 0){
+                if (mandat.getUeberhang() != 0) {
                     if (year == 2013) {
                         getMandate2013().add(mandat);
                     } else {
@@ -74,7 +74,6 @@ public class Q5Bean implements Serializable {
     //*********************************//
     //         GETTER/SETTER           //
     //*********************************//
-    
     public List<Mandat> getMandate2013() {
         if (mandate2013 == null) {
             mandate2013 = new ArrayList<>();

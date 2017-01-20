@@ -1,7 +1,7 @@
 package kaphira.wahlinfo.entities;
 
 /**
- *
+ * This entity represents a close decision displayed in the Q6 query
  * @author theralph
  */
 public class Decision {

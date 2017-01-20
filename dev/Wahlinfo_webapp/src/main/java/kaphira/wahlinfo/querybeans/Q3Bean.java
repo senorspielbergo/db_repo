@@ -10,20 +10,21 @@ import javax.faces.bean.SessionScoped;
 import kaphira.wahlinfo.entities.District;
 
 /**
+ * Backing the Q3.xhtml and its functionality
  *
  * @author theralph
  */
 @ManagedBean
 @SessionScoped
 public class Q3Bean implements Serializable {
-    
+
     @ManagedProperty(value = "#{districtManagementBean}")
     private DistrictManagementBean districtManagementBean;
-    
+
     private List<District> districts;
     private District selectedDistrict;
     private int selectedYear;
-    
+
     @PostConstruct
     private void init() {
         selectedYear = 2013;
@@ -31,29 +32,26 @@ public class Q3Bean implements Serializable {
         selectedDistrict = districts.get(0);
         onDistrictSelection();
     }
-    
-    public void onDistrictSelection(){
+
+    public void onDistrictSelection() {
         if (!selectedDistrict.isLoaded()) {
             districtManagementBean.loadDistrict(selectedDistrict, selectedYear, false);
         }
     }
-    
+
     public void onYearSelection() {
         if (selectedYear == 2013) {
             districts = districtManagementBean.getDistricts2013();
-        }
-        else {
+        } else {
             districts = districtManagementBean.getDistricts2009();
         }
         selectedDistrict = districts.get(0);
         onDistrictSelection();
     }
-    
-    
+
     //*********************************//
     //         GETTER/SETTER           //
     //*********************************//
-
     public DistrictManagementBean getDistrictManagementBean() {
         return districtManagementBean;
     }
@@ -83,7 +81,7 @@ public class Q3Bean implements Serializable {
     }
 
     public void setSelectedYear(int selectedYear) {
-            this.selectedYear = selectedYear;
+        this.selectedYear = selectedYear;
     }
-    
+
 }

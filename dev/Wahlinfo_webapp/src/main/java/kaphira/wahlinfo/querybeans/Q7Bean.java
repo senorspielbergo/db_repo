@@ -10,46 +10,43 @@ import javax.faces.bean.SessionScoped;
 import kaphira.wahlinfo.entities.District;
 
 /**
- *
+ * Backing the Q7.xhtml and its functionality
  * @author theralph
  */
 @ManagedBean
 @SessionScoped
 public class Q7Bean implements Serializable {
-    
+
     @ManagedProperty(value = "#{districtManagementBean}")
     private DistrictManagementBean districtManagementBean;
-    
+
     private List<District> districts;
     private District selectedDistrict;
     private int selectedYear;
-    
+
     @PostConstruct
     private void init() {
         selectedYear = 2013;
         districts = districtManagementBean.getBavarianDistricts2013();
     }
-    
-    public void onDistrictSelection(){
-            districtManagementBean.loadDistrict(selectedDistrict, selectedYear, true);
+
+    public void onDistrictSelection() {
+        districtManagementBean.loadDistrict(selectedDistrict, selectedYear, true);
     }
-    
+
     public void onYearSelection() {
         if (selectedYear == 2013) {
             districts = districtManagementBean.getBavarianDistricts2013();
-        }
-        else {
+        } else {
             districts = districtManagementBean.getBavarianDistricts2009();
         }
         selectedDistrict = districts.get(0);
         onDistrictSelection();
     }
-    
-    
+
     //*********************************//
     //         GETTER/SETTER           //
     //*********************************//
-
     public DistrictManagementBean getDistrictManagementBean() {
         return districtManagementBean;
     }
@@ -79,7 +76,7 @@ public class Q7Bean implements Serializable {
     }
 
     public void setSelectedYear(int selectedYear) {
-            this.selectedYear = selectedYear;
+        this.selectedYear = selectedYear;
     }
-    
+
 }

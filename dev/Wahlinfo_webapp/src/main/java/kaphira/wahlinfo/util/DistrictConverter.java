@@ -11,7 +11,7 @@ import javax.faces.convert.Converter;
 import kaphira.wahlinfo.backingbeans.DistrictManagementBean;
 
 /**
- *
+ * Converter used for selectionMenus
  * @author theralph
  */
 @ManagedBean

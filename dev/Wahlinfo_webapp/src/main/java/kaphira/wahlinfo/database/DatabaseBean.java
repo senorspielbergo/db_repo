@@ -1,6 +1,5 @@
 package kaphira.wahlinfo.database;
 
-import kaphira.wahlinfo.database.ConfigBean;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,9 +13,16 @@ import javax.annotation.PreDestroy;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import kaphira.wahlinfo.util.Clock;
 
 /**
- *
+ * This is the bean which actually communicates with the database
+ * All queries are only executed via its methods.
+ * The queries are loaded session-wise from the application bean. There is no way to perform
+ * other queries than provided this way.
+ * 
+ * This bean holds a stopwatch item to log the execution times of the queries
+ * 
  * @author theralph
  */
 @ManagedBean(name = "databaseBean")
@@ -37,6 +43,7 @@ public class DatabaseBean implements Serializable {
     private static final String PLACEHOLDER_LASTNAME = "%nachname%";
 
     private final Logger logger = Logger.getLogger(DatabaseBean.class.getName());
+    private final Clock clock = new Clock();
 
     private Connection connection;
 
@@ -52,9 +59,7 @@ public class DatabaseBean implements Serializable {
 
         try {
             Class.forName(POSTGRES_DRIVER);
-            System.out.println("SETTING UP DB CONNECTION");
             connection = DriverManager.getConnection(dbPath, dbUser, dbPassword);
-            System.out.println("DONE!");
 
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
@@ -74,12 +79,14 @@ public class DatabaseBean implements Serializable {
     //*********************************//
     //        QUERY EXECUTION          //
     //*********************************//
-    public ResultSet executeQuery(String query) {
+    public ResultSet executeQuery(String query, String queryName) {
         if (connection == null) {
             init();
         }
         try {
+            clock.start();
             Statement statement = connection.createStatement();
+            log(queryName, clock.stop());
             return statement.executeQuery(query);
 
         } catch (SQLException ex) {
@@ -88,13 +95,15 @@ public class DatabaseBean implements Serializable {
         return null;
     }
 
-    public void executeInsertStatement(String query) {
+    public void executeStatement(String query, String queryName) {
         if (connection == null) {
             init();
         }
         try {
+            clock.start();
             Statement statement = connection.createStatement();
             statement.execute(query);
+            log(queryName, clock.stop());
 
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -109,15 +118,15 @@ public class DatabaseBean implements Serializable {
      * @return
      */
     public ResultSet queryAllDistricts() {
-        return executeQuery(ALL_DISTRICTS);
+        return executeQuery(ALL_DISTRICTS, "ALL_DISTRICS");
     }
-    
+
     /**
      *
      * @return
      */
     public ResultSet queryAllSingleDistricts() {
-        return executeQuery(ALL_SINGLE_DISTRICTS);
+        return executeQuery(ALL_SINGLE_DISTRICTS, "ALL_LIVE_DISTRICTS");
     }
 
     /**
@@ -125,7 +134,7 @@ public class DatabaseBean implements Serializable {
      * @return
      */
     public ResultSet queryAllParties() {
-        return executeQuery(ALL_PARTIES);
+        return executeQuery(ALL_PARTIES, "ALL_PARTIES");
     }
 
     /**
@@ -136,8 +145,7 @@ public class DatabaseBean implements Serializable {
     public ResultSet queryQ1(int year) {
         String query = configBean.getQ1();
         query = query.replaceAll(PLACEHOLDER_YEAR, String.valueOf(year));
-        logger.log(Level.INFO, "Q1 Query: ", query);
-        return executeQuery(query);
+        return executeQuery(query, "Q1");
     }
 
     /**
@@ -149,8 +157,7 @@ public class DatabaseBean implements Serializable {
         String query = configBean.getQ2();
         query = query.replaceAll(PLACEHOLDER_YEAR, String.valueOf(year));
 
-        logger.log(Level.INFO, "Q2 Query: ", query);
-        return executeQuery(query);
+        return executeQuery(query, "Q2");
     }
 
     /**
@@ -164,8 +171,7 @@ public class DatabaseBean implements Serializable {
         query = query.replaceAll(PLACEHOLDER_YEAR, String.valueOf(year));
         query = query.replaceAll(PLACEHOLDER_DISTRICT, String.valueOf(districtId));
 
-        logger.log(Level.INFO, "Q3-1 Query: ", query);
-        return executeQuery(query);
+        return executeQuery(query, "Q3-1");
     }
 
     /**
@@ -179,8 +185,7 @@ public class DatabaseBean implements Serializable {
         query = query.replaceAll(PLACEHOLDER_YEAR, String.valueOf(year));
         query = query.replaceAll(PLACEHOLDER_DISTRICT, String.valueOf(districtId));
 
-        logger.log(Level.INFO, "Q3-2 Query: ", query);
-        return executeQuery(query);
+        return executeQuery(query, "Q3-2");
     }
 
     /**
@@ -194,8 +199,7 @@ public class DatabaseBean implements Serializable {
         query = query.replaceAll(PLACEHOLDER_YEAR, String.valueOf(year));
         query = query.replaceAll(PLACEHOLDER_DISTRICT, String.valueOf(districtId));
 
-        logger.log(Level.INFO, "Q3-3 Query: ", query);
-        return executeQuery(query);
+        return executeQuery(query, "Q3-3");
     }
 
     /**
@@ -209,8 +213,7 @@ public class DatabaseBean implements Serializable {
         query = query.replaceAll(PLACEHOLDER_YEAR, String.valueOf(year));
         query = query.replaceAll(PLACEHOLDER_DISTRICT, String.valueOf(districtId));
 
-        logger.log(Level.INFO, "Q3_4_1 Query: ", query);
-        return executeQuery(query);
+        return executeQuery(query, "Q3-4-1");
     }
 
     /**
@@ -224,8 +227,7 @@ public class DatabaseBean implements Serializable {
         query = query.replaceAll(PLACEHOLDER_YEAR, String.valueOf(year));
         query = query.replaceAll(PLACEHOLDER_DISTRICT, String.valueOf(districtId));
 
-        logger.log(Level.INFO, "Q3_4_2 Query: ", query);
-        return executeQuery(query);
+        return executeQuery(query, "Q3-4-2");
     }
 
     /**
@@ -237,8 +239,7 @@ public class DatabaseBean implements Serializable {
         String query = configBean.getQ4();
         query = query.replaceAll(PLACEHOLDER_YEAR, String.valueOf(year));
 
-        logger.log(Level.INFO, "Q4 Query: ", query);
-        return executeQuery(query);
+        return executeQuery(query, "Q4");
     }
 
     /**
@@ -248,8 +249,7 @@ public class DatabaseBean implements Serializable {
     public ResultSet queryQ5() {
         String query = configBean.getQ5();
 
-        logger.log(Level.INFO, "Q5 Query: ", query);
-        return executeQuery(query);
+        return executeQuery(query, "Q5");
     }
 
     /**
@@ -262,8 +262,7 @@ public class DatabaseBean implements Serializable {
         String query = configBean.getQ6();
         query = query.replaceAll(PLACEHOLDER_YEAR, String.valueOf(year));
         query = query.replaceAll(PLACEHOLDER_PARTY, partyName);
-        logger.log(Level.INFO, "Q6 Query: ", query);
-        return executeQuery(query);
+        return executeQuery(query, "Q6");
     }
 
     /**
@@ -277,8 +276,7 @@ public class DatabaseBean implements Serializable {
         query = query.replaceAll(PLACEHOLDER_YEAR, String.valueOf(year));
         query = query.replaceAll(PLACEHOLDER_DISTRICT, String.valueOf(districtId));
 
-        logger.log(Level.INFO, "Q7-1 Query: ", query);
-        return executeQuery(query);
+        return executeQuery(query, "Q7-1");
     }
 
     /**
@@ -292,8 +290,7 @@ public class DatabaseBean implements Serializable {
         query = query.replaceAll(PLACEHOLDER_YEAR, String.valueOf(year));
         query = query.replaceAll(PLACEHOLDER_DISTRICT, String.valueOf(districtId));
 
-        logger.log(Level.INFO, "Q7-2 Query: ", query);
-        return executeQuery(query);
+        return executeQuery(query, "Q7-2");
     }
 
     /**
@@ -307,8 +304,7 @@ public class DatabaseBean implements Serializable {
         query = query.replaceAll(PLACEHOLDER_YEAR, String.valueOf(year));
         query = query.replaceAll(PLACEHOLDER_DISTRICT, String.valueOf(districtId));
 
-        logger.log(Level.INFO, "Q7-3 Query: ", query);
-        return executeQuery(query);
+        return executeQuery(query, "Q7-3");
     }
 
     /**
@@ -322,8 +318,7 @@ public class DatabaseBean implements Serializable {
         query = query.replaceAll(PLACEHOLDER_YEAR, String.valueOf(year));
         query = query.replaceAll(PLACEHOLDER_DISTRICT, String.valueOf(districtId));
 
-        logger.log(Level.INFO, "Q7_4_1 Query: ", query);
-        return executeQuery(query);
+        return executeQuery(query, "Q7-4-1");
     }
 
     /**
@@ -337,8 +332,7 @@ public class DatabaseBean implements Serializable {
         query = query.replaceAll(PLACEHOLDER_YEAR, String.valueOf(year));
         query = query.replaceAll(PLACEHOLDER_DISTRICT, String.valueOf(districtId));
 
-        logger.log(Level.INFO, "Q7_4_2 Query: ", query);
-        return executeQuery(query);
+        return executeQuery(query, "Q7-4-2");
     }
 
     /**
@@ -350,8 +344,7 @@ public class DatabaseBean implements Serializable {
         String query = configBean.getQ2017_1();
         query = query.replaceAll(PLACEHOLDER_DISTRICT, String.valueOf(districtId));
 
-        logger.log(Level.INFO, "Q2017_1 Query: ", query);
-        return executeQuery(query);
+        return executeQuery(query, "Q2017-1");
     }
 
     /**
@@ -363,8 +356,7 @@ public class DatabaseBean implements Serializable {
         String query = configBean.getQ2017_2();
         query = query.replaceAll(PLACEHOLDER_DISTRICT, String.valueOf(districtId));
 
-        logger.log(Level.INFO, "Q2017_2 Query: ", query);
-        return executeQuery(query);
+        return executeQuery(query, "Q2017-2");
     }
 
     /**
@@ -383,9 +375,13 @@ public class DatabaseBean implements Serializable {
         query = query.replaceAll(PLACEHOLDER_LASTNAME, String.valueOf(lastName));
         query = query.replaceAll(PLACEHOLDER_PARTY, String.valueOf(party));
 
-        logger.log(Level.INFO, "InsertedVote \n" + query, query);
+        executeStatement(query, "INSERT_VOTE");
+    }
 
-        executeInsertStatement(query);
+    public void reloadViews() {
+        String statement = configBean.getReloadStatement();
+
+        executeStatement(statement, "RELOAD_VIEWS");
     }
 
     //*********************************//
@@ -397,6 +393,21 @@ public class DatabaseBean implements Serializable {
 
     public void setConfigBean(ConfigBean configBean) {
         this.configBean = configBean;
+    }
+
+    //*********************************//
+    //         LOGGING                 //
+    //*********************************//
+    private void log(String queryName, long time) {
+
+        String logString = new StringBuilder("Executed Query ")
+                .append(queryName)
+                .append(" in ")
+                .append(time)
+                .append(" ms.")
+                .toString();
+        logger.log(Level.INFO, logString);
+
     }
 
 }

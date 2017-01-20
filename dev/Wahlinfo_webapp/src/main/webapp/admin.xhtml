@@ -66,6 +66,10 @@
                         <p:panel style="border:none;">
                             <p:outputLabel value="#{adminBean.tokenValue}" id="tokenLabel" style="font-weight: bold" />
                         </p:panel>
+                        <p:separator/>
+                        <p:panel style="border:none;">
+                            <p:commandButton  value="Datenbankviews aktualisieren" action="#{adminBean.reloadViews()}" update="@form" />
+                        </p:panel>
                    </h:panelGroup>
                 </h:form>
             </div>

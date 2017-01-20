@@ -11,12 +11,14 @@
             <ui:define name="content" class="centered">
                 
                 <h:form styleClass="centered">
+                    <p:panel style="border: none;">
                         <p:selectOneRadio id="year" value="#{q1Bean.selectedYear}" style="display: inline">
                             <f:converter binding ="#{stringIntConverter}" />
                             <p:ajax event="change" listener="#{q1Bean.onYearSelection}" update="@form"/>
                             <f:selectItem itemLabel="2013" itemValue="2013" class="pr5"/>
                             <f:selectItem itemLabel="2009" itemValue="2009" class="pr5"/>
                         </p:selectOneRadio>
+                    </p:panel>
                     <p:separator/>
                     <!--<p:panel style="display: inline">-->
                     <p:pieChart value="#{q1Bean.pieChart}" 

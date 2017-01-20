@@ -20,7 +20,10 @@ import kaphira.wahlinfo.entities.Politician;
 import kaphira.wahlinfo.util.Utils;
 
 /**
- *
+ *This beans backs the Q3 and Q7 bean
+ * As their functionality is basically identical, it has been outsourced to this bean
+ * It handles all queries and interaction which is district related.
+ * 
  * @author theralph
  */
 @ManagedBean
@@ -28,34 +31,32 @@ import kaphira.wahlinfo.util.Utils;
 public class DistrictManagementBean implements Serializable {
 
     private final Logger logger = Logger.getLogger(DistrictManagementBean.class.getName());
-    
+
     @ManagedProperty(value = "#{databaseBean}")
     private DatabaseBean databaseBean;
-    
+
     private List<District> districts2013;
     private List<District> districts2009;
-    
+
     private List<District> bavarianDistricts2013;
     private List<District> bavarianDistricts2009;
-
 
     //*********************************//
     //             SETUP               //
     //*********************************//
     @PostConstruct
     public void init() {
-        
+
         districts2009 = queryAllDistricts(false);
         districts2013 = queryAllDistricts(false);
         bavarianDistricts2013 = queryAllDistricts(true);
         bavarianDistricts2009 = queryAllDistricts(true);
-        
+
     }
 
     //*********************************//
     //             CONTROLS            //
     //*********************************//
-    
     public void loadDistrict(District district, int selectedYear, boolean singleAnalysed) {
 
         try {
@@ -63,11 +64,11 @@ public class DistrictManagementBean implements Serializable {
             loadTurnout(district, selectedYear, singleAnalysed);
             loadWinner(district, selectedYear, singleAnalysed);
             loadPartyResults(district, selectedYear, singleAnalysed);
-            loadHistories(district,  selectedYear, singleAnalysed);
+            loadHistories(district, selectedYear, singleAnalysed);
             district.setIsLoaded(true);
 
         } catch (SQLException ex) {
-           logger.log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
         }
     }
 
@@ -81,13 +82,13 @@ public class DistrictManagementBean implements Serializable {
         }
         return null;
     }
-    
+
     public District findDistrictByID(int ID) {
-            for (District district : districts2013) {
-                if (district.getId() == ID) {
-                    return district;
-                }
+        for (District district : districts2013) {
+            if (district.getId() == ID) {
+                return district;
             }
+        }
         return null;
     }
 
@@ -96,12 +97,10 @@ public class DistrictManagementBean implements Serializable {
     //*********************************//
     private List<District> queryAllDistricts(boolean singleAnalysed) {
 
-        
         ResultSet result;
-        if(singleAnalysed){
+        if (singleAnalysed) {
             result = databaseBean.queryAllSingleDistricts();
-        } 
-        else {
+        } else {
             result = databaseBean.queryAllDistricts();
         }
 
@@ -128,13 +127,12 @@ public class DistrictManagementBean implements Serializable {
         return queriedDistricts;
     }
 
-    private void loadTurnout(District district,int selectedYear, boolean singleAnalysed) throws SQLException {
+    private void loadTurnout(District district, int selectedYear, boolean singleAnalysed) throws SQLException {
 
         ResultSet result;
-        if(singleAnalysed){
+        if (singleAnalysed) {
             result = databaseBean.queryQ7_1(district.getId(), selectedYear);
-        } 
-        else {
+        } else {
             result = databaseBean.queryQ3_1(district.getId(), selectedYear);
         }
 
@@ -144,37 +142,35 @@ public class DistrictManagementBean implements Serializable {
         district.setWahlbeteiligung(turnout);
     }
 
-    private void loadWinner(District district,int selectedYear, boolean singleAnalysed) throws SQLException {
+    private void loadWinner(District district, int selectedYear, boolean singleAnalysed) throws SQLException {
 
         ResultSet result;
-        if(singleAnalysed){
+        if (singleAnalysed) {
             result = databaseBean.queryQ7_2(district.getId(), selectedYear);
-        } 
-        else {
+        } else {
             result = databaseBean.queryQ3_2(district.getId(), selectedYear);
         }
 
         result.next();
         String title = result.getString(DbColumns.CLM_TITLE);
-        String firstName = result.getString(DbColumns.CLM_FIRSTNAME); 
+        String firstName = result.getString(DbColumns.CLM_FIRSTNAME);
         String lastName = result.getString(DbColumns.CLM_LASTNAME);
         String party = result.getString(DbColumns.CLM_PARTY);
         int votes = Integer.parseInt(result.getString(DbColumns.CLM_VOTES));
 
-        Politician politician = new Politician(title,firstName, lastName, party);
+        Politician politician = new Politician(title, firstName, lastName, party);
         politician.setTitle(title);
         politician.setVotes(votes);
 
         district.setDirektKandidat(politician);
     }
 
-    private void loadPartyResults(District district,int selectedYear, boolean singleAnalysed) throws SQLException {
+    private void loadPartyResults(District district, int selectedYear, boolean singleAnalysed) throws SQLException {
 
         ResultSet result;
-        if(singleAnalysed){
+        if (singleAnalysed) {
             result = databaseBean.queryQ7_3(district.getId(), selectedYear);
-        } 
-        else {
+        } else {
             result = databaseBean.queryQ3_3(district.getId(), selectedYear);
         }
 
@@ -193,13 +189,12 @@ public class DistrictManagementBean implements Serializable {
         district.setParties(parties);
     }
 
-    private void loadHistories(District district,int selectedYear, boolean singleAnalysed) throws SQLException {
+    private void loadHistories(District district, int selectedYear, boolean singleAnalysed) throws SQLException {
 
         ResultSet result;
-        if(singleAnalysed){
+        if (singleAnalysed) {
             result = databaseBean.queryQ7_4_1(district.getId(), selectedYear);
-        } 
-        else {
+        } else {
             result = databaseBean.queryQ3_4_1(district.getId(), selectedYear);
         }
 
@@ -222,7 +217,6 @@ public class DistrictManagementBean implements Serializable {
     //*********************************//
     //         GETTER/SETTER           //
     //*********************************//
-
     public DatabaseBean getDatabaseBean() {
         return databaseBean;
     }
@@ -247,6 +241,4 @@ public class DistrictManagementBean implements Serializable {
         return bavarianDistricts2009;
     }
 
-    
-    
 }

@@ -11,7 +11,7 @@ import kaphira.wahlinfo.backingbeans.ElectionBean;
 import kaphira.wahlinfo.entities.Politician;
 
 /**
- *
+ * Converter used for selection menus
  * @author theralph
  */
 @ManagedBean

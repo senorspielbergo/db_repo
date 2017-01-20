@@ -17,7 +17,7 @@ import kaphira.wahlinfo.entities.Decision;
 import kaphira.wahlinfo.entities.Party;
 
 /**
- *
+ * Backing the Q6.xhtml and its functionality
  * @author theralph
  */
 @ManagedBean
@@ -39,8 +39,8 @@ public class Q6Bean implements Serializable {
         setParties(queryAllParties());
         loadAllDecisions(getParties());
     }
-    
-    public void onYearSelection(){
+
+    public void onYearSelection() {
         setParties(queryAllParties());
         loadAllDecisions(getParties());
     }
@@ -48,7 +48,6 @@ public class Q6Bean implements Serializable {
     //*********************************//
     //             QUERIES             //
     //*********************************//
-    
     private void loadAllDecisions(List<Party> parties) {
         for (Party party : parties) {
             party.setClosestDecisions(loadPartyDecisions(party.getName()));
@@ -106,7 +105,6 @@ public class Q6Bean implements Serializable {
     //*********************************//
     //         GETTER/SETTER           //
     //*********************************//
-    
     public List<Party> getParties() {
         if (parties == null) {
             parties = new ArrayList<>();

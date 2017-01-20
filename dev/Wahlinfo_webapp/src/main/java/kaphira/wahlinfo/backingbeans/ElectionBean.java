@@ -14,28 +14,24 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.sound.sampled.Mixer.Info;
-import static jdk.nashorn.internal.runtime.Debug.id;
 import kaphira.wahlinfo.entities.District;
 import kaphira.wahlinfo.database.DatabaseBean;
 import kaphira.wahlinfo.database.DbColumns;
 import kaphira.wahlinfo.entities.Politician;
-import kaphira.wahlinfo.security.Token;
 import kaphira.wahlinfo.security.TokenBean;
 
 /**
- *
+ * This bean backs the voting.xhtml site
+ * It provides the functionality to enter a token and take a vote
  * @author theralph
  */
 @ManagedBean
 @SessionScoped
 public class ElectionBean implements Serializable {
 
-    private static final String QRY_ALL_DISTRICTS = "select * from wahlkreis";
-
-    @ManagedProperty(value="#{districtManagementBean}")
+    @ManagedProperty(value = "#{districtManagementBean}")
     private DistrictManagementBean districtManagementBean;
-    
+
     @ManagedProperty(value = "#{databaseBean}")
     private DatabaseBean databaseBean;
 
@@ -65,14 +61,14 @@ public class ElectionBean implements Serializable {
 
     public void register() {
         mayVote = tokenBean.authenticate(getToken());
-        if(mayVote){
+        if (mayVote) {
             int districtID = tokenBean.decodeDistrictId(getToken());
             selectedDistrict = districtManagementBean.findDistrictByID(districtID);
             onDistrictSelection();
-            message(FacesMessage.SEVERITY_INFO,"Info", "Token akzeptiert, bitte wählen Sie.");
+            message(FacesMessage.SEVERITY_INFO, "Info", "Token akzeptiert, bitte wählen Sie.");
             return;
         }
-        message(FacesMessage.SEVERITY_FATAL,"Fatal","Dieser Token ist leider nicht mehr gültig oder inkorrekt");
+        message(FacesMessage.SEVERITY_FATAL, "Fehler", "Dieser Token ist leider nicht mehr gültig oder inkorrekt");
     }
 
     public void vote() {
@@ -82,7 +78,7 @@ public class ElectionBean implements Serializable {
         token = "";
         selectedCandidate = null;
         selectedParty = null;
-        message(FacesMessage.SEVERITY_INFO,"Info", "Vielen Dank für Ihre Stimme!");
+        message(FacesMessage.SEVERITY_INFO, "Info", "Vielen Dank für Ihre Stimme!");
     }
 
     public void onDistrictSelection() {
@@ -90,14 +86,13 @@ public class ElectionBean implements Serializable {
         parties = queryParties();
     }
 
-    public void message(Severity severity,String messageLevel,String message) {
+    public void message(Severity severity, String messageLevel, String message) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, messageLevel, message));
     }
-    
-    
-    public Politician findPoliticianByName(String fullName){
+
+    public Politician findPoliticianByName(String fullName) {
         for (Politician candidate : candidates) {
-            if (candidate.getFormattedName().equals(fullName)){
+            if (candidate.getFormattedName().equals(fullName)) {
                 return candidate;
             }
         }
@@ -106,7 +101,6 @@ public class ElectionBean implements Serializable {
     //********************************//
     //      QUERIES                   //
     //********************************//
-
 
     private List<String> queryParties() {
 
@@ -154,21 +148,24 @@ public class ElectionBean implements Serializable {
     }
 
     private void insertVote() {
-        if(selectedCandidate != null && selectedParty != null){
-            int districtId = getSelectedDistrict().getId();
-            
-            String title = selectedCandidate.getTitle();
-            String firstName = selectedCandidate.getFirstName();
-            String lastName = selectedCandidate.getName();
-            
-            String party = getSelectedParty();
-            
-            databaseBean.insertVote(districtId, title, firstName, lastName, party);
-        } else {
-//            databaseBean.insertVote();
-        }
-        
 
+        int districtId = getSelectedDistrict().getId();
+        String title = "null";
+        String firstName = "null";
+        String lastName = "null";
+        String party = "null";
+
+        if (selectedCandidate != null) {
+
+            title = selectedCandidate.getTitle();
+            firstName = selectedCandidate.getFirstName();
+            lastName = selectedCandidate.getName();
+        }
+
+        if (selectedParty != null) {
+            party = getSelectedParty();
+        }
+        databaseBean.insertVote(districtId, title, firstName, lastName, party);
     }
 
     //********************************//
@@ -277,7 +274,5 @@ public class ElectionBean implements Serializable {
     public void setDistrictManagementBean(DistrictManagementBean districtManagementBean) {
         this.districtManagementBean = districtManagementBean;
     }
-    
-    
 
 }

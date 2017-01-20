@@ -12,12 +12,14 @@
             <ui:define name="content">
                 
                 <h:form styleClass="centered">
+                    <p:panel style="border: none;">
                     <p:selectOneRadio id="year" value="#{q3Bean.selectedYear}" style="display: inline">
                             <f:converter binding ="#{stringIntConverter}" />
                             <p:ajax event="change" listener="#{q3Bean.onYearSelection}" update="@form"/>
                             <f:selectItem itemLabel="2013" itemValue="2013" />
                             <f:selectItem itemLabel="2009" itemValue="2009" />
                         </p:selectOneRadio>
+                    </p:panel>
                     
                     
                     
@@ -27,7 +29,7 @@
                         <p:selectOneMenu value="#{q3Bean.selectedDistrict}" filter="true" filterMatchMode="contains">
                             <f:converter binding ="#{districtConverter}" />
                             <f:selectItems value="#{q3Bean.districts}" var="dist" itemValue="#{dist}" itemLabel="#{dist.name}"/>
-                            <p:ajax event="change" listener="#{q3Bean.onDistrictSelection}" update="@form"/>
+                            <p:ajax event="select" listener="#{q3Bean.onDistrictSelection}" update="@form"/>
                         </p:selectOneMenu>
                     </p:panel>
                     
@@ -46,7 +48,7 @@
                                 <h:outputText value="Wahlkreis:" />
                                 <h:outputText value="#{q3Bean.selectedDistrict.name}" style="font-weight: bold"/>
                                 
-                                <h:outputText value="Id:" />
+                                <h:outputText value="Nummer:" />
                                 <h:outputText value="#{q3Bean.selectedDistrict.id}" style="font-weight: bold"/>
 
                                 <h:outputText value="Bundesland:" />
@@ -103,24 +105,25 @@
                     <p:panel style="border:none;"/>
                     <p:panel style="border: none;">
                         <p:separator/>
-                        <p:outputLabel value="Entwicklung zu vorheriger Wahl" style="font-size: 24pt"/>
+                        <p:outputLabel value="Entwicklung zu vorheriger Wahl" style="font-size: 24pt" rendered="#{q3Bean.selectedYear==2013}" />
                     </p:panel>
                     
                         <p:dataTable var="history" value="#{q3Bean.selectedDistrict.histories}"
                                      lazy="true"
                                      scrollable="true"
-                                     scrollHeight="700">
+                                     scrollHeight="700"
+                                     rendered="#{q3Bean.selectedYear==2013}">
                             
                                      
                             <p:column headerText="Partei">
-                                <h:outputText value="#{history.party}" style="font-weight: bold; color: ##{stylingBean.getPartyColor(party.name)}"/>
+                                <h:outputText value="#{history.party}" style="font-weight: bold; color: ##{stylingBean.getPartyColor(history.party)}"/>
                             </p:column>
 
                             <p:column headerText="Erststimmendifferenz">
                                 <h:outputText value="#{history.diffFirstVote} (#{history.diffFirstVotePc} %)" style="color:#{stylingBean.getNumberColor(history.diffFirstVote)}"/>
                             </p:column>
                             <p:column headerText="Zweitstimmendifferenz">
-                                <h:outputText value="#{history.diffSecondVote} (#{history.diffSecondVotePc} %)" style="color:#{stylingBean.getNumberColor(history.diffFirstVote)}"/>
+                                <h:outputText value="#{history.diffSecondVote} (#{history.diffSecondVotePc} %)" style="color:#{stylingBean.getNumberColor(history.diffSecondVote)}"/>
                             </p:column>
                             
                         </p:dataTable>

@@ -9,11 +9,13 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import kaphira.wahlinfo.database.ConfigBean;
+import kaphira.wahlinfo.database.DatabaseBean;
 import kaphira.wahlinfo.entities.District;
 import kaphira.wahlinfo.security.TokenBean;
 
 /**
- *
+ * This bean backs the admin.xhtml interface.
+ * It provides all functionality related to generate tokens and reloading the database views
  * @author theralph
  */
 @ManagedBean
@@ -28,6 +30,10 @@ public class AdminBean implements Serializable {
     
     @ManagedProperty(value="#{districtManagementBean}")
     private DistrictManagementBean districtManagementBean;
+    
+    @ManagedProperty(value="#{databaseBean}")
+    private DatabaseBean databaseBean;
+    
     
     
     private String tokenValue;
@@ -56,6 +62,10 @@ public class AdminBean implements Serializable {
 
         }
         messageLogin(isLoggedIn());
+    }
+    
+    public void reloadViews(){
+        databaseBean.reloadViews();
     }
 
     public void messageLogin(boolean loggedIn) {
@@ -146,6 +156,14 @@ public class AdminBean implements Serializable {
 
     public void setSelectedDistrict(District selectedDistrict) {
         this.selectedDistrict = selectedDistrict;
+    }
+
+    public DatabaseBean getDatabaseBean() {
+        return databaseBean;
+    }
+
+    public void setDatabaseBean(DatabaseBean databaseBean) {
+        this.databaseBean = databaseBean;
     }
     
     

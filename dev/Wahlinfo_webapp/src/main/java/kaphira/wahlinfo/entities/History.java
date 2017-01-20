@@ -1,7 +1,7 @@
 package kaphira.wahlinfo.entities;
 
 /**
- *
+ * This entity represents a history entry in with the years 2013 and 2009 are compared to each other
  * @author theralph
  */
 public class History {

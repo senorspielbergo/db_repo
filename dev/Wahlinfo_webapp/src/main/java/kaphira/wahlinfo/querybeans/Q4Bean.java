@@ -16,6 +16,7 @@ import javax.faces.bean.SessionScoped;
 import kaphira.wahlinfo.database.DbColumns;
 
 /**
+ * Backing the Q4.xhtml and its functionality
  *
  * @author theralph
  */
@@ -37,15 +38,14 @@ public class Q4Bean implements Serializable {
         setSelectedYear(2013);
         setDistricts(queryDistrictsAndWinners());
     }
-    
-    public void onYearSelection(){
+
+    public void onYearSelection() {
         setDistricts(queryDistrictsAndWinners());
     }
 
     //*********************************//
     //             QUERIES             //
     //*********************************//
-    
     private List<District> queryDistrictsAndWinners() {
 
         ResultSet result = databaseBean.queryQ4(selectedYear);
@@ -81,7 +81,6 @@ public class Q4Bean implements Serializable {
     //*********************************//
     //         GETTER/SETTER           //
     //*********************************//
-    
     public DatabaseBean getDatabaseBean() {
         return databaseBean;
     }
@@ -95,7 +94,7 @@ public class Q4Bean implements Serializable {
     }
 
     public void setSelectedYear(int selectedYear) {
-            this.selectedYear = selectedYear;
+        this.selectedYear = selectedYear;
     }
 
     public List<District> getDistricts() {

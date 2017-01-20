@@ -1,7 +1,7 @@
 package kaphira.wahlinfo.entities;
 
 /**
- *
+ * This entity represents a so called "Ueberhangmandat"
  * @author theralph
  */
 public class Mandat {

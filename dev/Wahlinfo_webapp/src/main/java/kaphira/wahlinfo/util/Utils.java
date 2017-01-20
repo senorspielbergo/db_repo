@@ -5,7 +5,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 /**
- *
+ * Utility methods used by the StylingBean
  * @author theralph
  */
 public class Utils {
@@ -32,11 +32,11 @@ public class Utils {
         
         switch(name){
             case "cdu": return "000000";
-            case "csu": return "000000";
+            case "csu": return "33ccff";
             case "spd": return "FF0000";
             case "die linke": return "ff93c9";
             case "grüne": return "00b200";
-            case "fdp": return "FFFF00";
+            case "fdp": return "e6e600";
             case "afd": return "0000FF";
             default: return "3a3a3a";
        }

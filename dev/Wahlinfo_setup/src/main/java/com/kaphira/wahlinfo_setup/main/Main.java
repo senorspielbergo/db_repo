@@ -23,7 +23,6 @@ public class Main {
         InputStream scriptInputStream = Main.class.getResourceAsStream("/create_tables.sql");
         try {
             SqlRunner.runScript(DatabaseConnectionManager.getInstance().getConnection(), scriptInputStream);
-            System.out.println("DONE!");
         } catch (SQLException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {

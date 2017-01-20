@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- *
+ *This entity represents a district with all its information used in the Q3,Q4, and Q7 query
  * @author theralph
  */
 public class District implements Serializable {

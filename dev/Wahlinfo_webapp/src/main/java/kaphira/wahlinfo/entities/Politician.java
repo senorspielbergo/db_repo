@@ -1,7 +1,7 @@
 package kaphira.wahlinfo.entities;
 
 /**
- *
+ * This entity represents a politician with its information used throughout the application
  * @author theralph
  */
 public class Politician {

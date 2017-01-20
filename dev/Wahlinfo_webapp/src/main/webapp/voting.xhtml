@@ -3,7 +3,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:p ="http://primefaces.org/ui"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     
     <h:head>
@@ -24,7 +23,8 @@
             <div>
                 <h:form styleClass="centered">
                         <p:panel style="border:none">
-                            <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true"/>
+                            <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true"
+                                        showIcon="false"/>
                         </p:panel>
 
                     <h:panelGroup rendered="#{!electionBean.mayVote}">
