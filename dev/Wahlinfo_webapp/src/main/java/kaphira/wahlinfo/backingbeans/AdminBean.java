@@ -64,6 +64,13 @@ public class AdminBean implements Serializable {
         messageLogin(isLoggedIn());
     }
     
+    public void logout(){
+        setIsLoggedIn(false);
+        setUsername("");
+        setPassword("");
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "info", "Sie haben sich erfolgreich ausgeloggt."));
+    }
+    
     public void reloadViews(){
         databaseBean.reloadViews();
     }

@@ -69,6 +69,7 @@
                         <p:separator/>
                         <p:panel style="border:none;">
                             <p:commandButton  value="Datenbankviews aktualisieren" action="#{adminBean.reloadViews()}" update="@form" />
+                            <p:commandButton  value="Logout" action="#{adminBean.logout()}" update="@form" />
                         </p:panel>
                    </h:panelGroup>
                 </h:form>
