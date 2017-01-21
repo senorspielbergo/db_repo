@@ -1,10 +1,12 @@
 package kaphira.wahlinfo.entities;
 
+import java.io.Serializable;
+
 /**
  * This entity represents a history entry in with the years 2013 and 2009 are compared to each other
  * @author theralph
  */
-public class History {
+public class History implements Serializable{
     
     private String party;
     private int diffFirstVote;
@@ -21,7 +23,9 @@ public class History {
         this.diffSecondVotePc = diffSecondVotePc;
     }
 
-    
+    public History(){
+        
+    }
     
     
     public String getParty() {

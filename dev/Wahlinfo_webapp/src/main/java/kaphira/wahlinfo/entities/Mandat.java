@@ -1,10 +1,12 @@
 package kaphira.wahlinfo.entities;
 
+import java.io.Serializable;
+
 /**
  * This entity represents a so called "Ueberhangmandat"
  * @author theralph
  */
-public class Mandat {
+public class Mandat implements Serializable {
     
     private String bundesland;
     private String partei;
@@ -16,6 +18,10 @@ public class Mandat {
         this.partei = partei;
         this.ueberhang = ueberhang;
         this.wahljahr = wahljahr;
+    }
+    
+    public Mandat(){
+        
     }
     
     public String getBundesland() {

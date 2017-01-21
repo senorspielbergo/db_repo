@@ -1,12 +1,13 @@
 package kaphira.wahlinfo.entities;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * This entity represents a party with all the information used in Q1, Q2 and Q4 queries
  * @author theralph
  */
-public class Party {
+public class Party implements Serializable{
     
     private String name;
     private int seats;
@@ -17,6 +18,10 @@ public class Party {
     
     public Party(String name){
         this.name = name;
+    }
+    
+    public Party(){
+        
     }
     
     public String getName() {

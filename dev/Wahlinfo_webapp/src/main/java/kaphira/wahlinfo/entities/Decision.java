@@ -1,10 +1,12 @@
 package kaphira.wahlinfo.entities;
 
+import java.io.Serializable;
+
 /**
  * This entity represents a close decision displayed in the Q6 query
  * @author theralph
  */
-public class Decision {
+public class Decision implements Serializable{
     
     private String district;
     private String candidate;
@@ -16,6 +18,10 @@ public class Decision {
         this.difference = difference;
     }
 
+    public Decision(){
+        
+    }
+    
     public String getDistrict() {
         return district;
     }

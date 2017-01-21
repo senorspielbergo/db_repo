@@ -1,10 +1,12 @@
 package kaphira.wahlinfo.security;
 
+import java.io.Serializable;
+
 /**
  *
  * @author theralph
  */
-public class Token {
+public class Token implements Serializable {
     
     private String value;
     private long age;

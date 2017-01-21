@@ -1,10 +1,12 @@
 package kaphira.wahlinfo.database;
 
+import java.io.Serializable;
+
 /**
  * Constant list of all database columns which are used by the queries of this application
  * @author theralph
  */
-public class DbColumns {
+public class DbColumns implements Serializable{
     
     private DbColumns(){
         //Overriding public constructor

@@ -1,10 +1,12 @@
 package kaphira.wahlinfo.entities;
 
+import java.io.Serializable;
+
 /**
  * This entity represents a politician with its information used throughout the application
  * @author theralph
  */
-public class Politician {
+public class Politician implements Serializable{
     
     private String title;
     private String name;
@@ -21,6 +23,10 @@ public class Politician {
         this.title = title;
         this.votes = 0;
         this.formattedName = title + " " + firstName + " " + lastName;
+    }
+    
+    public Politician(){
+        
     }
     
     public String getTitle() {
