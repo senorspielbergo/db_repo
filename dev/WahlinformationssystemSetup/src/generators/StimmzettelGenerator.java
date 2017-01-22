@@ -37,7 +37,7 @@ public class StimmzettelGenerator implements IEntityGenerator {
 
 	public StimmzettelGenerator generateRange(ParsedCsvFile file, int from,
 			int to) {
-		System.out.println("Generating content of tables: stimmzettel...");
+		System.out.println("Generating content of tables for year "+ wahljahr.toInt() +": stimmzettel...");
 		Row columnNames = file.getRow(0);
 		try {
 			for (int idx = from; idx < to; idx++) {

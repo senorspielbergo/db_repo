@@ -35,7 +35,9 @@ public class EntityCollection extends ArrayList<DatabaseEntity> {
 						&& pair.second != null
 						|| pair.second == null
 						&& entity.getAttribute(pair.first) != null
-						|| !entity.getAttribute(pair.first).getValue()
+						|| entity.getAttribute(pair.first) != null && 
+							pair.second != null &&
+						!entity.getAttribute(pair.first).getValue()
 								.equals(pair.second)) {
 					match = false;
 					break;
