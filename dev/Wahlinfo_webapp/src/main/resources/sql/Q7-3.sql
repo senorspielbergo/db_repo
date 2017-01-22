@@ -13,8 +13,7 @@ wstimmenproliste AS (
     FROM bayerischestimmzettel bs, wgzs ges
     WHERE bs.landesliste NOTNULL
     GROUP BY bs.landesliste, ges.stimmen)
-
 SELECT l.partei, wspl.stimmen, wspl.prozent
 FROM wstimmenproliste wspl JOIN landesliste l ON l.id=wspl.landesliste
 WHERE l.wahljahr=%wahljahr%
-ORDER BY wspl.stimmen DESC
+ORDER BY wspl.stimmen DESC;
