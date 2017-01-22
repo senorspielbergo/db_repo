@@ -1,0 +1,14 @@
+/Wahlkreise.csv
+/csv/
+/database/
+/entities/
+/generators/
+/kerg_modified_unicode.csv
+/main/
+/materialized_view_statements.sql
+/postgresql-9.4.1212.jre6.jar
+/sitzkontingente.csv
+/util/
+/wahlbewerber2009_mod.csv
+/wahlbewerber2013_mit_platz.csv
+/wkumrechnung2013_modified_unicode.csv
