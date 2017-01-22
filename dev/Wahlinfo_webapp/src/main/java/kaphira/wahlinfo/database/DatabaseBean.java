@@ -261,7 +261,7 @@ public class DatabaseBean implements Serializable {
     public ResultSet queryQ6(String partyName, int year) {
         String query = configBean.getQ6();
         query = query.replaceAll(PLACEHOLDER_YEAR, String.valueOf(year));
-        query = query.replaceAll(PLACEHOLDER_PARTY, partyName);
+        query = query.replaceAll(PLACEHOLDER_PARTY, "\'" + partyName + "\'");
         return executeQuery(query, "Q6");
     }
 
