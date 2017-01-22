@@ -36,7 +36,7 @@ public class SitzkontingenteGenerator implements IEntityGenerator {
 						bundesland, Wahljahr.parse(row.get(1)), Integer
 								.valueOf(row.get(2))));
 			}
-			sitzkontingentCollection.commitAll();
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -54,7 +54,6 @@ public class Sitzkontingent extends DatabaseEntity {
 	@Override
 	public boolean equals(Object o) {
 		return o instanceof Sitzkontingent
-				&& ((Sitzkontingent) o).getId() == getId()
 				&& ((Sitzkontingent) o).getWahljahr().equals(getWahljahr())
 				&& ((Sitzkontingent) o).getKontigent() == getKontigent()
 				&& ((Sitzkontingent) o).getBundesland().equals(getBundesland());
