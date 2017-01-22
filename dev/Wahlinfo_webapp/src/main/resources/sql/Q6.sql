@@ -22,5 +22,5 @@ FROM wahlkreissieger wks JOIN (SELECT l.wahlkreis, MAX(l.differenz) AS differenz
 
 SELECT wk.name AS wahlkreis, b.titel, b.vorname, b.nachname, com.differenz
 FROM combined com JOIN bewerber b ON com.direktkandidat=b.id JOIN wahlkreis wk ON com.wahlkreis=wk.nummer
-WHERE com.partei=%partei%
+WHERE com.partei='%partei%'
 ORDER BY ABS(-com.differenz) ASC;
