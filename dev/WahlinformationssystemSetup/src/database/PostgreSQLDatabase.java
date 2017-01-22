@@ -107,7 +107,7 @@ public class PostgreSQLDatabase {
 		System.out.println("Creating index " + indexAttribute + " on table "
 				+ className + "...");
 		StringBuilder builder = new StringBuilder("create index ")
-				.append(className + "_" + indexAttribute + "_idx")
+				.append(className + "_" + indexAttribute + "_idx ")
 				.append("on ").append(className).append(" (")
 				.append(indexAttribute).append(");");
 		execute(builder.toString());
