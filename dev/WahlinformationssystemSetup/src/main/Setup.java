@@ -42,7 +42,7 @@ public class Setup {
 
 		System.out.println("Starting... (" + new Date().toString() + ")");
 		PostgreSQLDatabase.init(options.getUser());
-		
+
 		if (options.dropOldEntityClasses()) {
 			dropOldMaterializedViews();
 			dropOldEntityClasses();
@@ -180,10 +180,11 @@ public class Setup {
 					materializedViewStatements.toPath(),
 					Charset.forName("UTF-8"));
 			for (String line : lines) {
-				String viewName = line.substring(line.indexOf("CREATE VIEW ")
-						+ "CREATE VIEW ".length(), line.indexOf(" AS"));
-				System.out.println("Creating materialized view " + viewName
-						+ "...");
+				String action = line.substring(
+						0,
+						line.contains("AS") ? line.indexOf(" AS") : line
+								.indexOf("("));
+				System.out.println(action.toLowerCase());
 				try {
 					PostgreSQLDatabase.getCurrent().executeRaw(line);
 				} catch (SQLException e) {

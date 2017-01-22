@@ -141,6 +141,11 @@ public class PostgreSQLDatabase {
 						.append(user.getName()).append(";");
 
 				execute(builder.toString());
+
+				String sequencesPrivilege = "revoke usage on all sequences in schema public from "
+						+ user.getName();
+				execute(sequencesPrivilege);
+				
 			} catch (Exception e) {
 				System.out
 						.println("\tWarning: Error while revoking user privileges!");
