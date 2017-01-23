@@ -98,12 +98,12 @@ public class Setup {
 			User stimme = new User("stimmengeber", "waehlenisttoll");
 
 			waehler.addPrivilege(UserPrivilege.SELECT);
-
-			admin.addPrivilege(UserPrivilege.SELECT);
-			admin.addPrivilege(UserPrivilege.INSERT);
 			
 			stimme.addPrivilege(Stimmzettel.class, UserPrivilege.INSERT);
 			stimme.addPrivilege(UserPrivilege.SELECT);
+			
+			admin.addPrivilege(UserPrivilege.SELECT);
+			admin.addPrivilege(UserPrivilege.OWNER);
 
 			PostgreSQLDatabase.getCurrent().dropUser(waehler);
 			PostgreSQLDatabase.getCurrent().dropUser(stimme);

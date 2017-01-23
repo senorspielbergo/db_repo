@@ -16,17 +16,18 @@ public class PostgreSQLDatabase {
 			+ DB_NAME;
 
 	private Connection connection;
+	private User user;
 	private List<Table> tables;
 
 	private static PostgreSQLDatabase instance;
 
 	private PostgreSQLDatabase() {
 		this.tables = new ArrayList<Table>();
-
 	}
 
 	public static void init(User user) {
 		instance = new PostgreSQLDatabase();
+		instance.user = user;
 		try {
 			Class.forName(POSTGRES_DRIVER);
 			instance.connection = DriverManager.getConnection(DB_PATH,
@@ -145,7 +146,7 @@ public class PostgreSQLDatabase {
 				String sequencesPrivilege = "revoke usage on all sequences in schema public from "
 						+ user.getName();
 				execute(sequencesPrivilege);
-				
+
 			} catch (Exception e) {
 				System.out
 						.println("\tWarning: Error while revoking user privileges!");
@@ -184,7 +185,12 @@ public class PostgreSQLDatabase {
 			builder = new StringBuilder("grant ");
 
 			for (int idx = 0; idx < privileges.size();) {
-				builder.append(privileges.get(idx).name().toLowerCase());
+				if (privileges.get(idx).equals(UserPrivilege.OWNER)) {
+					execute("reassign owned by " + this.user.getName() + " to "
+							+ user.getName() + ";");
+				} else {
+					builder.append(privileges.get(idx).name().toLowerCase());
+				}
 				System.out
 						.print(privileges.get(idx).name().toLowerCase() + " ");
 				if (++idx < privileges.size()) {

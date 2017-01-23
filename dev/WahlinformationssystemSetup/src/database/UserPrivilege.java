@@ -1,5 +1,5 @@
 package database;
 
 public enum UserPrivilege {
-	INSERT, SELECT, ALL
+	INSERT, SELECT, ALL, OWNER
 }
