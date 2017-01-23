@@ -1,9 +1,11 @@
 package main;
 
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,7 +32,7 @@ import generators.StimmzettelGenerator;
 
 public class Setup {
 
-	private File kerg, wkumrechnung2013, wahlkreise, sitzkontingente,
+	private InputStream kerg, wkumrechnung2013, wahlkreise, sitzkontingente,
 			bewerber2009, bewerber2013, materializedViewStatements;
 	private SetupOptions options;
 
@@ -73,38 +75,42 @@ public class Setup {
 
 	public Setup(SetupOptions options) throws Exception {
 		this.options = options;
-		kerg = new File(ClassLoader.getSystemClassLoader()
-				.getResource("kerg_modified_unicode.csv").toURI());
-		wkumrechnung2013 = new File(ClassLoader.getSystemClassLoader()
-				.getResource("wkumrechnung2013_modified_unicode.csv").toURI());
-		wahlkreise = new File(ClassLoader.getSystemClassLoader()
-				.getResource("Wahlkreise.csv").toURI());
-		sitzkontingente = new File(ClassLoader.getSystemClassLoader()
-				.getResource("sitzkontingente.csv").toURI());
-		bewerber2009 = new File(ClassLoader.getSystemClassLoader()
-				.getResource("wahlbewerber2009_mod.csv").toURI());
-		bewerber2013 = new File(ClassLoader.getSystemClassLoader()
-				.getResource("wahlbewerber2013_mit_platz.csv").toURI());
-		materializedViewStatements = new File(ClassLoader
-				.getSystemClassLoader()
-				.getResource("materialized_view_statements.sql").toURI());
+		kerg = ClassLoader.getSystemClassLoader().getResourceAsStream(
+				"kerg_modified_unicode.csv");
+		wkumrechnung2013 = ClassLoader.getSystemClassLoader()
+				.getResourceAsStream("wkumrechnung2013_modified_unicode.csv");
+		wahlkreise = ClassLoader.getSystemClassLoader().getResourceAsStream(
+				"Wahlkreise.csv");
+		sitzkontingente = ClassLoader.getSystemClassLoader()
+				.getResourceAsStream("sitzkontingente.csv");
+		bewerber2009 = ClassLoader.getSystemClassLoader().getResourceAsStream(
+				"wahlbewerber2009_mod.csv");
+		bewerber2013 = ClassLoader.getSystemClassLoader().getResourceAsStream(
+				"wahlbewerber2013_mit_platz.csv");
+		materializedViewStatements = ClassLoader.getSystemClassLoader()
+				.getResourceAsStream("materialized_view_statements.sql");
 	}
 
 	private void createUsers() {
 		try {
 			User waehler = new User("waehler", "cowboyohnepony");
 			User admin = new User("wahladmin", "montagmorgenquiz");
+			User stimme = new User("stimmengeber", "waehlenisttoll");
 
-			waehler.addPrivilege(Stimmzettel.class, UserPrivilege.INSERT);
 			waehler.addPrivilege(UserPrivilege.SELECT);
 
 			admin.addPrivilege(UserPrivilege.SELECT);
 			admin.addPrivilege(UserPrivilege.INSERT);
+			
+			stimme.addPrivilege(Stimmzettel.class, UserPrivilege.INSERT);
+			stimme.addPrivilege(UserPrivilege.SELECT);
 
 			PostgreSQLDatabase.getCurrent().dropUser(waehler);
+			PostgreSQLDatabase.getCurrent().dropUser(stimme);
 			PostgreSQLDatabase.getCurrent().dropUser(admin);
 
 			PostgreSQLDatabase.getCurrent().createUser(waehler);
+			PostgreSQLDatabase.getCurrent().createUser(stimme);
 			PostgreSQLDatabase.getCurrent().createUser(admin);
 		} catch (SQLException e) {
 			throw new RuntimeException(e.getMessage());
@@ -176,9 +182,13 @@ public class Setup {
 	@SuppressWarnings("deprecation")
 	private void createMaterializedViews() {
 		try {
-			List<String> lines = Files.readAllLines(
-					materializedViewStatements.toPath(),
-					Charset.forName("UTF-8"));
+			List<String> lines = new ArrayList<String>();
+			String l = null;
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					materializedViewStatements, Charset.forName("UTF-8")));
+			while ((l = reader.readLine()) != null) {
+				lines.add(l);
+			}
 			for (String line : lines) {
 				String action = line.substring(
 						0,

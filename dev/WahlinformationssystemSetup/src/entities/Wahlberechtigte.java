@@ -54,7 +54,6 @@ public class Wahlberechtigte extends DatabaseEntity {
 	@Override
 	public boolean equals(Object o) {
 		return o instanceof Wahlberechtigte
-				&& ((Wahlberechtigte) o).getId() == getId()
 				&& ((Wahlberechtigte) o).getWahljahr().equals(getWahljahr())
 				&& ((Wahlberechtigte) o).getWahlkreis().equals(getWahlkreis())
 				&& ((Wahlberechtigte) o).getWahlberechtigte() == getWahlberechtigte();

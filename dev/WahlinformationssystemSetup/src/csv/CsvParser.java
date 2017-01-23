@@ -1,22 +1,29 @@
 package csv;
 
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CsvParser {
 
-	public static ParsedCsvFile parse(File file, String separator)
+	public static ParsedCsvFile parse(InputStream stream, String separator)
 			throws IOException {
-		List<String> wahlbewerberLines = Files.readAllLines(file.toPath(),
-				Charset.forName("UTF-8"));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				stream, Charset.forName("UTF-8")));
+		String line = null;
+		List<String> wahlbewerberLines = new ArrayList<String>();
+		while ((line = reader.readLine()) != null) {
+			wahlbewerberLines.add(line);
+		}
 		String[] columnNames = wahlbewerberLines.get(0).split(separator);
 		ParsedCsvFile result = new ParsedCsvFile(wahlbewerberLines.size(),
 				columnNames.length);
-		for (String line : wahlbewerberLines) {
-			result.addRow(line.split(separator));
+		for (String l : wahlbewerberLines) {
+			result.addRow(l.split(separator));
 		}
 		return result;
 	}
