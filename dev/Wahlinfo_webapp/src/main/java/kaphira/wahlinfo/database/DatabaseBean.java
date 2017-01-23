@@ -46,7 +46,9 @@ public class DatabaseBean implements Serializable {
     private final Logger logger = Logger.getLogger(DatabaseBean.class.getName());
     private final Clock clock = new Clock();
 
-    private Connection connection;
+    private Connection readOnlyConnection;
+    private Connection votingConnection;
+    private Connection adminConnection;
 
     @ManagedProperty(value = "#{configBean}")
     private ConfigBean configBean;
@@ -55,23 +57,56 @@ public class DatabaseBean implements Serializable {
     private void init() {
 
         String dbPath = configBean.getDatabasePath();
-        String dbUser = configBean.getDbUser();
-        String dbPassword = configBean.getDbPassword();
-
+        
+        String dbUser = configBean.getDbReadOnlyUser();
+        String dbPassword = configBean.getDbReadOnlyPassword();
+        
         try {
             Class.forName(POSTGRES_DRIVER);
-            connection = DriverManager.getConnection(dbPath, dbUser, dbPassword);
-
+            readOnlyConnection = DriverManager.getConnection(dbPath, dbUser, dbPassword);
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);
             ex.printStackTrace();
         }
     }
 
+    private void establishVotingConnection(){
+        String dbPath = configBean.getDatabasePath();
+        String dbVotingUser = configBean.getVotingUser();
+        String dbVotingUserPassword = configBean.getVotingUserPassword();
+        
+        try {
+            Class.forName(POSTGRES_DRIVER);
+            votingConnection = DriverManager.getConnection(dbPath, dbVotingUser, dbVotingUserPassword);
+            
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+        }
+    }
+    
+    
+    private void establishAdminConnection(){
+        String dbPath = configBean.getDatabasePath();
+        String dbAdmin = configBean.getAdminUser();
+        String dbAdminPassword = configBean.getAdminPassword();
+        try {
+            Class.forName(POSTGRES_DRIVER);
+            adminConnection = DriverManager.getConnection(dbPath, dbAdmin, dbAdminPassword);
+            
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+        }
+    }
+    
+    
     @PreDestroy
     private void onClose() {
         try {
-            connection.close();
+            readOnlyConnection.close();
+            votingConnection.close();
+            adminConnection.close();
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, null, ex);
         }
@@ -81,12 +116,12 @@ public class DatabaseBean implements Serializable {
     //        QUERY EXECUTION          //
     //*********************************//
     public ResultSet executeQuery(String query, String queryName) {
-        if (connection == null) {
+        if (readOnlyConnection == null) {
             init();
         }
         try {
             clock.start();
-            Statement statement = connection.createStatement();
+            Statement statement = readOnlyConnection.createStatement();
             log(queryName, clock.stop());
             return statement.executeQuery(query);
 
@@ -96,13 +131,28 @@ public class DatabaseBean implements Serializable {
         return null;
     }
 
-    public void executeStatement(String query, String queryName) {
-        if (connection == null) {
-            init();
+    public void executeVotingStatement(String query, String queryName) {
+        if (votingConnection == null) {
+            establishVotingConnection();
         }
         try {
             clock.start();
-            Statement statement = connection.createStatement();
+            Statement statement = votingConnection.createStatement();
+            statement.execute(query);
+            log(queryName, clock.stop());
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void executeUpdateStatement(String query, String queryName) {
+        if (adminConnection == null) {
+            establishAdminConnection();
+        }
+        try {
+            clock.start();
+            Statement statement = adminConnection.createStatement();
             statement.execute(query);
             log(queryName, clock.stop());
 
@@ -377,13 +427,13 @@ public class DatabaseBean implements Serializable {
         query = query.replaceAll(PLACEHOLDER_PARTY, String.valueOf(party));
         query = query.replaceAll(PLACEHOLDER_CANDIDATE_PARTY, String.valueOf(candidateParty));
         System.out.println(query);
-        executeStatement(query, "INSERT_VOTE");
+        executeVotingStatement(query, "INSERT_VOTE");
     }
 
     public void reloadViews() {
         String statement = configBean.getReloadStatement();
 
-        executeStatement(statement, "RELOAD_VIEWS");
+        executeUpdateStatement(statement, "RELOAD_VIEWS");
     }
 
     //*********************************//

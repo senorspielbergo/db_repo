@@ -160,7 +160,7 @@ public class ElectionBean implements Serializable {
 
             title = selectedCandidate.getTitle();
             firstName = selectedCandidate.getFirstName();
-            lastName = selectedCandidate.getName();
+            lastName = selectedCandidate.getLastName();
             candidateParty = selectedCandidate.getParty();
         }
 

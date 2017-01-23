@@ -126,20 +126,28 @@ public class ConfigBean implements Serializable {
         return builder.toString();
     }
     
-    public String getDbUser() {
-        return properties.getProperty("dbuser");
+    public String getDbReadOnlyUser() {
+        return properties.getProperty("dbreadonlyuser");
     }
     
-    public String getDbPassword() {
-        return properties.getProperty("dbpassword");
+    public String getDbReadOnlyPassword() {
+        return properties.getProperty("dbreadonlypassword");
     }
 
     public String getAdminUser(){
-        return properties.getProperty("username");
+        return properties.getProperty("dbadmin");
     }
     
-    public String getAdmintPassword(){
-        return properties.getProperty("password");
+    public String getAdminPassword(){
+        return properties.getProperty("dbadminpassword");
+    }
+    
+    public String getVotingUser(){
+        return properties.getProperty("dbvoter");
+    }
+    
+    public String getVotingUserPassword(){
+        return properties.getProperty("dbvoterpassword");
     }
     
     public String getQ1() {

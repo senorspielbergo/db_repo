@@ -9,7 +9,6 @@ import java.io.Serializable;
 public class Politician implements Serializable{
     
     private String title;
-    private String name;
     private String firstName;
     private String lastName;
     private String party;
@@ -35,14 +34,6 @@ public class Politician implements Serializable{
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getName() {
-        return lastName;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getParty() {

@@ -55,7 +55,7 @@ public class AdminBean implements Serializable {
     public void login(){
         
         String correctUsername = configBean.getAdminUser();
-        String correctPassword = configBean.getAdmintPassword();
+        String correctPassword = configBean.getAdminPassword();
         
         if(getUsername().equals(correctUsername) && getPassword().equals(correctPassword)) {
             setIsLoggedIn(true);
