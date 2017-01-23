@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p ="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <h:body>
+        <h:outputStylesheet library="css" name="style.css"/>
+        <ui:composition template="templates/template.xhtml">
+            <ui:define name="content">
+                <h:form styleClass="centered">
+                    <p:panel style="border: none;">
+                    <p:selectOneRadio id="year" value="#{q2Bean.selectedYear}" style="display: inline">
+                        <f:converter binding ="#{stringIntConverter}" />
+                        <p:ajax event="change" listener="#{q2Bean.onYearSelection}" update="@form"/>
+                        <f:selectItem itemLabel="2013" itemValue="2013" />
+                        <f:selectItem itemLabel="2009" itemValue="2009" />
+                    </p:selectOneRadio>
+                    </p:panel>
+                    <p:panel style="border: none;">
+                        <p:separator/>
+                        <p:outputLabel value="Bundestagsabgeordnete" style="font-size: 24pt"/>
+                    </p:panel>
+                    
+                    <p:dataTable id="tablePol" var="politician" value="#{q2Bean.governmentMembers}"
+                                 lazy="true"
+                                 scrollable="true"
+                                 scrollHeight="700"
+                                 filteredValue="#{q2Bean.filteredPoliticians}">
+                                 
+                        
+                        <p:column headerText="Name">
+                            <h:outputText value="#{politician.formattedName}" class="defFont"/>
+                        </p:column>
+                        
+                        <p:column headerText="Partei">
+                            <h:outputText value="#{politician.party}" 
+                                          style="font-weight: bold; color: ##{stylingBean.getPartyColor(politician.party)}" />
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

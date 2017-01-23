@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p ="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <h:head>
+        <title>Wahlinfo 3000</title>
+    </h:head>
+    <h:body>
+        <h:outputStylesheet library="css" name="style.css"/>
+        <div class="container">
+            <div>
+                
+                <div id="header" class="header" style="vertical-align: bottom">
+                <p:graphicImage library="img" name="bundestag.png" />
+                <p:graphicImage library="img" name="wahlomator_logo.png" style="padding-left: 5em" />
+                </div>
+                
+            </div>
+            <p:separator/>
+            <div>
+                <h:form styleClass="centered">
+                    <p:panel style="border:none;">
+                        <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+                    </p:panel>
+                    
+                    <h:panelGroup rendered="#{!adminBean.loggedIn}">
+                        <p:panel style="border:none; display: inline">
+
+                            <h:outputLabel value="Benutzername:" style="padding-right: 1em"/>
+                            <p:inputMask id="username" value="#{adminBean.username}" mask=""/>
+                        </p:panel>
+
+
+                        <p:panel style="border:none; display: inline">
+                            <h:outputLabel for="pwd2" value="Passwort:" style="padding-right: 3.5em"/>
+                            <p:password id="pwd2" value="#{adminBean.password}" label="Password 2" required="true" />
+                        </p:panel>
+                    <p:commandButton  value="Login" action="#{adminBean.login()}" label="Login" update="@form" />
+                    </h:panelGroup>
+                    
+                    
+                    
+                    <h:panelGroup rendered="#{adminBean.loggedIn}">
+                        <p:panel style="border:none">
+                            <h:outputLabel value="Für welchen Wahlkreis möchten Sie einen Token erzeugen?"  />
+                        </p:panel>   
+                        
+                        <p:panel style="border:none">
+                            <p:selectOneMenu value="#{adminBean.selectedDistrict}" filter="true" filterMatchMode="contains">
+                            <f:converter binding ="#{districtConverter}" />
+                            <f:selectItems value="#{adminBean.districts}" var="dist" itemValue="#{dist}" itemLabel="#{dist.name}"/>
+                        </p:selectOneMenu>
+                        </p:panel>    
+
+
+                        <p:panel style="border:none">
+                        <p:commandButton value="Token erzeugen" 
+                                             update="@form" 
+                                             action="#{adminBean.buttonClicked()}"
+                                             />
+                        </p:panel>
+                        <p:panel style="border:none;">
+                            <p:outputLabel value="#{adminBean.tokenValue}" id="tokenLabel" style="font-weight: bold" />
+                        </p:panel>
+                        <p:separator/>
+                        <p:panel style="border:none;">
+                            <p:commandButton  value="Datenbankviews aktualisieren" action="#{adminBean.reloadViews()}" update="@form" />
+                            <p:commandButton  value="Logout" action="#{adminBean.logout()}" update="@form" />
+                        </p:panel>
+                   </h:panelGroup>
+                </h:form>
+            </div>
+        </div>
+    </h:body>
+</html>
+

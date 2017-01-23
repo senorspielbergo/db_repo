@@ -73,6 +73,7 @@ public class AdminBean implements Serializable {
     
     public void reloadViews(){
         databaseBean.reloadViews();
+         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "info", "Views werden aktualisiert... Dies kann bis zu 10 Minuten dauern."));
     }
 
     public void messageLogin(boolean loggedIn) {
