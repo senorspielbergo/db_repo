@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE xhtml>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p ="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <h:body>
+        <ui:composition template="templates/template.xhtml">
+            
+            <ui:define name="content">
+                
+                <h:form styleClass="centered">
+                    <p:panel style="border: none;">
+                    <p:selectOneRadio id="year" value="#{q3Bean.selectedYear}" style="display: inline">
+                            <f:converter binding ="#{stringIntConverter}" />
+                            <p:ajax event="change" listener="#{q3Bean.onYearSelection}" update="@form"/>
+                            <f:selectItem itemLabel="2013" itemValue="2013" />
+                            <f:selectItem itemLabel="2009" itemValue="2009" />
+                        </p:selectOneRadio>
+                    </p:panel>
+                    
+                    
+                    
+                    <p:panel style="border: none;">
+                        <p:outputLabel value="Wahlkreis: "/>
+                        
+                        <p:selectOneMenu value="#{q3Bean.selectedDistrict}" filter="true" filterMatchMode="contains">
+                            <f:converter binding ="#{districtConverter}" />
+                            <f:selectItems value="#{q3Bean.districts}" var="dist" itemValue="#{dist}" itemLabel="#{dist.name}"/>
+                            <p:ajax event="select" listener="#{q3Bean.onDistrictSelection}" update="@form"/>
+                        </p:selectOneMenu>
+                    </p:panel>
+                    
+                    
+                    <p:panel style="border: none;">
+                        <p:separator/>
+                        <p:outputLabel value="Übersicht" style="font-size: 24pt"/>
+                    </p:panel>
+                    
+
+                    <h:panelGrid columns="2" cellpadding="10" style="width:80%; display: inline-block">    
+                        <p:outputPanel>
+                            <h:panelGrid columns="2" cellpadding="5">
+                                
+                                
+                                <h:outputText value="Wahlkreis:" />
+                                <h:outputText value="#{q3Bean.selectedDistrict.name}" style="font-weight: bold"/>
+                                
+                                <h:outputText value="Nummer:" />
+                                <h:outputText value="#{q3Bean.selectedDistrict.id}" style="font-weight: bold"/>
+
+                                <h:outputText value="Bundesland:" />
+                                <h:outputText value="#{q3Bean.selectedDistrict.bundesland}" style="font-weight: bold"/>
+                                
+                                <h:outputText value="Wahlbeteiligung:" />
+                                <h:outputText value="#{q3Bean.selectedDistrict.wahlbeteiligung} %" style="font-weight: bold"/>
+                            </h:panelGrid>
+                        </p:outputPanel>
+                 
+                        <p:outputPanel>
+                            <h:panelGrid columns="2" cellpadding="5">
+                                
+                                
+                                <h:outputText value="Direktkandidat" />
+                                <h:outputText value="#{q3Bean.selectedDistrict.direktKandidat.formattedName}" style="font-weight: bold"/>
+                                
+                                <h:outputText value="Partei:" />
+                                <h:outputText value="#{q3Bean.selectedDistrict.direktKandidat.party}" style="font-weight: bold; color: ##{stylingBean.getPartyColor(q3Bean.selectedDistrict.direktKandidat.party)}"/>
+                                
+                                <h:outputText value="Stimmen:" />
+                                <h:outputText value="#{q3Bean.selectedDistrict.direktKandidat.votes}" style="font-weight: bold"/>
+                                
+                            </h:panelGrid>
+                        </p:outputPanel>
+                    </h:panelGrid>
+                    
+                    <p:panel style="border: none;">
+                        <p:separator/>
+                        <p:outputLabel value="Wahlergebnis" style="font-size: 24pt"/>
+                    </p:panel>
+                    
+                    
+                        <p:dataTable var="party" value="#{q3Bean.selectedDistrict.parties}"
+                                     lazy="true"
+                                     scrollable="true"
+                                     >
+
+                            <p:column headerText="Partei">
+                                <h:outputText value="#{party.name}" style="font-weight: bold; color: ##{stylingBean.getPartyColor(party.name)}"/>
+                            </p:column>
+
+                            <p:column headerText="Absolute Stimmen">
+                                <h:outputText value="#{party.totalVotes}" class="defFont" />
+                            </p:column>
+
+                            <p:column headerText="Stimmenanteil">
+                                <h:outputText value="#{party.percentage} %" class="defFont"/>
+                            </p:column>
+                        </p:dataTable>
+                    <p:panel style="border:none;"/>
+                    <p:panel style="border: none;">
+                        <p:separator/>
+                        <p:outputLabel value="Entwicklung zu vorheriger Wahl" style="font-size: 24pt" rendered="#{q3Bean.selectedYear==2013}" />
+                    </p:panel>
+                    
+                        <p:dataTable var="history" value="#{q3Bean.selectedDistrict.histories}"
+                                     lazy="true"
+                                     scrollable="true"
+                                     scrollHeight="700"
+                                     rendered="#{q3Bean.selectedYear==2013}">
+                            
+                                     
+                            <p:column headerText="Partei">
+                                <h:outputText value="#{history.party}" style="font-weight: bold; color: ##{stylingBean.getPartyColor(history.party)}"/>
+                            </p:column>
+
+                            <p:column headerText="Erststimmendifferenz">
+                                <h:outputText value="#{history.diffFirstVote} (#{history.diffFirstVotePc} %)" style="color:#{stylingBean.getNumberColor(history.diffFirstVote)}"/>
+                            </p:column>
+                            <p:column headerText="Zweitstimmendifferenz">
+                                <h:outputText value="#{history.diffSecondVote} (#{history.diffSecondVotePc} %)" style="color:#{stylingBean.getNumberColor(history.diffSecondVote)}"/>
+                            </p:column>
+                            
+                        </p:dataTable>
+                    
+                </h:form>
+            </ui:define>
+            
+        </ui:composition>
+    </h:body>
+</html>
