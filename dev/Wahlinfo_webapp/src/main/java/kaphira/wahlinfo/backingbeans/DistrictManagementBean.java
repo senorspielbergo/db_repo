@@ -111,13 +111,13 @@ public class DistrictManagementBean implements Serializable {
             while (result.next()) {
 
                 int districtId = Integer.parseInt(result.getString(DbColumns.CLM_ID));
-                int allowedVoters = Integer.parseInt(result.getString(DbColumns.CLM_ALLOWED_VOTERS));
+                //int allowedVoters = Integer.parseInt(result.getString(DbColumns.CLM_ALLOWED_VOTERS));
                 String districtName = result.getString(DbColumns.CLM_NAME);
                 String districtCountry = result.getString(DbColumns.CLM_COUNTRY);
 
                 District district = new District(districtId, districtName);
                 district.setBundesland(districtCountry);
-                district.setWahlberechtigte(allowedVoters);
+                //district.setWahlberechtigte(allowedVoters);
                 queriedDistricts.add(district);
             }
         } catch (SQLException ex) {

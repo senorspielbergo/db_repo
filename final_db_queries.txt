@@ -1,0 +1,465 @@
+Q1: 
+
+Required input: %wahljahr%: int {2009, 2013}
+WITH hoechstzahlen2009 AS (
+    SELECT h.bundesland, h.partei, (row_number() OVER (PARTITION BY h.partei ORDER BY h.quotient DESC)) AS rn
+       FROM (
+    SELECT l.bundesland, l1.partei, FLOOR(CAST(l.stimmen AS NUMERIC)/u.zahl) AS quotient
+    FROM erlaubtelisten l JOIN landesliste l1 ON l.landesliste = l1.id AND l.wahljahr=l1.wahljahr AND l.wahljahr=2009, ungerade u
+	ORDER BY l.bundesland ASC, quotient DESC) AS h
+),
+ueberhang2009 AS (
+    WITH ueberhangproland2009 AS (
+    SELECT h.bundesland, h.partei, GREATEST(COALESCE(dmpl.count, 0) - COUNT(h.partei), 0) AS ueberhang, 2009 AS wahljahr
+    FROM hoechstzahlen2009 h JOIN oberverteilung o ON o.partei=h.partei AND o.wahljahr=2009
+    LEFT JOIN direktmandateproland dmpl ON dmpl.bundesland = h.bundesland AND h.partei = dmpl.partei AND dmpl.wahljahr=o.wahljahr
+    WHERE h.rn <= o.sitze
+    GROUP BY h.bundesland, h.partei, dmpl.count)
+    SELECT u.partei, SUM(u.ueberhang) AS ueberhang, u.wahljahr
+    FROM ueberhangproland2009 u
+    GROUP BY u.partei, u.wahljahr
+)
+SELECT o.partei, (o.sitze + COALESCE(u.ueberhang, 0)) AS sitze, o.wahljahr
+FROM oberverteilung o LEFT JOIN ueberhang2009 u ON o.partei=u.partei AND u.wahljahr=o.wahljahr
+WHERE o.wahljahr=%wahljahr%;
+
+
+Q2: 
+
+Required input: %wahljahr%: int {2009, 2013}
+WITH unterverteilung AS (
+WITH hoechstzahlen AS (
+    SELECT h.wahljahr, h.bundesland, h.partei, (row_number() OVER (PARTITION BY h.wahljahr, h.partei ORDER BY h.quotient DESC)) AS rn
+       FROM (
+    SELECT l.wahljahr, l.bundesland, l1.partei, FLOOR(CAST(l.stimmen AS NUMERIC)/u.zahl) AS quotient
+    FROM erlaubtelisten l JOIN landesliste l1 ON l.landesliste = l1.id AND l.wahljahr=l1.wahljahr, ungerade u
+	ORDER BY l.bundesland ASC, quotient DESC) AS h
+),
+laenderaufteilung AS (
+ SELECT h.wahljahr, h.bundesland, h.partei, GREATEST(COUNT(h.partei) - COALESCE(dmpl.count, 0), 0) AS sitze
+    FROM hoechstzahlen h JOIN oberverteilung o ON o.partei=h.partei AND o.wahljahr=h.wahljahr
+    LEFT JOIN direktmandateproland dmpl ON dmpl.bundesland = h.bundesland AND h.partei = dmpl.partei AND dmpl.wahljahr=h.wahljahr
+    WHERE h.rn <= o.sitze
+    GROUP BY h.wahljahr, h.bundesland, h.partei, dmpl.count),
+zuverteilendesitze AS (
+ SELECT l.wahljahr, l.partei, o.sitze + (o.sitze - (SUM(l.sitze) + SUM(COALESCE(d.count, 0)))) AS sitze
+ FROM laenderaufteilung l LEFT JOIN direktmandateproland d ON l.bundesland=d.bundesland AND l.partei=d.partei AND d.wahljahr=l.wahljahr
+    JOIN oberverteilung o ON o.partei=l.partei AND o.wahljahr=l.wahljahr
+ GROUP BY l.wahljahr, l.partei, o.sitze
+)
+SELECT h.wahljahr, h.bundesland, h.partei, COUNT(h.partei) AS sitze
+    FROM hoechstzahlen h JOIN zuverteilendesitze z ON z.partei=h.partei AND h.wahljahr=z.wahljahr
+    WHERE h.rn <= z.sitze
+    GROUP BY h.wahljahr, h.bundesland, h.partei
+    ORDER BY h.wahljahr, h.bundesland, h.partei),
+ direktmandate AS (
+    SELECT w.bundesland, b.id, b.titel, b.vorname, b.nachname, b.partei
+    FROM wahlkreissieger d JOIN bewerber b ON d.direktkandidat=b.id JOIN wahlkreis w ON d.wahlkreis=w.nummer
+    JOIN erlaubteparteien e ON b.partei=e.partei
+WHERE e.wahljahr=%wahljahr% AND d.wahljahr=%wahljahr%),
+verfuegbarelistenplaetze AS (
+SELECT e.listen_id, e.bewerber_id, (row_number() OVER (PARTITION BY e.listen_id ORDER BY e.listenplatz ASC)) as listenplatz
+FROM (SELECT lp.listen_id, lp.bewerber_id, lp.listenplatz 
+      FROM erlaubteparteien e JOIN landesliste l ON e.partei=l.partei
+	  JOIN listenplaetze lp ON lp.listen_id=l.id 
+	  LEFT JOIN direktmandate d ON d.partei=l.partei 
+      AND d.bundesland=l.bundesland AND d.id=lp.bewerber_id
+	  WHERE d.id ISNULL AND e.wahljahr=%wahljahr% AND l.wahljahr=%wahljahr%) AS e)
+(SELECT l.bundesland, b.titel, b.vorname, b.nachname, b.partei
+FROM bewerber b JOIN verfuegbarelistenplaetze lp ON b.id=lp.bewerber_id
+JOIN landesliste l ON lp.listen_id=l.id JOIN
+unterverteilung u ON l.partei=u.partei AND l.bundesland=u.bundesland AND l.wahljahr=u.wahljahr
+JOIN direktmandateproland dmpl ON l.partei=dmpl.partei AND l.bundesland=dmpl.bundesland AND l.wahljahr=dmpl.wahljahr
+WHERE lp.listenplatz <= u.sitze - dmpl.count AND l.wahljahr=%wahljahr% AND u.wahljahr=%wahljahr%)
+UNION ALL (
+    SELECT d.bundesland, d.titel, d.vorname, d.nachname, d.partei
+    FROM direktmandate d);
+Q3_1:
+
+Required input %wahlkreis_nr%: int [1;299], %wahljahr%: int {2009, 2013}
+
+SELECT w.nummer, w.name, w.bundesland, 
+sg.waehler / CAST(wb.wahlberechtigte AS NUMERIC) AS wahlbeteiligung
+FROM wahlkreis w JOIN stimmengueltigkeit sg ON w.nummer=sg.wahlkreis
+JOIN wahlberechtigte wb ON w.nummer=wb.wahlkreis 
+WHERE w.nummer=%wahlkreis_nr% AND sg.wahljahr=%wahljahr% AND wb.wahljahr=%wahljahr%;
+
+Q3_2:
+
+Required input %wahlkreis_nr%: int [1;299], %wahljahr%: int {2009, 2013}
+
+SELECT b.titel, b.vorname, b.nachname, b.partei, s.stimmen, CAST(s.stimmen AS NUMERIC)/sg.g_erststimmen AS prozent
+FROM bewerber b JOIN  wahlkreissieger s ON s.direktkandidat=b.id JOIN
+wahlkreis w ON w.nummer=s.wahlkreis JOIN stimmengueltigkeit sg ON w.nummer=sg.wahlkreis WHERE w.nummer=%wahlkreis_nr% AND sg.wahljahr=%wahljahr% AND s.wahljahr=%wahljahr%;
+
+Q3_3:
+
+Required input %wahlkreis_nr%: int [1;299], %wahljahr%: {2009, 2013}
+
+SELECT l.partei, wspl.stimmen, wspl.prozent
+FROM wahlkreisstimmenprolandesliste wspl JOIN landesliste l ON l.id=wspl.landesliste
+WHERE wspl.wahlkreis=%wahlkreis_nr% AND l.wahljahr=%wahljahr%
+ORDER BY wspl.stimmen DESC;
+
+Q3_4_1 (einzelne Parteien):
+
+Required input %wahlkreis_nr%: int [1;299], %wahljahr%: int {2009, 2013}
+
+WITH erststimmen AS (
+    SELECT spk.wahljahr, spk.wahlkreis, b.partei, SUM(spk.stimmen) as e_absolut, CAST(SUM(spk.stimmen) AS NUMERIC)/sg.g_erststimmen AS e_prozent
+    FROM stimmenprokandidat spk JOIN bewerber b ON spk.direktkandidat=b.id
+    JOIN stimmengueltigkeit sg ON spk.wahljahr=sg.wahljahr AND spk.wahlkreis=sg.wahlkreis
+   GROUP BY spk.wahljahr, spk.wahlkreis, b.partei, sg.g_erststimmen),
+zweitstimmen AS (
+    SELECT wspl.wahljahr, wspl.wahlkreis, l.partei, wspl.stimmen as z_absolut, wspl.prozent AS z_prozent
+	FROM wahlkreisstimmenprolandesliste wspl JOIN landesliste l ON l.id=wspl.landesliste AND wspl.wahljahr=l.wahljahr),
+helptable AS (
+SELECT e.wahljahr, e.wahlkreis, e.partei, e.e_absolut, e.e_prozent, z.z_absolut, z.z_prozent
+FROM erststimmen e JOIN zweitstimmen z ON e.wahljahr=z.wahljahr AND e.partei=z.partei AND e.wahlkreis=z.wahlkreis)
+SELECT h1.wahlkreis, h1.partei, COALESCE(h1.e_absolut, 0) - COALESCE(h2.e_absolut) AS ediffabs,
+	COALESCE(h1.e_prozent, 0) - COALESCE(h2.e_prozent, 0) AS ediffpro, 
+    COALESCE(h1.z_absolut, 0) - COALESCE(h2.z_absolut, 0) AS zdiffabs,
+    COALESCE(h1.z_prozent, 0) - COALESCE(h2.z_prozent, 0) AS zdiffpro
+FROM helptable h1 JOIN helptable h2 ON h1.wahljahr > h2.wahljahr AND h1.wahlkreis=h2.wahlkreis AND h1.partei=h2.partei AND h1.wahlkreis=%wahlkreis_nr% AND h1.wahljahr=%wahljahr%
+
+Q3_4_2 (gültige Stimmen):
+
+Required input %wahlkreis_nr%: int [1;299], %wahljahr%: int {2009, 2013}
+
+SELECT w.nummer, w.name, w.bundesland, 
+(sg1.waehler - sg2.waehler) AS waehlerdiffabs, 
+(sg1.waehler / CAST(wb1.wahlberechtigte AS NUMERIC) - sg2.waehler / CAST(wb2.wahlberechtigte AS NUMERIC)) AS waehlerdiffpro,
+(sg1.g_erststimmen - sg2.g_erststimmen) as gediffabs,
+(sg1.g_erststimmen / CAST(sg1.waehler AS NUMERIC) - sg2.g_erststimmen / CAST(sg2.waehler AS NUMERIC)) AS gediffpro,
+(sg1.ug_erststimmen - sg2.ug_erststimmen) as ugediffabs,
+(sg1.ug_erststimmen / CAST(sg1.waehler AS NUMERIC) - sg2.ug_erststimmen / CAST(sg2.waehler AS NUMERIC)) AS ugediffpro,
+(sg1.g_zweitstimmen - sg2.g_zweitstimmen) as gzdiffabs,
+(sg1.g_zweitstimmen / CAST(sg1.waehler AS NUMERIC) - sg2.g_zweitstimmen / CAST(sg2.waehler AS NUMERIC)) AS gzdiffpro,
+(sg1.ug_zweitstimmen - sg2.ug_zweitstimmen) as ugzdiffabs,
+(sg1.ug_zweitstimmen / CAST(sg1.waehler AS NUMERIC) - sg2.ug_zweitstimmen / CAST(sg2.waehler AS NUMERIC)) AS ugzdiffpro
+FROM wahlkreis w JOIN wahlberechtigte wb1 ON w.nummer=wb1.wahlkreis
+JOIN wahlberechtigte wb2 ON w.nummer=wb2.wahlkreis AND wb2.wahljahr < wb1.wahljahr
+JOIN stimmengueltigkeit sg1 ON w.nummer=sg1.wahlkreis
+JOIN stimmengueltigkeit sg2 ON sg1.wahljahr > sg2.wahljahr AND sg1.wahlkreis=sg2.wahlkreis
+WHERE w.nummer=%wahlkreis_nr% AND sg1.wahljahr=%wahljahr% AND wb1.wahljahr=%wahljahr%
+Q4:
+
+WITH wahlkreiszweitstimmensieger AS (
+    SELECT w.wahlkreis, MAX(w.stimmen) as stimmen
+    FROM wahlkreisstimmenprolandesliste w
+WHERE w.wahljahr=%wahljahr%
+    GROUP BY w.wahlkreis)
+SELECT w.nummer, w.name, b.partei AS erststimmen_partei, wks.stimmen AS erststimmen,
+		l.partei AS zweitstimmen_partei, wkspl.stimmen AS zweitstimmen
+FROM wahlkreis w JOIN wahlkreiszweitstimmensieger wkzs ON w.nummer=wkzs.wahlkreis
+JOIN wahlkreisstimmenprolandesliste wkspl ON wkspl.wahlkreis=wkzs.wahlkreis AND wkspl.stimmen=wkzs.stimmen
+JOIN landesliste l ON wkspl.landesliste=l.id JOIN wahlkreissieger wks ON wks.wahlkreis=wkzs.wahlkreis JOIN bewerber b ON wks.direktkandidat=b.id WHERE wkspl.wahljahr=%wahljahr% AND l.wahljahr=%wahljahr% AND wks.wahljahr=%wahljahr%;
+
+Q5:
+WITH ueberhang AS (
+    WITH hoechstzahlen2013 AS (
+        SELECT h.bundesland, h.partei, (row_number() OVER (PARTITION BY h.bundesland ORDER BY h.quotient DESC)) AS rn
+           FROM (
+        SELECT l.bundesland, l1.partei, CAST(l.stimmen AS NUMERIC)/u.zahl AS quotient
+        FROM erlaubtelisten l JOIN landesliste l1 ON l.landesliste = l1.id AND l.wahljahr=l1.wahljahr AND l.wahljahr=2013, ungerade u
+        ORDER BY l.bundesland ASC, quotient DESC) AS h
+    ), 
+    saintlague2013 AS (
+        SELECT h.bundesland, h.partei, COUNT(h.partei) AS sitze
+        FROM hoechstzahlen2013 h JOIN sitzkontingent s ON s.bundesland = h.bundesland AND s.wahljahr=2013
+        WHERE h.rn <= s.kontingent
+        GROUP BY h.bundesland, h.partei),
+hoechstzahlen2009 AS (
+    SELECT h.bundesland, h.partei, (row_number() OVER (PARTITION BY h.partei ORDER BY h.quotient DESC)) AS rn
+       FROM (
+    SELECT l.bundesland, l1.partei, FLOOR(CAST(l.stimmen AS NUMERIC)/u.zahl) AS quotient
+    FROM erlaubtelisten l JOIN landesliste l1 ON l.landesliste = l1.id AND l.wahljahr=l1.wahljahr AND l.wahljahr=2009, ungerade u
+	ORDER BY l.bundesland ASC, quotient DESC) AS h
+)
+
+    (SELECT s.bundesland, e.partei, ABS(LEAST(s.sitze - d.count, 0))
+                                       AS ueberhang, 2013 AS wahljahr
+    FROM saintlague2013 s JOIN erlaubteparteien e ON s.partei=e.partei AND e.wahljahr=2013
+    LEFT JOIN direktmandateproland d ON d.bundesland=s.bundesland AND d.partei=e.partei
+    AND d.wahljahr=2013
+    ORDER BY s.bundesland, e.partei)
+    UNION ALL (
+        SELECT h.bundesland, h.partei, GREATEST(COALESCE(dmpl.count, 0) - COUNT(h.partei), 0) AS ueberhang, 2009 AS wahljahr
+    FROM hoechstzahlen2009 h JOIN oberverteilung o ON o.partei=h.partei AND o.wahljahr=2009
+    LEFT JOIN direktmandateproland dmpl ON dmpl.bundesland = h.bundesland AND h.partei = dmpl.partei AND dmpl.wahljahr=o.wahljahr
+    WHERE h.rn <= o.sitze
+    GROUP BY h.bundesland, h.partei, dmpl.count)
+)
+SELECT * FROM ueberhang u WHERE u.ueberhang > 0;
+Q6:
+
+WITH losers AS (
+SELECT b.partei, spk.direktkandidat, spk.wahlkreis, (spk.stimmen - wks.stimmen) AS differenz, 
+(row_number() OVER (PARTITION BY b.partei ORDER BY (spk.stimmen - wks.stimmen) DESC)) as rn
+FROM stimmenprokandidat spk JOIN wahlkreissieger wks ON spk.wahlkreis=wks.wahlkreis 
+    AND spk.stimmen - wks.stimmen < 0 JOIN bewerber b ON spk.direktkandidat=b.id
+    WHERE b.partei NOTNULL AND spk.wahljahr=%wahljahr% AND wks.wahljahr=%wahljahr%
+    ),
+    winners AS (
+SELECT b.partei, wks.direktkandidat, wks.wahlkreis, ABS(bl.differenz) AS differenz,
+(row_number() OVER (PARTITION BY b.partei ORDER BY ABS(bl.differenz) ASC)) as rn
+FROM wahlkreissieger wks JOIN (SELECT l.wahlkreis, MAX(l.differenz) AS differenz FROM
+    losers l GROUP BY l.wahlkreis) as bl ON wks.wahlkreis=bl.wahlkreis
+        JOIN bewerber b ON wks.direktkandidat=b.id WHERE b.partei NOTNULL AND wks.wahljahr=%wahljahr%),
+	combined AS (
+(SELECT w.partei, w.wahlkreis, w.direktkandidat, w.differenz 
+ FROM winners w
+ WHERE w.rn <= 10)
+ UNION ALL (
+     SELECT l.partei, l.wahlkreis, l.direktkandidat, l.differenz
+     FROM losers l LEFT JOIN winners w ON l.partei=w.partei
+	 WHERE w.direktkandidat ISNULL AND l.rn <= 10))
+
+SELECT com.partei, com.wahlkreis as nummer, wk.name AS wahlkreis, b.titel, b.vorname, b.nachname, com.differenz
+FROM combined com JOIN bewerber b ON com.direktkandidat=b.id JOIN wahlkreis wk ON com.wahlkreis=wk.nummer
+ORDER BY com.partei, ABS(com.differenz) ASC;
+
+
+Q7_1:
+
+Required input %wahlkreis_nr%: int [213;217], %wahljahr%: int {2009, 2013}
+
+WITH bayerischestimmzettel AS (
+SELECT s.id, s.direktkandidat, s.landesliste, s.wahlkreis 
+FROM stimmzettel s
+WHERE s.wahljahr=%wahljahr% AND s.wahlkreis=%wahlkreis_nr%),
+waehler AS (
+    SELECT bs.wahlkreis, COUNT(*) AS anzahl 
+	FROM bayerischestimmzettel bs
+	GROUP BY bs.wahlkreis
+)
+SELECT wk.nummer, wk.name, wk.bundesland, 
+w.anzahl / CAST(wb.wahlberechtigte AS NUMERIC) AS wahlbeteiligung
+FROM wahlkreis wk JOIN waehler w ON wk.nummer=w.wahlkreis
+JOIN wahlberechtigte wb ON wk.nummer=wb.wahlkreis
+WHERE wk.nummer=%wahlkreis_nr% AND wb.wahljahr=%wahljahr%;
+
+Q7_2:
+
+Required input %wahlkreis_nr%: int [213;217], %wahljahr%: int {2009, 2013}
+WITH bayerischestimmzettel AS (
+SELECT s.id, s.direktkandidat, s.landesliste, s.wahlkreis 
+FROM stimmzettel s
+WHERE s.wahljahr=%wahljahr% AND s.wahlkreis=%wahlkreis_nr%),
+wsieger AS (
+        SELECT bs.direktkandidat, COUNT(bs.direktkandidat) AS stimmen
+        FROM bayerischestimmzettel bs WHERE bs.direktkandidat NOTNULL
+        GROUP BY bs.direktkandidat
+    	ORDER BY stimmen DESC
+    	LIMIT 1
+), 
+gstimmen AS (
+    SELECT COUNT(bs.direktkandidat) AS stimmen
+    FROM bayerischestimmzettel bs
+    WHERE bs.direktkandidat NOTNULL)
+    
+SELECT b.titel, b.vorname, b.nachname, b.partei, s.stimmen, 
+CAST(s.stimmen AS NUMERIC)/sg.stimmen AS prozent
+FROM bewerber b JOIN  wsieger s ON s.direktkandidat=b.id, wahlkreis w, gstimmen sg
+WHERE w.nummer=%wahlkreis_nr%;
+Q7_3:
+
+Required input %wahlkreis_nr%: int [213;217], %wahljahr%: int {2009, 2013}
+WITH bayerischestimmzettel AS (
+SELECT s.id, s.direktkandidat, s.landesliste, s.wahlkreis 
+FROM stimmzettel s
+WHERE s.wahljahr=%wahljahr% AND s.wahlkreis=%wahlkreis_nr%),
+wstimmenproliste AS (
+    WITH wgzs AS (
+        SELECT COUNT(bs.landesliste) AS stimmen
+        FROM bayerischestimmzettel bs
+        WHERE bs.landesliste NOTNULL
+        )
+    SELECT bs.landesliste, COUNT(bs.landesliste) AS stimmen,
+    CAST(COUNT(bs.landesliste) AS NUMERIC) / ges.stimmen AS prozent
+    FROM bayerischestimmzettel bs, wgzs ges
+    WHERE bs.landesliste NOTNULL
+    GROUP BY bs.landesliste, ges.stimmen)
+SELECT l.partei, wspl.stimmen, wspl.prozent
+FROM wstimmenproliste wspl JOIN landesliste l ON l.id=wspl.landesliste
+WHERE l.wahljahr=%wahljahr%
+ORDER BY wspl.stimmen DESC;
+
+Q7_4_1 (einzelne Parteien):
+
+Required input %wahlkreis_nr%: int [213;217], %wahljahr%: int {2009, 2013}
+
+WITH bayerischestimmzettel AS (
+SELECT s.wahljahr, s.id, s.direktkandidat, s.landesliste
+FROM stimmzettel s
+WHERE s.wahlkreis=%wahlkreis_nr%),
+bstimmenprokandidat AS (
+        SELECT bs.wahljahr, bs.direktkandidat, COUNT(bs.direktkandidat) AS stimmen
+        FROM bayerischestimmzettel bs WHERE bs.direktkandidat NOTNULL
+        GROUP BY bs.wahljahr, bs.direktkandidat),
+bstimmengueltigkeit AS (
+    SELECT bs.wahljahr, COUNT(bs.direktkandidat) AS g_erststimmen
+    FROM bayerischestimmzettel bs
+    WHERE bs.direktkandidat NOTNULL
+    GROUP BY bs.wahljahr),
+bwahlkreisstimmenprolandesliste AS (
+    WITH wgzs AS (
+        SELECT bs.wahljahr, COUNT(*) AS stimmen
+        FROM bayerischestimmzettel bs
+        WHERE bs.landesliste NOTNULL
+        GROUP BY bs.wahljahr
+        )
+    SELECT bs.wahljahr, bs.landesliste, COUNT(bs.landesliste) AS stimmen,
+    CAST(COUNT(bs.landesliste) AS NUMERIC) / ges.stimmen AS prozent
+    FROM bayerischestimmzettel bs JOIN wgzs ges ON ges.wahljahr=bs.wahljahr
+    WHERE bs.landesliste NOTNULL
+    GROUP BY bs.wahljahr, bs.landesliste, ges.stimmen),
+erststimmen AS (
+    SELECT spk.wahljahr, b.partei, SUM(spk.stimmen) as e_absolut, CAST(SUM(spk.stimmen) AS NUMERIC)/sg.g_erststimmen AS e_prozent
+    FROM bstimmenprokandidat spk JOIN bewerber b ON spk.direktkandidat=b.id
+    JOIN bstimmengueltigkeit sg ON spk.wahljahr=sg.wahljahr
+ GROUP BY spk.wahljahr, b.partei, sg.g_erststimmen),
+zweitstimmen AS (
+    SELECT wspl.wahljahr, l.partei, wspl.stimmen as z_absolut, wspl.prozent AS z_prozent
+	FROM bwahlkreisstimmenprolandesliste wspl JOIN landesliste l ON l.id=wspl.landesliste AND wspl.wahljahr=l.wahljahr),
+helptable AS (
+SELECT e.wahljahr, e.partei, e.e_absolut, e.e_prozent, z.z_absolut, z.z_prozent
+FROM erststimmen e JOIN zweitstimmen z ON e.wahljahr=z.wahljahr AND e.partei=z.partei)
+SELECT h1.partei, COALESCE(h1.e_absolut, 0) - COALESCE(h2.e_absolut) AS ediffabs,
+	COALESCE(h1.e_prozent, 0) - COALESCE(h2.e_prozent, 0) AS ediffpro, 
+    COALESCE(h1.z_absolut, 0) - COALESCE(h2.z_absolut, 0) AS zdiffabs,
+    COALESCE(h1.z_prozent, 0) - COALESCE(h2.z_prozent, 0) AS zdiffpro
+FROM helptable h1 JOIN helptable h2 ON h1.wahljahr > h2.wahljahr AND h1.partei=h2.partei AND h1.wahljahr=%wahljahr%;
+
+Q7_4_2 (gültige Stimmen):
+
+Required input %wahlkreis_nr%: int [213;217], %wahljahr%: int {2009, 2013}
+
+WITH bayerischestimmzettel AS (
+SELECT s.wahljahr, s.id, s.direktkandidat, s.landesliste
+FROM stimmzettel s
+WHERE s.wahlkreis=%wahlkreis_nr%),
+bstimmengueltigkeit AS (
+    WITH bstimmenprokandidat AS (
+        SELECT bs.wahljahr, bs.direktkandidat, COUNT(bs.direktkandidat) AS stimmen
+        FROM bayerischestimmzettel bs WHERE bs.direktkandidat NOTNULL
+        GROUP BY bs.wahljahr, bs.direktkandidat)
+,
+bwahlkreisstimmenprolandesliste AS (
+    WITH wgzs AS (
+        SELECT bs.wahljahr, COUNT(*) AS stimmen
+        FROM bayerischestimmzettel bs
+        WHERE bs.landesliste NOTNULL
+        GROUP BY bs.wahljahr
+        )
+    SELECT bs.wahljahr, bs.landesliste, COUNT(bs.landesliste) AS stimmen,
+    CAST(COUNT(bs.landesliste) AS NUMERIC) / ges.stimmen AS prozent
+    FROM bayerischestimmzettel bs JOIN wgzs ges ON ges.wahljahr=bs.wahljahr
+    WHERE bs.landesliste NOTNULL
+    GROUP BY bs.wahljahr, bs.landesliste, ges.stimmen
+),
+bewerber_count AS(
+    	SELECT SUM(spk.stimmen) AS stimmen, spk.wahljahr FROM bstimmenprokandidat spk
+    	GROUP BY spk.wahljahr	),
+	listen_count AS(
+    	SELECT SUM(wspl.stimmen) AS stimmen, wspl.wahljahr FROM bwahlkreisstimmenprolandesliste wspl
+    	GROUP BY wspl.wahljahr),
+    gesamt AS(
+        SELECT s.wahljahr, COUNT(*) AS waehler FROM
+        bayerischestimmzettel s GROUP BY s.wahljahr
+    )
+    SELECT DISTINCT ges.wahljahr, ges.waehler, bc.stimmen AS g_erststimmen,
+    lc.stimmen AS g_zweitstimmen, ges.waehler - bc.stimmen AS ug_erststimmen, 
+    ges.waehler - lc.stimmen AS ug_zweitstimmen
+    FROM gesamt ges JOIN bewerber_count bc ON ges.wahljahr=bc.wahljahr JOIN
+    listen_count lc ON ges.wahljahr=lc.wahljahr
+)
+SELECT w.name, w.bundesland, 
+(sg1.waehler - sg2.waehler) AS waehlerdiffabs, 
+(sg1.waehler / CAST(wb1.wahlberechtigte AS NUMERIC) - sg2.waehler / CAST(wb2.wahlberechtigte AS NUMERIC)) AS waehlerdiffpro,
+(sg1.g_erststimmen - sg2.g_erststimmen) as gediffabs,
+(sg1.g_erststimmen / CAST(sg1.waehler AS NUMERIC) - sg2.g_erststimmen / CAST(sg2.waehler AS NUMERIC)) AS gediffpro,
+(sg1.ug_erststimmen - sg2.ug_erststimmen) as ugediffabs,
+(sg1.ug_erststimmen / CAST(sg1.waehler AS NUMERIC) - sg2.ug_erststimmen / CAST(sg2.waehler AS NUMERIC)) AS ugediffpro,
+(sg1.g_zweitstimmen - sg2.g_zweitstimmen) as gzdiffabs,
+(sg1.g_zweitstimmen / CAST(sg1.waehler AS NUMERIC) - sg2.g_zweitstimmen / CAST(sg2.waehler AS NUMERIC)) AS gzdiffpro,
+(sg1.ug_zweitstimmen - sg2.ug_zweitstimmen) as ugzdiffabs,
+(sg1.ug_zweitstimmen / CAST(sg1.waehler AS NUMERIC) - sg2.ug_zweitstimmen / CAST(sg2.waehler AS NUMERIC)) AS ugzdiffpro
+FROM wahlkreis w JOIN wahlberechtigte wb1 ON w.nummer=wb1.wahlkreis
+JOIN wahlberechtigte wb2 ON w.nummer=wb2.wahlkreis AND wb2.wahljahr < wb1.wahljahr
+, bstimmengueltigkeit sg1 JOIN bstimmengueltigkeit sg2 ON sg1.wahljahr > sg2.wahljahr
+WHERE w.nummer=%wahlkreis_nr% AND sg1.wahljahr=%wahljahr% AND wb1.wahljahr=%wahljahr%;    
+
+
+Q2 ALTERNATIV:
+WITH bundestagssitze AS (
+WITH hoechstzahlen2009 AS (
+    SELECT h.bundesland, h.partei, (row_number() OVER (PARTITION BY h.partei ORDER BY h.quotient DESC)) AS rn
+       FROM (
+    SELECT l.bundesland, l1.partei, FLOOR(CAST(l.stimmen AS NUMERIC)/u.zahl) AS quotient
+    FROM erlaubtelisten l JOIN landesliste l1 ON l.landesliste = l1.id AND l.wahljahr=l1.wahljahr AND l.wahljahr=2009, ungerade u
+	ORDER BY l.bundesland ASC, quotient DESC) AS h
+),
+ueberhang2009 AS (
+    WITH ueberhangproland2009 AS (
+    SELECT h.bundesland, h.partei, GREATEST(COALESCE(dmpl.count, 0) - COUNT(h.partei), 0) AS ueberhang, 2009 AS wahljahr
+    FROM hoechstzahlen2009 h JOIN oberverteilung o ON o.partei=h.partei AND o.wahljahr=2009
+    LEFT JOIN direktmandateproland dmpl ON dmpl.bundesland = h.bundesland AND h.partei = dmpl.partei AND dmpl.wahljahr=o.wahljahr
+    WHERE h.rn <= o.sitze
+    GROUP BY h.bundesland, h.partei, dmpl.count)
+    SELECT u.partei, SUM(u.ueberhang) AS ueberhang, u.wahljahr
+    FROM ueberhangproland2009 u
+    GROUP BY u.partei, u.wahljahr
+)
+SELECT o.partei, (o.sitze + COALESCE(u.ueberhang, 0)) AS sitze, o.wahljahr
+FROM oberverteilung o LEFT JOIN ueberhang2009 u ON o.partei=u.partei AND u.wahljahr=o.wahljahr
+WHERE o.wahljahr=%wahljahr%),
+unterverteilung AS (
+WITH hoechstzahlen AS (
+    SELECT h.wahljahr, h.bundesland, h.partei, (row_number() OVER (PARTITION BY h.wahljahr, h.partei ORDER BY h.quotient DESC)) AS rn
+       FROM (
+    SELECT l.wahljahr, l.bundesland, l1.partei, FLOOR(CAST(l.stimmen AS NUMERIC)/u.zahl) AS quotient
+    FROM erlaubtelisten l JOIN landesliste l1 ON l.landesliste = l1.id AND l.wahljahr=l1.wahljahr, ungerade u
+	ORDER BY l.bundesland ASC, quotient DESC) AS h
+),
+laenderaufteilung AS (
+ SELECT h.wahljahr, h.bundesland, h.partei, GREATEST(COUNT(h.partei) - COALESCE(dmpl.count, 0), 0) AS sitze
+    FROM hoechstzahlen h JOIN bundestagssitze o ON o.partei=h.partei AND o.wahljahr=h.wahljahr
+    LEFT JOIN direktmandateproland dmpl ON dmpl.bundesland = h.bundesland AND h.partei = dmpl.partei AND dmpl.wahljahr=h.wahljahr
+    WHERE h.rn <= o.sitze
+    GROUP BY h.wahljahr, h.bundesland, h.partei, dmpl.count),
+zuverteilendesitze AS (
+ SELECT l.wahljahr, l.partei, o.sitze + (o.sitze - (SUM(l.sitze) + SUM(COALESCE(d.count, 0)))) AS sitze
+ FROM laenderaufteilung l LEFT JOIN direktmandateproland d ON l.bundesland=d.bundesland AND l.partei=d.partei AND d.wahljahr=l.wahljahr
+    JOIN bundestagssitze o ON o.partei=l.partei AND o.wahljahr=l.wahljahr
+ GROUP BY l.wahljahr, l.partei, o.sitze
+)
+SELECT h.wahljahr, h.bundesland, h.partei, COUNT(h.partei) AS sitze
+    FROM hoechstzahlen h JOIN zuverteilendesitze z ON z.partei=h.partei AND h.wahljahr=z.wahljahr
+    WHERE h.rn <= z.sitze
+    GROUP BY h.wahljahr, h.bundesland, h.partei
+    ORDER BY h.wahljahr, h.bundesland, h.partei),
+ direktmandate AS (
+    SELECT w.bundesland, b.id, b.titel, b.vorname, b.nachname, b.partei
+    FROM wahlkreissieger d JOIN bewerber b ON d.direktkandidat=b.id JOIN wahlkreis w ON d.wahlkreis=w.nummer
+    JOIN erlaubteparteien e ON b.partei=e.partei
+WHERE e.wahljahr=%wahljahr% AND d.wahljahr=%wahljahr%),
+verfuegbarelistenplaetze AS (
+SELECT e.listen_id, e.bewerber_id, (row_number() OVER (PARTITION BY e.listen_id ORDER BY e.listenplatz ASC)) as listenplatz
+FROM (SELECT lp.listen_id, lp.bewerber_id, lp.listenplatz 
+      FROM erlaubteparteien e JOIN landesliste l ON e.partei=l.partei
+	  JOIN listenplaetze lp ON lp.listen_id=l.id 
+	  LEFT JOIN direktmandate d ON d.partei=l.partei 
+      AND d.bundesland=l.bundesland AND d.id=lp.bewerber_id
+	  WHERE d.id ISNULL AND e.wahljahr=%wahljahr% AND l.wahljahr=%wahljahr%) AS e)
+(SELECT l.bundesland, b.titel, b.vorname, b.nachname, b.partei
+FROM bewerber b JOIN verfuegbarelistenplaetze lp ON b.id=lp.bewerber_id
+JOIN landesliste l ON lp.listen_id=l.id JOIN
+unterverteilung u ON l.partei=u.partei AND l.bundesland=u.bundesland AND l.wahljahr=u.wahljahr
+JOIN direktmandateproland dmpl ON l.partei=dmpl.partei AND l.bundesland=dmpl.bundesland AND l.wahljahr=dmpl.wahljahr
+WHERE lp.listenplatz <= u.sitze - dmpl.count AND l.wahljahr=%wahljahr% AND u.wahljahr=%wahljahr%)
+UNION ALL (
+    SELECT d.bundesland, d.titel, d.vorname, d.nachname, d.partei
+    FROM direktmandate d);
+
+

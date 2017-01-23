@@ -1,7 +1,7 @@
 WITH losers AS (
 SELECT b.partei, spk.direktkandidat, spk.wahlkreis, (spk.stimmen - wks.stimmen) AS differenz, 
 (row_number() OVER (PARTITION BY b.partei ORDER BY (spk.stimmen - wks.stimmen) DESC)) as rn
-FROM stimmenprokandidat spk JOIN wahlkreissieger wks ON spk.wahlkreis=wks.wahlkreis
+FROM stimmenprokandidat spk JOIN wahlkreissieger wks ON spk.wahlkreis=wks.wahlkreis 
     AND spk.stimmen - wks.stimmen < 0 JOIN bewerber b ON spk.direktkandidat=b.id
     WHERE b.partei NOTNULL AND spk.wahljahr=%wahljahr% AND wks.wahljahr=%wahljahr%
     ),
@@ -20,7 +20,7 @@ FROM wahlkreissieger wks JOIN (SELECT l.wahlkreis, MAX(l.differenz) AS differenz
      FROM losers l LEFT JOIN winners w ON l.partei=w.partei
 	 WHERE w.direktkandidat ISNULL AND l.rn <= 10))
 
-SELECT com.partei, com.wahlkreis as nummer, wk.name AS wahlkreis, b.titel, b.vorname, b.nachname, com.differenz
+SELECT wk.name AS wahlkreis, b.titel, b.vorname, b.nachname, com.differenz
 FROM combined com JOIN bewerber b ON com.direktkandidat=b.id JOIN wahlkreis wk ON com.wahlkreis=wk.nummer
-WHERE com.partei = '%partei%'
-ORDER BY com.partei, ABS(com.differenz) ASC;
+WHERE com.partei='%partei%'
+ORDER BY ABS(-com.differenz) ASC;

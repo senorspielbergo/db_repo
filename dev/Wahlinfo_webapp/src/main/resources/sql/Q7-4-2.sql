@@ -23,12 +23,10 @@ bwahlkreisstimmenprolandesliste AS (
 ),
 bewerber_count AS(
     	SELECT SUM(spk.stimmen) AS stimmen, spk.wahljahr FROM bstimmenprokandidat spk
-    	GROUP BY spk.wahljahr
-	),
+    	GROUP BY spk.wahljahr	),
 	listen_count AS(
     	SELECT SUM(wspl.stimmen) AS stimmen, wspl.wahljahr FROM bwahlkreisstimmenprolandesliste wspl
-    	GROUP BY wspl.wahljahr ORDER BY wspl.wahljahr
-	),
+    	GROUP BY wspl.wahljahr),
     gesamt AS(
         SELECT s.wahljahr, COUNT(*) AS waehler FROM
         bayerischestimmzettel s GROUP BY s.wahljahr
@@ -41,7 +39,7 @@ bewerber_count AS(
 )
 SELECT w.name, w.bundesland, 
 (sg1.waehler - sg2.waehler) AS waehlerdiffabs, 
-(sg1.waehler / CAST(w.wahlberechtigte AS NUMERIC) - sg2.waehler / CAST(w.wahlberechtigte AS NUMERIC)) AS waehlerdiffpro,
+(sg1.waehler / CAST(wb1.wahlberechtigte AS NUMERIC) - sg2.waehler / CAST(wb2.wahlberechtigte AS NUMERIC)) AS waehlerdiffpro,
 (sg1.g_erststimmen - sg2.g_erststimmen) as gediffabs,
 (sg1.g_erststimmen / CAST(sg1.waehler AS NUMERIC) - sg2.g_erststimmen / CAST(sg2.waehler AS NUMERIC)) AS gediffpro,
 (sg1.ug_erststimmen - sg2.ug_erststimmen) as ugediffabs,
@@ -50,5 +48,7 @@ SELECT w.name, w.bundesland,
 (sg1.g_zweitstimmen / CAST(sg1.waehler AS NUMERIC) - sg2.g_zweitstimmen / CAST(sg2.waehler AS NUMERIC)) AS gzdiffpro,
 (sg1.ug_zweitstimmen - sg2.ug_zweitstimmen) as ugzdiffabs,
 (sg1.ug_zweitstimmen / CAST(sg1.waehler AS NUMERIC) - sg2.ug_zweitstimmen / CAST(sg2.waehler AS NUMERIC)) AS ugzdiffpro
-FROM bstimmengueltigkeit sg1 JOIN bstimmengueltigkeit sg2 ON sg1.wahljahr > sg2.wahljahr, wahlkreis w
-WHERE w.nummer=%wahlkreis_nr% AND sg1.wahljahr=%wahljahr%
+FROM wahlkreis w JOIN wahlberechtigte wb1 ON w.nummer=wb1.wahlkreis
+JOIN wahlberechtigte wb2 ON w.nummer=wb2.wahlkreis AND wb2.wahljahr < wb1.wahljahr
+, bstimmengueltigkeit sg1 JOIN bstimmengueltigkeit sg2 ON sg1.wahljahr > sg2.wahljahr
+WHERE w.nummer=%wahlkreis_nr% AND sg1.wahljahr=%wahljahr% AND wb1.wahljahr=%wahljahr%;    
