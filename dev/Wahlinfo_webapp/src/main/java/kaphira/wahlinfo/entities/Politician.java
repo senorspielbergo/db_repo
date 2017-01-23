@@ -38,7 +38,7 @@ public class Politician implements Serializable{
     }
 
     public String getName() {
-        return name;
+        return lastName;
     }
 
     public void setName(String name) {

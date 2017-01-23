@@ -29,7 +29,7 @@
                         <p:selectOneMenu value="#{q3Bean.selectedDistrict}" filter="true" filterMatchMode="contains">
                             <f:converter binding ="#{districtConverter}" />
                             <f:selectItems value="#{q3Bean.districts}" var="dist" itemValue="#{dist}" itemLabel="#{dist.name}"/>
-                            <p:ajax event="select" listener="#{q3Bean.onDistrictSelection}" update="@form"/>
+                            <p:ajax event="change" listener="#{q3Bean.onDistrictSelection}" update="@form"/>
                         </p:selectOneMenu>
                     </p:panel>
                     

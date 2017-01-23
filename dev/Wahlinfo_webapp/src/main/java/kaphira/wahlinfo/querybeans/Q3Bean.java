@@ -34,9 +34,9 @@ public class Q3Bean implements Serializable {
     }
 
     public void onDistrictSelection() {
-        if (!selectedDistrict.isLoaded()) {
+//        if (!selectedDistrict.isLoaded()) {
             districtManagementBean.loadDistrict(selectedDistrict, selectedYear, false);
-        }
+//        }
     }
 
     public void onYearSelection() {

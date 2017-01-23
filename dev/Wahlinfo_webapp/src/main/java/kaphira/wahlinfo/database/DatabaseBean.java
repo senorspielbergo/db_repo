@@ -41,6 +41,7 @@ public class DatabaseBean implements Serializable {
     private static final String PLACEHOLDER_TITLE = "%titel%";
     private static final String PLACEHOLDER_FIRSTNAME = "%vorname%";
     private static final String PLACEHOLDER_LASTNAME = "%nachname%";
+    private static final String PLACEHOLDER_CANDIDATE_PARTY = "%bewerber_partei%";
 
     private final Logger logger = Logger.getLogger(DatabaseBean.class.getName());
     private final Clock clock = new Clock();
@@ -367,14 +368,15 @@ public class DatabaseBean implements Serializable {
      * @param lastName
      * @param party
      */
-    public void insertVote(int districtId, String title, String firstName, String lastName, String party) {
+    public void insertVote(int districtId, String title, String firstName, String lastName, String candidateParty, String party) {
         String query = configBean.getInsert();
         query = query.replaceAll(PLACEHOLDER_DISTRICT, String.valueOf(districtId));
         query = query.replaceAll(PLACEHOLDER_TITLE, String.valueOf(title));
         query = query.replaceAll(PLACEHOLDER_FIRSTNAME, String.valueOf(firstName));
         query = query.replaceAll(PLACEHOLDER_LASTNAME, String.valueOf(lastName));
         query = query.replaceAll(PLACEHOLDER_PARTY, String.valueOf(party));
-
+        query = query.replaceAll(PLACEHOLDER_CANDIDATE_PARTY, String.valueOf(candidateParty));
+        System.out.println(query);
         executeStatement(query, "INSERT_VOTE");
     }
 

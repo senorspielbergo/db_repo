@@ -154,18 +154,20 @@ public class ElectionBean implements Serializable {
         String firstName = "null";
         String lastName = "null";
         String party = "null";
-
+        String candidateParty = "null";
+        
         if (selectedCandidate != null) {
 
             title = selectedCandidate.getTitle();
             firstName = selectedCandidate.getFirstName();
             lastName = selectedCandidate.getName();
+            candidateParty = selectedCandidate.getParty();
         }
 
         if (selectedParty != null) {
             party = getSelectedParty();
         }
-        databaseBean.insertVote(districtId, title, firstName, lastName, party);
+        databaseBean.insertVote(districtId, title, firstName, lastName, candidateParty, party);
     }
 
     //********************************//
