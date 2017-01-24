@@ -129,6 +129,14 @@ public class PostgreSQLDatabase {
 		for (Class<? extends DatabaseEntity> cls : user.getPrivileges()
 				.keySet()) {
 			try {
+				for (UserPrivilege privilege : user.getPrivileges().get(cls)) {
+					if (privilege.equals(UserPrivilege.OWNER)) {
+						System.out.println("\tRemoving ownership on wahlinfo_db...");
+						execute("reassign owned by " + user.getName() + " to "
+								+ this.user.getName() + ";");
+					}
+				}
+
 				StringBuilder builder = new StringBuilder("revoke all on ");
 
 				String className = cls.getCanonicalName().equals(
@@ -178,6 +186,19 @@ public class PostgreSQLDatabase {
 				.keySet()) {
 			List<UserPrivilege> privileges = user.getPrivileges().get(cls);
 
+			if (privileges.contains(UserPrivilege.OWNER)) {
+				if (cls.getCanonicalName().equals(
+						DatabaseEntity.Any.class.getCanonicalName())) {
+					System.out.print("owner (wahlinfo_db) ");
+					execute("reassign owned by " + this.user.getName() + " to "
+							+ user.getName() + ";");
+				} else {
+					throw new RuntimeException(
+							"Ownership cannot be reassigned for only one table!");
+				}
+				privileges.remove(UserPrivilege.OWNER);
+			}
+
 			String className = cls.getCanonicalName().equals(
 					DatabaseEntity.Any.class.getCanonicalName()) ? "all tables in schema public"
 					: cls.getSimpleName().toLowerCase();
@@ -185,12 +206,7 @@ public class PostgreSQLDatabase {
 			builder = new StringBuilder("grant ");
 
 			for (int idx = 0; idx < privileges.size();) {
-				if (privileges.get(idx).equals(UserPrivilege.OWNER)) {
-					execute("reassign owned by " + this.user.getName() + " to "
-							+ user.getName() + ";");
-				} else {
-					builder.append(privileges.get(idx).name().toLowerCase());
-				}
+				builder.append(privileges.get(idx).name().toLowerCase());
 				System.out
 						.print(privileges.get(idx).name().toLowerCase() + " ");
 				if (++idx < privileges.size()) {
